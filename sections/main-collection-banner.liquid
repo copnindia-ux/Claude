@@ -1,0 +1,53 @@
+{%- liquid
+  assign s = section.settings
+  assign banner_image = collection.metafields.custom.banner_image.value | default: collection.image
+  assign show_image = false
+  if s.show_image and banner_image != blank
+    assign show_image = true
+  endif
+-%}
+<section class="color-{{ s.color_scheme }}">
+  {%- if show_image -%}
+    <div class="collection-hero collection-hero--image banner" style="--banner-height: {{ s.height }}vh; --banner-height-mobile: {{ s.height }}vh;">
+      {%- render 'banner-media', image: banner_image, eager: true -%}
+      <div class="collection-hero__inner">
+        <h1 class="h0" style="margin:0">{{ collection.title | escape }}</h1>
+        {%- if s.show_description and collection.description != blank -%}
+          <div class="collection-hero__desc rte">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="page-width page-width--full collection-hero{% if s.align == 'center' %} text-center{% endif %}">
+      <h1 class="h1" style="margin:0">{{ collection.title | escape }}</h1>
+      {%- if s.show_description and collection.description != blank -%}
+        <div class="collection-hero__desc rte subtext"{% if s.align == 'center' %} style="margin-left:auto;margin-right:auto"{% endif %}>{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if s.pills_menu != blank -%}
+    <div class="page-width page-width--full">
+      <nav class="collection-pills" aria-label="{{ 'sections.collection.related' | t }}"{% if s.align == 'center' %} style="justify-content:center"{% endif %}>
+        {%- for link in s.pills_menu.links -%}
+          <a href="{{ link.url }}" class="pill"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "class": "section-collection-banner",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "label": "Show collection image", "default": true, "info": "Uses metafield custom.banner_image, falling back to the collection image." },
+    { "type": "range", "id": "height", "min": 30, "max": 90, "step": 5, "unit": "vh", "label": "Image banner height", "default": 50 },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "select", "id": "align", "label": "Text alignment (no image)", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "left" },
+    { "type": "link_list", "id": "pills_menu", "label": "Category pills menu", "info": "Show quick links to sibling collections." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

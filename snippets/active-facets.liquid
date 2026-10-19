@@ -1,0 +1,39 @@
+{%- comment -%}
+  - results: collection or search
+  - clear_url: url to remove all filters
+{%- endcomment -%}
+{%- liquid
+  assign has_active = false
+  for filter in results.filters
+    if filter.active_values.size > 0
+      assign has_active = true
+    elsif filter.type == 'price_range'
+      if filter.min_value.value != null or filter.max_value.value != null
+        assign has_active = true
+      endif
+    endif
+  endfor
+-%}
+{%- if has_active -%}
+  <div class="active-facets" data-active-facets>
+    {%- for filter in results.filters -%}
+      {%- for value in filter.active_values -%}
+        <a href="{{ value.url_to_remove }}" data-facet-remove>
+          {{ filter.label | escape }}: {{ value.label | escape }} {% render 'icon', icon: 'close' %}
+          <span class="visually-hidden">{{ 'products.facets.clear_filter' | t }}</span>
+        </a>
+      {%- endfor -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+          <a href="{{ filter.url_to_remove }}" data-facet-remove>
+            {%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}
+            &ndash;
+            {%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+            {% render 'icon', icon: 'close' %}
+          </a>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    <a href="{{ clear_url }}" data-facet-remove class="link-underline" style="border:0">{{ 'products.facets.clear_all' | t }}</a>
+  </div>
+{%- endif -%}

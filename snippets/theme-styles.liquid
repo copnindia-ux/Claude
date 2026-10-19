@@ -1,0 +1,70 @@
+{%- comment -%}
+  Outputs font-faces and CSS custom properties generated from theme settings.
+{%- endcomment -%}
+{%- liquid
+  assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+  assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+  assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+-%}
+{% style %}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+  {{ body_font_italic | font_face: font_display: 'swap' }}
+  {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+  {{ settings.type_header_font | font_face: font_display: 'swap' }}
+
+  {% for scheme in settings.color_schemes -%}
+    {%- assign s = scheme.settings -%}
+    {% if forloop.index == 1 %}:root,{% endif %}
+    .color-{{ scheme.id }} {
+      --color-background: {{ s.background.red }},{{ s.background.green }},{{ s.background.blue }};
+      {% if s.background_gradient != empty -%}
+        --gradient-background: {{ s.background_gradient }};
+      {%- else -%}
+        --gradient-background: {{ s.background }};
+      {%- endif %}
+      --color-foreground: {{ s.text.red }},{{ s.text.green }},{{ s.text.blue }};
+      --color-accent: {{ s.accent.red }},{{ s.accent.green }},{{ s.accent.blue }};
+      --color-button: {{ s.button.red }},{{ s.button.green }},{{ s.button.blue }};
+      --color-button-text: {{ s.button_label.red }},{{ s.button_label.green }},{{ s.button_label.blue }};
+      --color-card: {{ s.card_background.red }},{{ s.card_background.green }},{{ s.card_background.blue }};
+      --color-border: {{ s.border.red }},{{ s.border.green }},{{ s.border.blue }};
+      --color-badge: {{ s.badge.red }},{{ s.badge.green }},{{ s.badge.blue }};
+      --color-badge-text: {{ s.badge_text.red }},{{ s.badge_text.green }},{{ s.badge_text.blue }};
+    }
+  {% endfor %}
+
+  :root {
+    --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-style: {{ settings.type_body_font.style }};
+    --font-body-weight: {{ settings.type_body_font.weight }};
+    --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 900 }};
+    --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+    --font-heading-style: {{ settings.type_header_font.style }};
+    --font-heading-weight: {{ settings.type_header_font.weight }};
+    --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+    --font-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+    --heading-letter-spacing: {{ settings.heading_letter_spacing | divided_by: 1000.0 }}em;
+    --body-letter-spacing: {{ settings.body_letter_spacing | divided_by: 1000.0 }}em;
+
+    --page-width: {{ settings.page_width | divided_by: 10.0 }}rem;
+    --page-gutter: {{ settings.page_gutter }}px;
+    --spacing-sections-desktop: {{ settings.spacing_sections }}px;
+    --spacing-sections-mobile: {{ settings.spacing_sections | times: 0.7 | round }}px;
+    --grid-gap-desktop: {{ settings.grid_gap }}px;
+    --grid-gap-mobile: {{ settings.grid_gap | times: 0.6 | round }}px;
+
+    --button-radius: {{ settings.button_radius }}px;
+    --button-height: {{ settings.button_height }}px;
+    --input-radius: {{ settings.input_radius }}px;
+    --card-radius: {{ settings.card_radius }}px;
+    --media-radius: {{ settings.media_radius }}px;
+    --badge-radius: {{ settings.badge_radius }}px;
+    --card-image-ratio: {% case settings.card_image_ratio %}{% when 'portrait' %}125%{% when 'square' %}100%{% when 'tall' %}133.33%{% else %}125%{% endcase %};
+    --card-image-padding: {{ settings.card_image_padding }}px;
+    --drawer-width: {{ settings.drawer_width }}px;
+    --duration-short: 150ms;
+    --duration-default: 300ms;
+    --duration-long: 600ms;
+  }
+{% endstyle %}

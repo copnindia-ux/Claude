@@ -1,0 +1,71 @@
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <span class="marquee__item" {{ block.shopify_attributes }}>
+      {%- if block.type == 'logo' and block.settings.image != blank -%}
+        {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
+        {{ block.settings.image | image_url: height: 120 | image_tag: loading: 'lazy', alt: block.settings.image.alt | escape }}
+        {%- if block.settings.link != blank -%}</a>{%- endif -%}
+      {%- else -%}
+        {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.text }}</a>{%- else -%}{{ block.settings.text }}{%- endif -%}
+      {%- endif -%}
+    </span>
+    {%- if section.settings.separator != blank -%}<span class="marquee__sep" aria-hidden="true">{{ section.settings.separator }}</span>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div
+  class="marquee color-{{ section.settings.color_scheme }} section-padding{% if section.settings.reverse %} marquee--reverse{% endif %}"
+  style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }}; --marquee-speed: {{ section.settings.speed }}s; --logo-height: {{ section.settings.logo_height }}px;"
+>
+  <div class="marquee__track{% if section.settings.pause_on_hover %} pause-hover{% endif %} {{ section.settings.text_size }}" style="margin:0">
+    {%- for i in (1..2) -%}
+      <div class="marquee__group"{% if i == 2 %} aria-hidden="true"{% endif %}>{{ items }}{{ items }}{{ items }}</div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Scrolling marquee",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "select", "id": "text_size", "label": "Text size", "options": [ { "value": "caption", "label": "Small" }, { "value": "h4", "label": "Medium" }, { "value": "h2", "label": "Large" } ], "default": "h4" },
+    { "type": "text", "id": "separator", "label": "Separator", "default": "✦" },
+    { "type": "range", "id": "speed", "min": 10, "max": 120, "step": 5, "unit": "s", "label": "Loop duration", "default": 40 },
+    { "type": "range", "id": "logo_height", "min": 16, "max": 80, "step": 2, "unit": "px", "label": "Logo height", "default": 28 },
+    { "type": "checkbox", "id": "reverse", "label": "Reverse direction", "default": false },
+    { "type": "checkbox", "id": "pause_on_hover", "label": "Pause on hover", "default": true },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Top padding", "default": 16 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Bottom padding", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "clean formulas" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "logo",
+      "name": "Logo / press",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo image" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling marquee",
+      "blocks": [
+        { "type": "text", "settings": { "text": "clean formulas" } },
+        { "type": "text", "settings": { "text": "dermatologist tested" } },
+        { "type": "text", "settings": { "text": "cruelty free" } },
+        { "type": "text", "settings": { "text": "fragrance free" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

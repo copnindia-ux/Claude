@@ -1,0 +1,77 @@
+{%- comment -%}
+  Mobile navigation drawer.
+  - menu, secondary_menu: linklists
+  - promos: mega_promo blocks (first two shown)
+{%- endcomment -%}
+<menu-drawer class="drawer drawer--left menu-drawer" id="MenuDrawer" aria-hidden="true">
+  <div class="drawer__overlay" data-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" tabindex="-1">
+    <div class="drawer__header">
+      <span class="drawer__title">{{ shop.name | escape }}</span>
+      <button type="button" class="icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+    </div>
+    <div class="drawer__body">
+      <nav class="menu-drawer__nav" aria-label="{{ 'sections.header.main_menu' | t }}">
+        <ul class="list-unstyled" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              {%- if link.links != blank -%}
+                <details{% if link.child_active %} open{% endif %}>
+                  <summary class="menu-drawer__link">
+                    <span>{{ link.title | escape }}</span>
+                    {%- render 'icon', icon: 'plus' -%}
+                  </summary>
+                  <div class="menu-drawer__sub">
+                    <a href="{{ link.url }}">{{ 'sections.header.view_all' | t }}</a>
+                    {%- for child in link.links -%}
+                      <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                      {%- for grandchild in child.links -%}
+                        <a href="{{ grandchild.url }}" style="padding-left:1.2rem;opacity:.75">{{ grandchild.title | escape }}</a>
+                      {%- endfor -%}
+                    {%- endfor -%}
+                  </div>
+                </details>
+              {%- else -%}
+                <a href="{{ link.url }}" class="menu-drawer__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+          {%- for link in secondary_menu.links -%}
+            <li><a href="{{ link.url }}" class="menu-drawer__link">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      {%- if promos.size > 0 -%}
+        <div class="menu-drawer__promos">
+          {%- for promo in promos limit: 2 -%}
+            <a href="{{ promo.settings.link }}" class="mega-menu__promo">
+              <div class="media">
+                {%- if promo.settings.image != blank -%}
+                  {{ promo.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: promo.settings.image.alt | escape }}
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <span class="caption">{{ promo.settings.heading | escape }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="menu-drawer__utility">
+        {%- if shop.customer_accounts_enabled -%}
+          {%- if customer -%}
+            <a href="{{ routes.account_url }}">{%- render 'icon', icon: 'account' -%} {{ 'customer.account.title' | t }}</a>
+          {%- else -%}
+            <a href="{{ routes.account_login_url }}" style="display:flex;gap:.8rem;align-items:center">{%- render 'icon', icon: 'account' -%} {{ 'customer.log_in' | t }}</a>
+          {%- endif -%}
+        {%- endif -%}
+        {%- render 'localization-form', id: 'MenuDrawerLocalization' -%}
+        {%- render 'social-icons' -%}
+      </div>
+    </div>
+  </div>
+</menu-drawer>

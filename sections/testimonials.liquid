@@ -1,0 +1,66 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <slider-component class="page-width{% if s.full_width %} page-width--full{% endif %}">
+    {%- render 'section-heading', heading: s.heading, text: s.text, align: s.heading_align, slider: true -%}
+    <div class="slider" data-slider style="--per-view: {{ s.columns_desktop }}; --per-view-mobile: 1.15;">
+      {%- for block in section.blocks -%}
+        <figure class="testimonial" style="margin:0" {{ block.shopify_attributes }}>
+          <div class="testimonial__stars" aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: block.settings.rating, rating_max: 5 }}">
+            {%- for i in (1..5) -%}
+              {%- if i <= block.settings.rating -%}{% render 'icon', icon: 'star' %}{%- else -%}{% render 'icon', icon: 'star-empty' %}{%- endif -%}
+            {%- endfor -%}
+          </div>
+          <blockquote class="testimonial__quote" style="margin:0">{{ block.settings.quote }}</blockquote>
+          <figcaption class="testimonial__author">
+            {%- if block.settings.avatar != blank -%}
+              <span class="media" style="width:4rem;height:4rem;border-radius:50%;flex-shrink:0">{{ block.settings.avatar | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}</span>
+            {%- endif -%}
+            <span>
+              <strong style="font-weight:var(--font-body-weight-bold)">{{ block.settings.author | escape }}</strong>
+              {%- if block.settings.verified -%} <span class="subtext">&middot; {{ 'sections.testimonials.verified' | t }}</span>{%- endif -%}
+            </span>
+          </figcaption>
+          {%- if block.settings.product != blank -%}
+            {%- assign rp = block.settings.product -%}
+            <a href="{{ rp.url }}" class="testimonial__product">
+              <span class="media">{%- if rp.featured_media -%}{{ rp.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}</span>
+              <span>{{ rp.title | escape }}</span>
+            </a>
+          {%- endif -%}
+        </figure>
+      {%- endfor -%}
+    </div>
+  </slider-component>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "in their words" },
+    { "type": "richtext", "id": "text", "label": "Description" },
+    { "type": "select", "id": "heading_align", "label": "Heading alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "left" },
+    { "type": "range", "id": "columns_desktop", "min": 1, "max": 4, "step": 1, "label": "Cards per view (desktop)", "default": 3 },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "label": "Rating", "default": 5 },
+        { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>Light, quick to absorb and my skin feels comfortable all day. It's become a non-negotiable.</p>" },
+        { "type": "text", "id": "author", "label": "Author", "default": "Customer name" },
+        { "type": "checkbox", "id": "verified", "label": "Verified buyer", "default": true },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar" },
+        { "type": "product", "id": "product", "label": "Reviewed product" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Testimonials", "blocks": [ { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" } ] } ]
+}
+{% endschema %}

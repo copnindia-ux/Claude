@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "our story", "size": "h0" } }
+      },
+      "block_order": ["heading"],
+      "settings": { "height": 70, "height_mobile": 60, "overlay_opacity": 10, "content_position": "bottom-left", "content_position_mobile": "bottom", "text_alignment_mobile": "left", "text_light": true, "show_panel": false, "full_width": true, "color_scheme": "scheme-1" }
+    },
+    "intro": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "essentials, edited", "size": "h1" } },
+        "text": { "type": "text", "settings": { "text": "<p>Tell customers why you started, what you believe in and how you make your products.</p>" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": { "text_align": "center", "narrow": true }
+    },
+    "values": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "made with care", "size": "h1" } },
+        "text": { "type": "text", "settings": { "text": "<p>Describe your formulation standards, sourcing and testing.</p>" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": { "layout": "right", "media_width": 50, "image_height": "fill", "content_vertical": "center", "text_align": "left", "full_width": true, "color_scheme": "scheme-2" }
+    }
+  },
+  "order": ["hero", "intro", "values"]
+}

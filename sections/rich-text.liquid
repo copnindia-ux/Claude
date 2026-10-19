@@ -1,0 +1,56 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width{% if s.narrow %} page-width--narrow{% endif %}">
+    <div class="{% if settings.animations_enabled %}reveal{% endif %}" style="display:flex;flex-direction:column;gap:1.6rem;{% if s.text_align == 'center' %}align-items:center;text-align:center;{% elsif s.text_align == 'right' %}align-items:flex-end;text-align:right;{% endif %}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'caption' -%}
+            <p class="caption" style="margin:0" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            <h2 class="{{ block.settings.size }}" style="margin:0" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'button' -%}
+            <div class="banner__buttons" {{ block.shopify_attributes }}>
+              {%- if block.settings.label != blank -%}<a href="{{ block.settings.link | default: '#' }}" class="button{% if block.settings.secondary %} button--secondary{% endif %}">{{ block.settings.label | escape }}</a>{%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    { "type": "select", "id": "text_align", "label": "Alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "checkbox", "id": "narrow", "label": "Narrow width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Top padding", "default": 72 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Bottom padding", "default": 72 }
+  ],
+  "blocks": [
+    { "type": "caption", "name": "Caption", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "about us" } ] },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "essentials, edited" },
+        { "type": "select", "id": "size", "label": "Size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" }
+      ]
+    },
+    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Share your story, your values, or what makes your products different.</p>" } ] },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "read more" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "secondary", "label": "Outline style", "default": true }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Rich text", "blocks": [ { "type": "heading" }, { "type": "text" }, { "type": "button" } ] } ]
+}
+{% endschema %}

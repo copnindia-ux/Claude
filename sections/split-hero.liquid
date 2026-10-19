@@ -1,0 +1,65 @@
+{%- style -%}
+  #SplitHero-{{ section.id }} { --banner-height: {{ section.settings.height }}vh; }
+{%- endstyle -%}
+<section id="SplitHero-{{ section.id }}" class="split-hero color-{{ section.settings.color_scheme }}">
+  {%- for block in section.blocks limit: 2 -%}
+    {%- assign b = block.settings -%}
+    <div class="split-hero__panel" style="--overlay-opacity: {{ b.overlay_opacity | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+      {%- if b.link != blank -%}
+        <a href="{{ b.link }}" style="position:absolute;inset:0;z-index:3" aria-label="{{ b.heading | strip_html | escape }}"></a>
+      {%- endif -%}
+      {%- render 'banner-media', image: b.image, video: b.video, eager: true, sizes: '(min-width: 750px) 50vw, 100vw', placeholder: 'lifestyle-1' -%}
+      <div class="banner__content banner__content--{{ b.content_position }}">
+        <div class="banner__box{% if b.content_position contains 'center' %} banner__box--center{% endif %}{% if b.text_light %} banner__text-light{% endif %}">
+          {%- if b.heading != blank -%}<h2 class="banner__heading h1">{{ b.heading }}</h2>{%- endif -%}
+          {%- if b.text != blank -%}<div class="rte">{{ b.text }}</div>{%- endif -%}
+          {%- if b.button_label != blank -%}
+            <div class="banner__buttons" style="position:relative;z-index:4">
+              <a href="{{ b.link | default: '#' }}" class="button{% if b.text_light %} button--light{% endif %}">{{ b.button_label | escape }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Split hero",
+  "max_blocks": 2,
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "height", "min": 40, "max": 100, "step": 5, "unit": "vh", "label": "Desktop height", "default": 85 }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panel",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "video", "id": "video", "label": "Video" },
+        { "type": "range", "id": "overlay_opacity", "min": 0, "max": 80, "step": 5, "unit": "%", "label": "Overlay opacity", "default": 0 },
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "the lip edit" },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "shop" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "text_light", "label": "Light text", "default": true },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content position",
+          "options": [
+            { "value": "top-left", "label": "Top left" },
+            { "value": "middle-center", "label": "Middle center" },
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "bottom-center", "label": "Bottom center" }
+          ],
+          "default": "bottom-left"
+        }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Split hero", "blocks": [ { "type": "panel" }, { "type": "panel", "settings": { "heading": "the skin edit" } } ] } ]
+}
+{% endschema %}

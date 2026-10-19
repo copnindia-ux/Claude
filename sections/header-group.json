@@ -1,0 +1,38 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-1": { "type": "announcement", "settings": { "text": "free shipping on orders over $50", "link": "" } },
+        "announcement-2": { "type": "announcement", "settings": { "text": "new: the soft-focus lip treatment, in four sheer tints", "link": "" } }
+      },
+      "block_order": ["announcement-1", "announcement-2"],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "show_arrows": true,
+        "show_social": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "menu": "main-menu",
+        "logo_position": "center",
+        "mega_menu": "mega",
+        "sticky": "always",
+        "show_border": false,
+        "show_search": true,
+        "show_account": true,
+        "cart_style": "text",
+        "transparent_home": false,
+        "transparent_text_color": "#FFFFFF"
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

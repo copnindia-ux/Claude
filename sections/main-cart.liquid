@@ -1,0 +1,62 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <cart-page class="page-width" id="MainCart-{{ section.id }}" data-section="{{ section.id }}">
+    <h1 class="h1">{{ 'sections.cart.title' | t }}</h1>
+    {%- if cart.item_count > 0 -%}
+      <div class="cart-page">
+        <div>
+          {%- render 'free-shipping-bar' -%}
+          <form action="{{ routes.cart_url }}" method="post" id="CartForm" data-cart-items>
+            {%- render 'cart-line-items' -%}
+            <noscript><button type="submit" class="button button--secondary button--small" style="margin-top:1.6rem">{{ 'sections.cart.update' | t }}</button></noscript>
+          </form>
+        </div>
+        <aside class="cart-summary">
+          {%- if settings.cart_show_note -%}
+            <div class="field">
+              <label for="CartNote">{{ 'sections.cart.note' | t }}</label>
+              <textarea class="textarea" id="CartNote" name="note" form="CartForm" data-cart-note>{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            <ul class="cart-discounts">
+              {%- for discount in cart.cart_level_discount_applications -%}
+                <li>{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <div class="cart-totals"><span>{{ 'sections.cart.subtotal' | t }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+          <p class="cart-tax-note">
+            {%- if cart.taxes_included -%}{{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}{%- else -%}{{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}{%- endif -%}
+          </p>
+          <div class="cart-checkout-buttons">
+            <button type="submit" name="checkout" form="CartForm" class="button button--full">{{ 'sections.cart.checkout' | t }}</button>
+            {%- if additional_checkout_buttons and s.show_additional_checkout -%}
+              <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+            {%- endif -%}
+          </div>
+        </aside>
+      </div>
+    {%- else -%}
+      <div class="grid-empty">
+        <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+        {%- if shop.customer_accounts_enabled and customer == nil -%}
+          <p class="subtext" style="margin-top:2.4rem">{{ 'sections.cart.login_html' | t: link: routes.account_login_url }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </cart-page>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_additional_checkout", "label": "Show additional checkout buttons", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ]
+}
+{% endschema %}

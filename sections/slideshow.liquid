@@ -1,0 +1,88 @@
+{%- style -%}
+  #Slideshow-{{ section.id }} .banner { --banner-height: {{ section.settings.height }}vh; --banner-height-mobile: {{ section.settings.height_mobile }}vh; }
+{%- endstyle -%}
+
+<slider-component
+  id="Slideshow-{{ section.id }}"
+  class="hero-slideshow color-{{ section.settings.color_scheme }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.speed | times: 1000 }}"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="{{ section.settings.accessibility_label | escape }}"
+>
+  <div class="slider" data-slider>
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      <div class="banner" style="--overlay-opacity: {{ b.overlay_opacity | divided_by: 100.0 }};" role="group" aria-roledescription="slide" aria-label="{{ forloop.index }} / {{ forloop.length }}" {{ block.shopify_attributes }}>
+        {%- render 'banner-media', image: b.image, image_mobile: b.image_mobile, eager: forloop.first, placeholder: 'lifestyle-2' -%}
+        <div class="banner__content banner__content--{{ b.content_position }}">
+          <div class="banner__box{% if b.content_position contains 'center' %} banner__box--center{% endif %}{% if b.text_light %} banner__text-light{% endif %}">
+            {%- if b.caption != blank -%}<p class="caption">{{ b.caption | escape }}</p>{%- endif -%}
+            {%- if b.heading != blank -%}<h2 class="banner__heading h0">{{ b.heading }}</h2>{%- endif -%}
+            {%- if b.text != blank -%}<div class="rte">{{ b.text }}</div>{%- endif -%}
+            {%- if b.button_label != blank -%}
+              <div class="banner__buttons">
+                <a href="{{ b.link | default: '#' }}" class="button{% if b.text_light %} button--light{% endif %}">{{ b.button_label | escape }}</a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+  {%- if section.blocks.size > 1 -%}
+    <div class="slider-dots" data-slider-dots></div>
+    <div class="hero-slideshow__controls slider-buttons small-hide">
+      <button type="button" class="slider-button" data-slider-prev aria-label="{{ 'accessibility.previous_slide' | t }}">{%- render 'icon', icon: 'chevron-left' -%}</button>
+      <button type="button" class="slider-button" data-slider-next aria-label="{{ 'accessibility.next_slide' | t }}">{%- render 'icon', icon: 'chevron-right' -%}</button>
+    </div>
+  {%- endif -%}
+</slider-component>
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "height", "min": 40, "max": 100, "step": 5, "unit": "vh", "label": "Desktop height", "default": 85 },
+    { "type": "range", "id": "height_mobile", "min": 40, "max": 100, "step": 5, "unit": "vh", "label": "Mobile height", "default": 75 },
+    { "type": "checkbox", "id": "autoplay", "label": "Auto-rotate slides", "default": true },
+    { "type": "range", "id": "speed", "min": 3, "max": 12, "step": 1, "unit": "s", "label": "Change slides every", "default": 6 },
+    { "type": "text", "id": "accessibility_label", "label": "Slideshow description", "default": "Featured" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Mobile image" },
+        { "type": "range", "id": "overlay_opacity", "min": 0, "max": 80, "step": 5, "unit": "%", "label": "Overlay opacity", "default": 10 },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "made for every day" },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "shop now" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "text_light", "label": "Light text", "default": true },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content position",
+          "options": [
+            { "value": "top-left", "label": "Top left" },
+            { "value": "middle-left", "label": "Middle left" },
+            { "value": "middle-center", "label": "Middle center" },
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "bottom-center", "label": "Bottom center" },
+            { "value": "bottom-right", "label": "Bottom right" }
+          ],
+          "default": "bottom-left"
+        }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Slideshow", "blocks": [ { "type": "slide" }, { "type": "slide" } ] } ]
+}
+{% endschema %}

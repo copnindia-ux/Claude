@@ -1,0 +1,17 @@
+<div class="{% if section.settings.include_margins %}page-width section-padding{% endif %}" style="--pt: 40; --pb: 40;">
+  {%- for block in section.blocks -%}
+    {% render block %}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Apps",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "include_margins", "label": "Make section margins the same as theme", "default": true }
+  ],
+  "blocks": [ { "type": "@app" } ],
+  "presets": [ { "name": "Apps" } ]
+}
+{% endschema %}

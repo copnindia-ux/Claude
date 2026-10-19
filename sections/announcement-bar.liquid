@@ -1,0 +1,76 @@
+{%- assign slides = section.blocks | where: 'type', 'announcement' -%}
+<announcement-bar
+  class="announcement-bar color-{{ section.settings.color_scheme }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.autoplay_speed | times: 1000 }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width announcement-bar__inner">
+    {%- if slides.size > 1 and section.settings.show_arrows -%}
+      <button type="button" class="icon-button announcement-bar__arrow" data-prev aria-label="{{ 'accessibility.previous_slide' | t }}">
+        {%- render 'icon', icon: 'chevron-left' -%}
+      </button>
+    {%- endif -%}
+    <div class="announcement-bar__track" role="region" aria-label="{{ 'sections.header.announcement' | t }}">
+      {%- for block in slides -%}
+        <div class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            {{ block.settings.text }}
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if slides.size > 1 and section.settings.show_arrows -%}
+      <button type="button" class="icon-button announcement-bar__arrow" data-next aria-label="{{ 'accessibility.next_slide' | t }}">
+        {%- render 'icon', icon: 'chevron-right' -%}
+      </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_social or section.settings.utility_menu != blank -%}
+      <div class="announcement-bar__utility">
+        {%- for link in section.settings.utility_menu.links -%}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endfor -%}
+        {%- if section.settings.show_social -%}{%- render 'social-icons' -%}{%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</announcement-bar>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "section-announcement",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "checkbox", "id": "autoplay", "label": "Auto-rotate announcements", "default": true },
+    { "type": "range", "id": "autoplay_speed", "min": 3, "max": 10, "step": 1, "unit": "s", "label": "Rotation speed", "default": 5 },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show arrows", "default": true },
+    { "type": "link_list", "id": "utility_menu", "label": "Utility links (desktop)" },
+    { "type": "checkbox", "id": "show_social", "label": "Show social icons (desktop)", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "free shipping on orders over $50" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "blocks": [
+        { "type": "announcement", "settings": { "text": "free shipping on orders over $50" } },
+        { "type": "announcement", "settings": { "text": "new: the soft-focus lip treatment, in four sheer tints" } }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

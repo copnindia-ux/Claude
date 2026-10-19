@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "main-list-collections", "settings": { "title": "collections", "sort": "alphabetical", "columns_desktop": 4 } }
+  },
+  "order": ["main"]
+}

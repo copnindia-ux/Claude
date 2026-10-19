@@ -1,0 +1,19 @@
+<div class="color-{{ section.settings.color_scheme }} section-padding" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="{% if section.settings.contained %}page-width{% endif %}">
+    {{ section.settings.custom_liquid }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "settings": [
+    { "type": "liquid", "id": "custom_liquid", "label": "Custom Liquid", "info": "Add app snippets or other Liquid code." },
+    { "type": "checkbox", "id": "contained", "label": "Constrain to page width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 40 }
+  ],
+  "presets": [ { "name": "Custom Liquid" } ]
+}
+{% endschema %}

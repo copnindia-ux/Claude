@@ -1,0 +1,167 @@
+{%- comment -%}
+  Product card.
+  - product: product object (blank renders a placeholder card)
+  - lazy: boolean, default true
+  - sizes: image sizes attribute
+  - show_quick_add: override global quick add
+  - placeholder_index: number used for placeholder art
+{%- endcomment -%}
+{%- liquid
+  assign sizes = sizes | default: '(min-width: 990px) 25vw, 50vw'
+  assign quick_add = settings.card_quick_add
+  if show_quick_add == false
+    assign quick_add = false
+  endif
+  assign swatch_names = settings.swatch_option_names | downcase | split: ','
+-%}
+
+{%- if product != blank -%}
+  {%- liquid
+    assign primary = product.featured_media
+    assign secondary = product.media[1]
+    assign has_secondary = false
+    if settings.card_show_secondary_image and secondary != blank and secondary.media_type == 'image'
+      assign has_secondary = true
+    endif
+
+    assign swatch_option = nil
+    for option in product.options_with_values
+      assign option_name = option.name | downcase | strip
+      for n in swatch_names
+        assign n_clean = n | strip
+        if option_name == n_clean
+          assign swatch_option = option
+          break
+        endif
+      endfor
+      if swatch_option
+        break
+      endif
+    endfor
+  -%}
+  <div class="card product-card{% if settings.animations_enabled %} reveal{% endif %}" data-product-card data-product-id="{{ product.id }}">
+    <div class="card__media-wrap">
+      <div class="card__media media{% if has_secondary %} has-secondary{% endif %}" data-card-media>
+        {%- if primary -%}
+          {{
+            primary.preview_image
+            | image_url: width: 1200
+            | image_tag:
+              loading: lazy,
+              sizes: sizes,
+              widths: '300, 450, 600, 800, 1000, 1200',
+              class: 'card__image--primary',
+              alt: primary.alt | default: product.title | escape
+          }}
+          {%- if has_secondary -%}
+            {{
+              secondary.preview_image
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'lazy',
+                sizes: sizes,
+                widths: '300, 450, 600, 800, 1000, 1200',
+                class: 'card__image--secondary',
+                alt: ''
+            }}
+          {%- endif -%}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+
+      {%- render 'card-badges', product: product -%}
+
+      {%- if quick_add and product.available -%}
+        <div class="card__quick-add">
+          {%- if product.has_only_default_variant or product.variants.size == 1 -%}
+            {%- form 'product', product, class: 'quick-add-form', data-product-form: '', novalidate: 'novalidate' -%}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button type="submit" class="button button--full button--small" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ product.title | escape }}">
+                {%- render 'icon', icon: 'plus' -%}
+                <span>{{ 'products.product.quick_add' | t }} &mdash; {{ product.price | money }}</span>
+              </button>
+            {%- endform -%}
+          {%- else -%}
+            <button
+              type="button"
+              class="button button--full button--small"
+              data-quick-view="{{ product.url }}"
+              aria-label="{{ 'products.product.choose_options' | t }}: {{ product.title | escape }}"
+              aria-haspopup="dialog"
+            >
+              {%- render 'icon', icon: 'plus' -%}
+              <span>{{ 'products.product.quick_add' | t }}</span>
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="card__info">
+      {%- if settings.card_show_vendor -%}
+        <p class="card__vendor caption">{{ product.vendor }}</p>
+      {%- endif -%}
+      <div class="card__heading-row">
+        <h3 class="card__title">
+          <a href="{{ product.url }}" data-card-link>{{ product.title | escape }}</a>
+        </h3>
+        <span class="card__price">{% render 'price', product: product, show_from: true %}</span>
+      </div>
+      {%- if settings.card_show_subtitle and product.metafields.custom.subtitle != blank -%}
+        <p class="card__subtitle">{{ product.metafields.custom.subtitle }}</p>
+      {%- endif -%}
+      {%- if settings.card_show_rating and product.metafields.reviews.rating.value != blank -%}
+        {%- render 'rating', rating: product.metafields.reviews.rating.value, count: product.metafields.reviews.rating_count -%}
+      {%- endif -%}
+
+      {%- if settings.card_show_swatches and swatch_option -%}
+        <div class="swatches" role="list" aria-label="{{ swatch_option.name | escape }}">
+          {%- for value in swatch_option.values limit: 6 -%}
+            {%- liquid
+              assign v_image = blank
+              for variant in product.variants
+                if variant.options contains value.name and variant.featured_media
+                  assign v_image = variant.featured_media.preview_image
+                  assign v_url = variant.url
+                  break
+                endif
+              endfor
+            -%}
+            <button
+              type="button"
+              role="listitem"
+              class="swatch{% if forloop.first %} is-active{% endif %}"
+              {% render 'swatch-style', value: value %}
+              title="{{ value.name | escape }}"
+              aria-label="{{ value.name | escape }}"
+              {% if v_image %}
+                data-swatch-image="{{ v_image | image_url: width: 800 }}"
+                data-swatch-srcset="{{ v_image | image_url: width: 400 }} 400w, {{ v_image | image_url: width: 800 }} 800w, {{ v_image | image_url: width: 1200 }} 1200w"
+                data-swatch-url="{{ v_url }}"
+              {% endif %}
+            ></button>
+          {%- endfor -%}
+          {%- if swatch_option.values.size > 6 -%}
+            <span class="swatches__more">+{{ swatch_option.values.size | minus: 6 }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- else -%}
+  {%- assign ph = placeholder_index | default: 1 | modulo: 6 | plus: 1 -%}
+  <div class="card product-card">
+    <div class="card__media-wrap">
+      <div class="card__media media">
+        {{ 'product-' | append: ph | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    </div>
+    <div class="card__info">
+      <div class="card__heading-row">
+        <h3 class="card__title">{{ 'onboarding.product_title' | t }}</h3>
+        <span class="card__price">{{ 2400 | money }}</span>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

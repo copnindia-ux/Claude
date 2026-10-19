@@ -1,0 +1,54 @@
+{%- liquid
+  assign s = section.settings
+  assign fp = s.product
+  assign sid = section.id
+-%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width">
+    {%- if fp != blank -%}
+      <div class="product" style="--media-width: 50%;">
+        {%- render 'product-media-gallery', product: fp, section_id: sid, layout: 'carousel', enable_zoom: false, show_thumbs: true -%}
+        <div class="product__info" style="justify-content:center">
+          <div class="product__info-inner">
+            {%- if s.caption != blank -%}<p class="caption">{{ s.caption | escape }}</p>{%- endif -%}
+            <h2 class="product__title h1">{{ fp.title | escape }}</h2>
+            {%- if fp.metafields.custom.subtitle != blank -%}<p class="product__subtitle">{{ fp.metafields.custom.subtitle }}</p>{%- endif -%}
+            <div class="product__price" id="Price-{{ sid }}" data-dynamic>{%- render 'price', product: fp, use_variant: true -%}</div>
+            {%- if s.show_description and fp.description != blank -%}
+              <div class="rte">{{ fp.description | strip_html | truncatewords: 50 }}</div>
+            {%- endif -%}
+            {%- render 'product-variant-picker', product: fp, section_id: sid, picker_style: 'pills' -%}
+            {%- render 'product-buy-form', product: fp, section_id: sid, show_quantity: s.show_quantity, show_dynamic_checkout: s.show_dynamic_checkout -%}
+            <a href="{{ fp.url }}" class="link-underline">{{ 'products.product.view_full_details' | t }}</a>
+          </div>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="product" style="--media-width: 50%;">
+        <div class="media" style="padding-top:125%">{{ 'product-2' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+        <div class="product__info" style="justify-content:center">
+          <h2 class="h1">{{ 'onboarding.product_title' | t }}</h2>
+          <div class="product__price">{{ 2400 | money }}</div>
+          <button class="button" disabled>{{ 'products.product.add_to_cart' | t }}</button>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured product",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "caption", "label": "Caption", "default": "spotlight" },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "checkbox", "id": "show_quantity", "label": "Show quantity selector", "default": false },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 }
+  ],
+  "presets": [ { "name": "Featured product" } ]
+}
+{% endschema %}

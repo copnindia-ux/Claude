@@ -1,0 +1,55 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width">
+    <div style="display:grid;gap:3.2rem;align-items:center;grid-template-columns:repeat(auto-fit,minmax(min(100%,36rem),1fr));">
+      <before-after class="before-after" style="--ratio: {{ s.ratio }};">
+        <div class="media">
+          {%- if s.before_image != blank -%}
+            {{ s.before_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.before_image.alt | escape }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+        <div class="before-after__after">
+          <div class="media">
+            {%- if s.after_image != blank -%}
+              {{ s.after_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.after_image.alt | escape }}
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+        </div>
+        <span class="badge before-after__label before-after__label--before">{{ s.before_label | escape }}</span>
+        <span class="badge before-after__label before-after__label--after">{{ s.after_label | escape }}</span>
+        <span class="before-after__handle" aria-hidden="true"></span>
+        <input type="range" min="0" max="100" value="50" aria-label="{{ 'sections.before_after.slider_label' | t }}">
+      </before-after>
+      <div style="display:flex;flex-direction:column;gap:1.6rem">
+        {%- if s.heading != blank -%}<h2 class="h1" style="margin:0">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="rte">{{ s.text }}</div>{%- endif -%}
+        {%- if s.button_label != blank -%}<div><a href="{{ s.button_link | default: '#' }}" class="button">{{ s.button_label | escape }}</a></div>{%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Before / after",
+  "settings": [
+    { "type": "image_picker", "id": "before_image", "label": "Before image" },
+    { "type": "image_picker", "id": "after_image", "label": "After image" },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "before" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "after" },
+    { "type": "select", "id": "ratio", "label": "Ratio", "options": [ { "value": "100%", "label": "Square" }, { "value": "125%", "label": "Portrait" }, { "value": "66.66%", "label": "Landscape" } ], "default": "100%" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "visible results" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Describe the result customers can expect and over what timeframe.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ],
+  "presets": [ { "name": "Before / after" } ]
+}
+{% endschema %}

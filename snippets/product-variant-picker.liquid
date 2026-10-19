@@ -1,0 +1,71 @@
+{%- comment -%}
+  Variant picker. Options listed in settings.swatch_option_names render as swatches.
+  - product
+  - section_id
+  - picker_style: 'pills' | 'dropdown'
+  - block: optional, for shopify_attributes
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  {%- assign swatch_names = settings.swatch_option_names | downcase | split: ',' -%}
+  <variant-picker
+    class="variant-picker"
+    data-section="{{ section_id }}"
+    data-url="{{ product.url }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_name = option.name | downcase | strip
+        assign is_swatch = false
+        for n in swatch_names
+          assign n_clean = n | strip
+          if option_name == n_clean
+            assign is_swatch = true
+          endif
+        endfor
+      -%}
+      {%- if picker_style == 'dropdown' and is_swatch == false -%}
+        <div class="field variant-dropdown">
+          <label for="Option-{{ section_id }}-{{ forloop.index0 }}">{{ option.name | escape }}</label>
+          <div class="select-wrapper">
+            <select id="Option-{{ section_id }}-{{ forloop.index0 }}" class="select" name="options[{{ option.name | escape }}]" data-option-index="{{ forloop.index0 }}">
+              {%- for value in option.values -%}
+                <option value="{{ value | escape }}"{% if value.selected %} selected{% endif %}>{{ value | escape }}</option>
+              {%- endfor -%}
+            </select>
+            {%- render 'icon', icon: 'caret' -%}
+          </div>
+        </div>
+      {%- else -%}
+        <fieldset class="variant-option" data-option-index="{{ forloop.index0 }}">
+          <legend>{{ option.name | escape }}: <span data-selected-value>{{ option.selected_value | escape }}</span></legend>
+          <div class="variant-option__values">
+            {%- for value in option.values -%}
+              {%- assign input_id = 'Option-' | append: section_id | append: '-' | append: option.position | append: '-' | append: forloop.index0 -%}
+              <input
+                type="radio"
+                id="{{ input_id }}"
+                name="Option-{{ section_id }}-{{ option.position }}"
+                value="{{ value | escape }}"
+                data-option-index="{{ option.position | minus: 1 }}"
+                {% if value.selected %}checked{% endif %}
+                {% unless value.available %}class="is-disabled"{% endunless %}
+              >
+              {%- if is_swatch -%}
+                <label for="{{ input_id }}" class="swatch-label" title="{{ value | escape }}">
+                  <span class="swatch" {% render 'swatch-style', value: value %}></span>
+                  <span class="visually-hidden">{{ value | escape }}</span>
+                </label>
+              {%- else -%}
+                <label for="{{ input_id }}" class="pill">{{ value | escape }}</label>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+      {%- endif -%}
+    {%- endfor -%}
+    <script type="application/json" data-variants>
+      {{ product.variants | json }}
+    </script>
+  </variant-picker>
+{%- endunless -%}

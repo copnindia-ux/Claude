@@ -1,0 +1,33 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width page-width--narrow text-center" style="display:flex;flex-direction:column;gap:2rem;align-items:center">
+    {%- if s.heading != blank -%}<h2 class="h1" style="margin:0">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+    <countdown-timer class="countdown" data-end="{{ s.end_date }}T{{ s.end_time | default: '00:00' }}:00" data-hide-on-end="{{ s.hide_on_end }}" role="timer">
+      <div class="countdown__unit"><span class="countdown__num" data-days>00</span><span class="countdown__label">{{ 'sections.countdown.days' | t }}</span></div>
+      <div class="countdown__unit"><span class="countdown__num" data-hours>00</span><span class="countdown__label">{{ 'sections.countdown.hours' | t }}</span></div>
+      <div class="countdown__unit"><span class="countdown__num" data-minutes>00</span><span class="countdown__label">{{ 'sections.countdown.minutes' | t }}</span></div>
+      <div class="countdown__unit"><span class="countdown__num" data-seconds>00</span><span class="countdown__label">{{ 'sections.countdown.seconds' | t }}</span></div>
+    </countdown-timer>
+    {%- if s.button_label != blank -%}<a href="{{ s.button_link | default: '#' }}" class="button">{{ s.button_label | escape }}</a>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Countdown",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "launching soon" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Set a reminder. This one won't wait.</p>" },
+    { "type": "text", "id": "end_date", "label": "End date", "info": "Format: YYYY-MM-DD", "default": "2026-12-31" },
+    { "type": "text", "id": "end_time", "label": "End time (visitor's local time)", "info": "Format: HH:MM (24h)", "default": "09:00" },
+    { "type": "checkbox", "id": "hide_on_end", "label": "Hide section when finished", "default": false },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-4" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 }
+  ],
+  "presets": [ { "name": "Countdown" } ]
+}
+{% endschema %}

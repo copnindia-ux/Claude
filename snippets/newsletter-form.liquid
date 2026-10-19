@@ -1,0 +1,30 @@
+{%- comment -%}
+  Customer newsletter signup.
+  - id: unique id
+  - form_id: id used to scope the posted form (section or block id)
+  - button_style: 'arrow' (default) | 'button'
+{%- endcomment -%}
+{%- form 'customer', id: id, class: 'newsletter__form' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <input type="hidden" name="form_id" value="{{ form_id }}">
+  {%- if form.posted_successfully? and form.id == id -%}
+    <p class="form-message form-message--success" tabindex="-1" autofocus>{{ 'newsletter.success' | t }}</p>
+  {%- else -%}
+    {%- if form.errors and form.id == id -%}
+      <p class="form-message form-message--error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+    {%- endif -%}
+    {%- if button_style == 'button' -%}
+      <div class="inline-form">
+        <label class="visually-hidden" for="{{ id }}-email">{{ 'newsletter.label' | t }}</label>
+        <input id="{{ id }}-email" type="email" name="contact[email]" class="input" value="{{ form.email }}" autocomplete="email" placeholder="{{ 'newsletter.label' | t }}" required>
+        <button type="submit" class="button">{{ 'newsletter.button_label' | t }}</button>
+      </div>
+    {%- else -%}
+      <div class="newsletter-input">
+        <label class="visually-hidden" for="{{ id }}-email">{{ 'newsletter.label' | t }}</label>
+        <input id="{{ id }}-email" type="email" name="contact[email]" class="input" value="{{ form.email }}" autocomplete="email" placeholder="{{ 'newsletter.label' | t }}" required>
+        <button type="submit" aria-label="{{ 'newsletter.button_label' | t }}">{%- render 'icon', icon: 'arrow-right' -%}</button>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endform -%}

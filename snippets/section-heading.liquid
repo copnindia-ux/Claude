@@ -1,0 +1,23 @@
+{%- comment -%}
+  Common section heading row.
+  - heading, text, link_label, link_url, align ('left'|'center'), size, slider (bool: show arrows)
+{%- endcomment -%}
+{%- if heading != blank or text != blank or link_label != blank or slider -%}
+  <div class="section-header{% if align == 'center' %} section-header--center{% endif %}">
+    <div>
+      {%- if heading != blank -%}<h2 class="section-header__title {{ size | default: 'h2' }}">{{ heading }}</h2>{%- endif -%}
+      {%- if text != blank -%}<div class="section-header__text rte subtext" style="margin-top:.8rem">{{ text }}</div>{%- endif -%}
+    </div>
+    <div style="display:flex;gap:1.6rem;align-items:center">
+      {%- if link_label != blank -%}
+        <a href="{{ link_url | default: routes.all_products_collection_url }}" class="link-underline">{{ link_label | escape }}</a>
+      {%- endif -%}
+      {%- if slider -%}
+        <div class="slider-buttons small-hide">
+          <button type="button" class="slider-button" data-slider-prev aria-label="{{ 'accessibility.previous_slide' | t }}">{%- render 'icon', icon: 'chevron-left' -%}</button>
+          <button type="button" class="slider-button" data-slider-next aria-label="{{ 'accessibility.next_slide' | t }}">{%- render 'icon', icon: 'chevron-right' -%}</button>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,112 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "skin, but softer", "size": "h0" } },
+        "text": { "type": "text", "settings": { "text": "<p>Daily essentials that layer, hydrate and glow.</p>" } },
+        "buttons": { "type": "buttons", "settings": { "label_1": "shop now", "link_1": "shopify://collections/all", "style_1": "light", "label_2": "", "style_2": "secondary" } }
+      },
+      "block_order": ["heading", "text", "buttons"],
+      "settings": {
+        "height": 90,
+        "height_mobile": 80,
+        "overlay_opacity": 10,
+        "content_position": "bottom-left",
+        "content_position_mobile": "bottom",
+        "text_alignment_mobile": "left",
+        "text_light": true,
+        "show_panel": false,
+        "full_width": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "bestsellers",
+        "link_label": "shop all",
+        "link_url": "shopify://collections/all",
+        "products_to_show": 8,
+        "layout": "slider",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "show_view_all": false,
+        "full_width": true,
+        "heading_align": "left",
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "split": {
+      "type": "split-hero",
+      "blocks": {
+        "panel-1": { "type": "panel", "settings": { "heading": "the lip edit", "button_label": "shop lips", "text_light": true, "content_position": "bottom-left", "overlay_opacity": 0 } },
+        "panel-2": { "type": "panel", "settings": { "heading": "the skin edit", "button_label": "shop skin", "text_light": true, "content_position": "bottom-left", "overlay_opacity": 0 } }
+      },
+      "block_order": ["panel-1", "panel-2"],
+      "settings": { "color_scheme": "scheme-1", "height": 85 }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "t1": { "type": "text", "settings": { "text": "clean formulas" } },
+        "t2": { "type": "text", "settings": { "text": "dermatologist tested" } },
+        "t3": { "type": "text", "settings": { "text": "cruelty free" } },
+        "t4": { "type": "text", "settings": { "text": "fragrance free" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"],
+      "settings": { "color_scheme": "scheme-3", "text_size": "h4", "separator": "✦", "speed": 40, "reverse": false, "pause_on_hover": true, "padding_top": 16, "padding_bottom": 16, "logo_height": 28 }
+    },
+    "story": {
+      "type": "image-with-text",
+      "blocks": {
+        "caption": { "type": "caption", "settings": { "text": "our philosophy" } },
+        "heading": { "type": "heading", "settings": { "heading": "fewer steps, better skin", "size": "h1" } },
+        "text": { "type": "text", "settings": { "text": "<p>We make a short edit of hardworking essentials, so your routine stays simple and your skin stays happy.</p>" } },
+        "button": { "type": "button", "settings": { "label": "our story", "link": "", "style": "secondary" } }
+      },
+      "block_order": ["caption", "heading", "text", "button"],
+      "settings": { "layout": "left", "media_width": 50, "image_height": "fill", "content_vertical": "center", "text_align": "left", "full_width": true, "color_scheme": "scheme-2", "padding_top": 48, "padding_bottom": 48 }
+    },
+    "benefits": {
+      "type": "multicolumn",
+      "blocks": {
+        "c1": { "type": "column", "settings": { "icon": "drop", "title": "hydrating", "text": "<p>Formulated to support a healthy moisture barrier.</p>" } },
+        "c2": { "type": "column", "settings": { "icon": "leaf", "title": "clean formulas", "text": "<p>Thoughtful ingredients, nothing unnecessary.</p>" } },
+        "c3": { "type": "column", "settings": { "icon": "rabbit", "title": "cruelty free", "text": "<p>Never tested on animals.</p>" } },
+        "c4": { "type": "column", "settings": { "icon": "sparkle", "title": "everyday glow", "text": "<p>Layers beautifully, morning or night.</p>" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": { "heading": "why you'll love it", "heading_align": "center", "image_style": "image", "image_ratio": "portrait", "icon_size": 36, "text_align": "center", "show_card": false, "columns_desktop": 4, "columns_mobile": "2", "full_width": false, "color_scheme": "scheme-1", "padding_top": 64, "padding_bottom": 64 }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "r1": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>Light, quick to absorb and my skin feels comfortable all day. It's become a non-negotiable.</p>", "author": "Customer name", "verified": true } },
+        "r2": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>The sheerest wash of color with real hydration. I keep one in every bag.</p>", "author": "Customer name", "verified": true } },
+        "r3": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>Simple routine, visibly smoother skin. Exactly what I wanted.</p>", "author": "Customer name", "verified": true } }
+      },
+      "block_order": ["r1", "r2", "r3"],
+      "settings": { "heading": "in their words", "heading_align": "left", "columns_desktop": 3, "full_width": true, "color_scheme": "scheme-1", "padding_top": 56, "padding_bottom": 56 }
+    },
+    "gallery": {
+      "type": "ugc-gallery",
+      "blocks": {
+        "i1": { "type": "item", "settings": {} },
+        "i2": { "type": "item", "settings": {} },
+        "i3": { "type": "item", "settings": {} },
+        "i4": { "type": "item", "settings": {} },
+        "i5": { "type": "item", "settings": {} }
+      },
+      "block_order": ["i1", "i2", "i3", "i4", "i5"],
+      "settings": { "heading": "as seen on you", "heading_align": "left", "link_label": "follow us", "carousel": true, "image_ratio": "story", "columns_desktop": 5, "full_width": true, "color_scheme": "scheme-1", "padding_top": 56, "padding_bottom": 56 }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": { "heading": "be the first to know", "text": "<p>Launches, restocks and the occasional routine tip. No spam, ever.</p>", "button_style": "button", "align": "center", "color_scheme": "scheme-3", "padding_top": 80, "padding_bottom": 80 }
+    }
+  },
+  "order": ["hero", "bestsellers", "split", "marquee", "story", "benefits", "reviews", "gallery", "newsletter"]
+}

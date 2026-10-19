@@ -1,0 +1,94 @@
+{%- assign s = section.settings -%}
+<article class="color-{{ s.color_scheme }} section-padding" style="--pt: 0; --pb: {{ s.padding_bottom }};">
+  {%- if s.show_image and article.image -%}
+    <div class="article-template__hero">
+      <div class="media" style="border-radius:0">
+        {{ article.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '800, 1200, 1800, 2400', sizes: '100vw', alt: article.image.alt | escape }}
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="page-width page-width--narrow">
+    <header class="article-template__header">
+      <p class="caption subtext">
+        {%- if s.show_date -%}{{ article.published_at | time_tag: format: 'month_day_year' }}{%- endif -%}
+        {%- if s.show_author %} &middot; {{ article.author }}{%- endif -%}
+      </p>
+      <h1 class="h1">{{ article.title | escape }}</h1>
+    </header>
+    <div class="article-template__content rte">{{ article.content }}</div>
+
+    {%- if s.show_share -%}
+      <share-button class="product__share" style="margin-top:3.2rem">
+        <button type="button" class="button button--secondary button--small" data-share-url="{{ request.origin }}{{ article.url }}" data-share-title="{{ article.title | escape }}">
+          {%- render 'icon', icon: 'share' -%} {{ 'general.share.label' | t }}
+        </button>
+      </share-button>
+    {%- endif -%}
+
+    {%- if blog.comments_enabled? -%}
+      <div class="article-template__comments">
+        {%- if article.comments_count > 0 -%}
+          <h2 class="h3">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
+          {%- paginate article.comments by 10 -%}
+            {%- for comment in article.comments -%}
+              <div class="comment">
+                <div class="rte">{{ comment.content }}</div>
+                <p class="caption subtext">{{ comment.author }} &middot; {{ comment.created_at | time_tag: format: 'month_day_year' }}</p>
+              </div>
+            {%- endfor -%}
+            {%- render 'pagination', paginate: paginate, anchor: '#comments' -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+        {%- form 'new_comment', article -%}
+          <h2 class="h3" id="comments" style="margin-top:3.2rem">{{ 'blogs.article.comment_form_title' | t }}</h2>
+          {%- if form.posted_successfully? -%}
+            <p class="form-message form-message--success">
+              {%- if blog.moderated? -%}{{ 'blogs.article.success_moderated' | t }}{%- else -%}{{ 'blogs.article.success' | t }}{%- endif -%}
+            </p>
+          {%- endif -%}
+          {%- if form.errors -%}<div class="form-message form-message--error">{{ form.errors | default_errors }}</div>{%- endif -%}
+          <div class="grid" style="--cols-desktop: 2; --cols-tablet: 2; --cols-mobile: 1; gap: 0 1.6rem;">
+            <div class="field"><label for="CommentAuthor">{{ 'blogs.article.name' | t }}</label><input class="input" id="CommentAuthor" name="comment[author]" value="{{ form.author }}" required></div>
+            <div class="field"><label for="CommentEmail">{{ 'blogs.article.email' | t }}</label><input class="input" type="email" id="CommentEmail" name="comment[email]" value="{{ form.email }}" required></div>
+          </div>
+          <div class="field"><label for="CommentBody">{{ 'blogs.article.message' | t }}</label><textarea class="textarea" id="CommentBody" name="comment[body]" required>{{ form.body }}</textarea></div>
+          {%- if blog.moderated? -%}<p class="caption subtext">{{ 'blogs.article.moderated' | t }}</p>{%- endif -%}
+          <button type="submit" class="button">{{ 'blogs.article.post' | t }}</button>
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+
+    <div class="text-center" style="margin-top:4.8rem">
+      <a href="{{ blog.url }}" class="link-underline">{{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
+    </div>
+  </div>
+</article>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "articleBody": {{ article.content | strip_html | json }},
+    "mainEntityOfPage": { "@type": "WebPage", "@id": {{ request.origin | append: article.url | json }} },
+    "headline": {{ article.title | json }},
+    {% if article.image %}"image": [{{ article.image | image_url: width: 1920 | prepend: 'https:' | json }}],{% endif %}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateCreated": {{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "author": { "@type": "Person", "name": {{ article.author | json }} },
+    "publisher": { "@type": "Organization", "name": {{ shop.name | json }} }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Blog post",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "label": "Show featured image", "default": true },
+    { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
+    { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false },
+    { "type": "checkbox", "id": "show_share", "label": "Show share button", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 }
+  ]
+}
+{% endschema %}

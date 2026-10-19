@@ -1,0 +1,27 @@
+{%- comment -%}
+  Rendered via the Section Rendering API (?section_id=quick-view) on a product URL
+  to populate the quick view modal.
+{%- endcomment -%}
+{%- if product -%}
+  <div class="product" style="--media-width: 50%;" data-section="quick-view">
+    {%- render 'product-media-gallery', product: product, section_id: 'quick-view', layout: 'carousel', enable_zoom: false, show_thumbs: false -%}
+    <div class="product__info">
+      <div class="product__info-inner" style="position:static">
+        {%- render 'card-badges', product: product, class: 'product__badges' -%}
+        <h2 class="product__title h2">{{ product.title | escape }}</h2>
+        {%- if product.metafields.custom.subtitle != blank -%}
+          <p class="product__subtitle">{{ product.metafields.custom.subtitle }}</p>
+        {%- endif -%}
+        <div class="product__price" id="Price-quick-view" data-dynamic>
+          {%- render 'price', product: product, use_variant: true -%}
+        </div>
+        {%- render 'product-variant-picker', product: product, section_id: 'quick-view', picker_style: 'pills' -%}
+        {%- render 'product-buy-form', product: product, section_id: 'quick-view', show_quantity: true, show_dynamic_checkout: false -%}
+        {%- if product.description != blank -%}
+          <div class="rte subtext">{{ product.description | strip_html | truncatewords: 40 }}</div>
+        {%- endif -%}
+        <a href="{{ product.url }}" class="link-underline">{{ 'products.product.view_full_details' | t }}</a>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

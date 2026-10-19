@@ -1,0 +1,78 @@
+{%- paginate customer.addresses by 10 -%}
+  <div class="customer customer--wide">
+    <p><a href="{{ routes.account_url }}" class="link-underline">{{ 'customer.account.return' | t }}</a></p>
+    <h1 class="h1">{{ 'customer.addresses.title' | t }}</h1>
+
+    <div class="text-center">
+      <button type="button" class="button" data-address-toggle="AddressNew" aria-expanded="false" aria-controls="AddressNew">{{ 'customer.addresses.add_new' | t }}</button>
+    </div>
+    <div id="AddressNew" class="address-form" hidden>
+      <h2 class="h3">{{ 'customer.addresses.add_new' | t }}</h2>
+      {%- form 'customer_address', customer.new_address -%}
+        {%- render 'address-form-fields', form: form, id: 'new' -%}
+        <div style="display:flex;gap:1rem">
+          <button class="button">{{ 'customer.addresses.add' | t }}</button>
+          <button type="button" class="button button--secondary" data-address-toggle="AddressNew">{{ 'customer.addresses.cancel' | t }}</button>
+        </div>
+      {%- endform -%}
+    </div>
+
+    <div class="addresses-list" style="margin-top:3.2rem">
+      {%- for address in customer.addresses -%}
+        <div class="address-card">
+          {%- if address == customer.default_address -%}<p class="badge" style="margin-bottom:1.2rem">{{ 'customer.addresses.default' | t }}</p>{%- endif -%}
+          {{ address | format_address }}
+          <div style="display:flex;gap:1.6rem;margin-top:1.6rem">
+            <button type="button" class="button-link" data-address-toggle="EditAddress-{{ address.id }}" aria-expanded="false" aria-controls="EditAddress-{{ address.id }}">{{ 'customer.addresses.edit' | t }}</button>
+            <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" data-confirm="{{ 'customer.addresses.delete_confirm' | t }}">
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" class="button-link">{{ 'customer.addresses.delete' | t }}</button>
+            </form>
+          </div>
+          <div id="EditAddress-{{ address.id }}" class="address-form" hidden>
+            {%- form 'customer_address', address -%}
+              {%- render 'address-form-fields', form: form, id: address.id -%}
+              <div style="display:flex;gap:1rem">
+                <button class="button">{{ 'customer.addresses.update' | t }}</button>
+                <button type="button" class="button button--secondary" data-address-toggle="EditAddress-{{ address.id }}">{{ 'customer.addresses.cancel' | t }}</button>
+              </div>
+            {%- endform -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  </div>
+{%- endpaginate -%}
+<script>
+  document.querySelectorAll('[data-address-toggle]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.dataset.addressToggle);
+      target.hidden = !target.hidden;
+      document.querySelectorAll('[aria-controls="' + target.id + '"]').forEach(function (b) { b.setAttribute('aria-expanded', String(!target.hidden)); });
+    });
+  });
+  document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+    form.addEventListener('submit', function (e) { if (!confirm(form.dataset.confirm)) e.preventDefault(); });
+  });
+  document.querySelectorAll('[data-country-select]').forEach(function (select) {
+    var provinceWrap = document.getElementById(select.dataset.provinceWrap);
+    var provinceSelect = provinceWrap.querySelector('select');
+    function update() {
+      var option = select.options[select.selectedIndex];
+      var provinces = option ? JSON.parse(option.dataset.provinces || '[]') : [];
+      provinceSelect.innerHTML = '';
+      provinceWrap.hidden = provinces.length === 0;
+      provinces.forEach(function (p) {
+        var o = document.createElement('option');
+        o.value = p[0]; o.textContent = p[1];
+        if (p[0] === provinceSelect.dataset.default) o.selected = true;
+        provinceSelect.appendChild(o);
+      });
+    }
+    var def = select.dataset.default;
+    if (def) { for (var i = 0; i < select.options.length; i++) { if (select.options[i].value === def) select.selectedIndex = i; } }
+    select.addEventListener('change', update);
+    update();
+  });
+</script>

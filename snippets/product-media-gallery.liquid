@@ -1,0 +1,85 @@
+{%- comment -%}
+  Product media gallery.
+  - product
+  - section_id
+  - layout: 'grid' | 'stack' | 'carousel'
+  - enable_zoom: bool
+  - show_thumbs: bool
+  - image_ratio: css padding percentage
+{%- endcomment -%}
+{%- liquid
+  assign featured = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+  assign layout = layout | default: 'grid'
+-%}
+<media-gallery class="product__media" id="MediaGallery-{{ section_id }}" data-section="{{ section_id }}" style="--media-ratio: {{ image_ratio | default: '125%' }};">
+  <ul class="product__media-list product__media-list--{{ layout }} list-unstyled" role="list" data-media-list>
+    {%- if product.media.size > 0 -%}
+      {%- for media in product.media -%}
+        <li class="product__media-item" data-media-id="{{ media.id }}" {% if media.id == featured.id %}data-featured{% endif %}>
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              {%- liquid
+                assign loading = 'lazy'
+                if forloop.first
+                  assign loading = 'eager'
+                endif
+              -%}
+              {%- if enable_zoom -%}
+                <button type="button" class="product__media-zoom" data-zoom="{{ forloop.index0 }}" aria-label="{{ 'products.product.media.open_zoom' | t }}">
+              {%- endif -%}
+              <div class="media">
+                {{ media | image_url: width: 2000 | image_tag: loading: loading, widths: '400, 600, 800, 1000, 1400, 2000', sizes: '(min-width: 990px) 60vw, 100vw', alt: media.alt | escape }}
+              </div>
+              {%- if enable_zoom -%}</button>{%- endif -%}
+            {%- when 'video' -%}
+              <div class="media media--video" style="padding-top: var(--media-ratio)">
+                {{ media | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1200x' }}
+              </div>
+            {%- when 'external_video' -%}
+              <div class="media media--video" style="padding-top:56.25%">
+                {{ media | external_video_tag: loading: 'lazy' }}
+              </div>
+            {%- when 'model' -%}
+              <div class="media" style="padding-top:100%">
+                {{ media | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true }}
+              </div>
+          {%- endcase -%}
+        </li>
+      {%- endfor -%}
+    {%- else -%}
+      <li class="product__media-item"><div class="media">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div></li>
+    {%- endif -%}
+  </ul>
+
+  {%- if product.media.size > 1 -%}
+    {%- if show_thumbs and layout == 'carousel' -%}
+      <div class="product__thumbs small-hide" data-thumbs>
+        {%- for media in product.media -%}
+          <button type="button" class="product__thumb" data-thumb="{{ media.id }}" aria-label="{{ 'products.product.media.load_image' | t: index: forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+            <span class="media">{{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    <div class="product__media-dots slider-dots" data-media-dots>
+      {%- for media in product.media -%}
+        <button type="button" class="slider-dot" data-dot="{{ forloop.index0 }}" aria-label="{{ 'products.product.media.load_image' | t: index: forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}></button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if product.media.size > 0 and enable_zoom -%}
+    <lightbox-modal class="modal lightbox" id="Lightbox-{{ section_id }}" aria-hidden="true">
+      <div class="modal__panel" role="dialog" aria-modal="true" aria-label="{{ 'products.product.media.gallery_viewer' | t }}" tabindex="-1">
+        <button type="button" class="modal__close icon-button" data-close aria-label="{{ 'accessibility.close' | t }}" style="position:fixed">{%- render 'icon', icon: 'close' -%}</button>
+        <div class="lightbox__list">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              {{ media | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '1000, 1600, 2400', sizes: '100vw', data-lightbox-index: forloop.index0, alt: media.alt | escape }}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </lightbox-modal>
+  {%- endif -%}
+</media-gallery>

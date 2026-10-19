@@ -1,0 +1,32 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width page-width--narrow">
+    <div class="newsletter{% if s.align == 'left' %} newsletter--left{% endif %}">
+      {%- if s.caption != blank -%}<p class="caption" style="margin:0">{{ s.caption | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="h1" style="margin:0">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+      {%- assign newsletter_id = 'Newsletter-' | append: section.id -%}
+      {%- render 'newsletter-form', id: newsletter_id, form_id: section.id, button_style: s.button_style -%}
+      {%- if s.disclaimer != blank -%}<div class="rte caption subtext">{{ s.disclaimer }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "paragraph", "content": "Signups are added to your Shopify customer list with the 'newsletter' tag." },
+    { "type": "text", "id": "caption", "label": "Caption" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "be the first to know" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Launches, restocks and the occasional routine tip. No spam, ever.</p>" },
+    { "type": "richtext", "id": "disclaimer", "label": "Disclaimer" },
+    { "type": "select", "id": "button_style", "label": "Field style", "options": [ { "value": "arrow", "label": "Underline with arrow" }, { "value": "button", "label": "Box with button" } ], "default": "button" },
+    { "type": "select", "id": "align", "label": "Alignment", "options": [ { "value": "center", "label": "Center" }, { "value": "left", "label": "Left" } ], "default": "center" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Top padding", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Bottom padding", "default": 80 }
+  ],
+  "presets": [ { "name": "Newsletter" } ]
+}
+{% endschema %}

@@ -1,0 +1,60 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width page-width--full">
+    <h1 class="h1">{{ s.title | escape }}</h1>
+    {%- liquid
+      case s.sort
+        when 'products_high' or 'products_low'
+          assign list = collections | sort: 'all_products_count'
+        when 'date' or 'date_reversed'
+          assign list = collections | sort: 'published_at'
+        else
+          assign list = collections
+      endcase
+      if s.sort == 'products_high' or s.sort == 'date_reversed' or s.sort == 'alphabetical_reversed'
+        assign list = list | reverse
+      endif
+    -%}
+    <div class="grid" style="--cols-desktop: {{ s.columns_desktop }}; --cols-tablet: 3; --cols-mobile: 2; --ratio: 125%;">
+      {%- for c in list -%}
+        <a href="{{ c.url }}" class="collection-card">
+          <div class="media">
+            {%- if c.featured_image -%}
+              {{ c.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '300, 600, 1000', sizes: '(min-width: 990px) 25vw, 50vw', alt: c.title | escape }}
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          <h2 class="collection-card__title">{{ c.title | escape }} {% render 'icon', icon: 'arrow-right' %}</h2>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list page",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "collections" },
+    {
+      "type": "select",
+      "id": "sort",
+      "label": "Sort collections",
+      "options": [
+        { "value": "alphabetical", "label": "Alphabetically, A–Z" },
+        { "value": "alphabetical_reversed", "label": "Alphabetically, Z–A" },
+        { "value": "date_reversed", "label": "Date, new to old" },
+        { "value": "date", "label": "Date, old to new" },
+        { "value": "products_high", "label": "Product count, high to low" },
+        { "value": "products_low", "label": "Product count, low to high" }
+      ],
+      "default": "alphabetical"
+    },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 5, "step": 1, "label": "Columns (desktop)", "default": 4 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,83 @@
+{%- comment -%}
+  Filters form (storefront filtering).
+  - results: collection or search object
+  - id_prefix: unique prefix ('Desktop' | 'Drawer')
+  - section_id
+  - open_filters: bool, expand by default
+{%- endcomment -%}
+<form class="facets-form" data-facets-form id="FacetsForm-{{ id_prefix }}">
+  {%- if results.terms -%}
+    <input type="hidden" name="q" value="{{ results.terms | escape }}">
+    <input type="hidden" name="options[prefix]" value="last">
+  {%- endif -%}
+  {%- if results.sort_by -%}
+    <input type="hidden" name="sort_by" value="{{ results.sort_by | default: results.default_sort_by }}" data-sort-mirror>
+  {%- endif -%}
+
+  {%- for filter in results.filters -%}
+    {%- liquid
+      assign total_active = filter.active_values.size
+      if filter.type == 'price_range' and filter.min_value.value or filter.max_value.value
+        assign total_active = 1
+      endif
+    -%}
+    <details class="facet" {% if open_filters or total_active > 0 %}open{% endif %}>
+      <summary>
+        <span>{{ filter.label | escape }}{% if total_active > 0 %} ({{ total_active }}){% endif %}</span>
+        {%- render 'icon', icon: 'plus' -%}
+      </summary>
+      {%- case filter.type -%}
+        {%- when 'boolean', 'list' -%}
+          <ul class="facet__list list-unstyled{% if filter.presentation == 'swatch' %} facet__list--swatch{% endif %}" role="list">
+            {%- for value in filter.values -%}
+              {%- assign input_id = id_prefix | append: '-' | append: filter.param_name | append: '-' | append: forloop.index | handle -%}
+              <li>
+                <label for="{{ input_id }}" class="checkbox{% if value.count == 0 and value.active == false %} is-disabled{% endif %}"{% if filter.presentation == 'swatch' %} title="{{ value.label | escape }}"{% endif %}>
+                  <input
+                    type="checkbox"
+                    id="{{ input_id }}"
+                    name="{{ value.param_name }}"
+                    value="{{ value.value }}"
+                    {% if value.active %}checked{% endif %}
+                    {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                  >
+                  {%- if filter.presentation == 'swatch' -%}
+                    {%- liquid
+                      if value.swatch.image
+                        assign swatch_bg = value.swatch.image | image_url: width: 60 | prepend: 'url(' | append: ')'
+                      elsif value.swatch.color
+                        assign swatch_bg = value.swatch.color
+                      else
+                        assign swatch_bg = value.label | downcase | remove: ' '
+                      endif
+                    -%}
+                    <span class="swatch" style="--swatch-bg: {{ swatch_bg }}; --swatch-size: 2.8rem;"></span>
+                    <span class="visually-hidden">{{ value.label | escape }}</span>
+                  {%- else -%}
+                    <span>{{ value.label | escape }} <span class="facet__count">({{ value.count }})</span></span>
+                  {%- endif -%}
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- when 'price_range' -%}
+          {%- assign currency_symbol = cart.currency.symbol -%}
+          <div class="facet__price">
+            <div class="field">
+              <label for="{{ id_prefix }}-price-min">{{ 'products.facets.from' | t }} ({{ currency_symbol }})</label>
+              <input class="input" id="{{ id_prefix }}-price-min" type="number" name="{{ filter.min_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | remove: ',' }}"{% endif %}
+                placeholder="0">
+            </div>
+            <div class="field">
+              <label for="{{ id_prefix }}-price-max">{{ 'products.facets.to' | t }} ({{ currency_symbol }})</label>
+              <input class="input" id="{{ id_prefix }}-price-max" type="number" name="{{ filter.max_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | remove: ',' }}"{% endif %}
+                placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}">
+            </div>
+          </div>
+      {%- endcase -%}
+    </details>
+  {%- endfor -%}
+  <noscript><button type="submit" class="button button--small" style="margin-top:1.6rem">{{ 'products.facets.apply' | t }}</button></noscript>
+</form>

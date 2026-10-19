@@ -1,0 +1,51 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width">
+    <div class="contact-grid">
+      <div>
+        {%- if s.heading != blank -%}<h2 class="h1">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+      </div>
+      {%- form 'contact', id: 'ContactForm', class: 'contact-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-message form-message--success" tabindex="-1" autofocus>{{ 'templates.contact.form.post_success' | t }}</p>
+        {%- elsif form.errors -%}
+          <div class="form-message form-message--error">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+        <div class="grid">
+          <div class="field">
+            <label for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
+            <input class="input" id="ContactForm-name" name="contact[{{ 'templates.contact.form.name' | t }}]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+          <div class="field">
+            <label for="ContactForm-email">{{ 'templates.contact.form.email' | t }} *</label>
+            <input class="input" id="ContactForm-email" type="email" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+          </div>
+        </div>
+        <div class="field">
+          <label for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
+          <input class="input" id="ContactForm-phone" type="tel" name="contact[{{ 'templates.contact.form.phone' | t }}]" autocomplete="tel" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+        </div>
+        <div class="field">
+          <label for="ContactForm-body">{{ 'templates.contact.form.comment' | t }}</label>
+          <textarea class="textarea" id="ContactForm-body" name="contact[{{ 'templates.contact.form.comment' | t }}]">{{ form.body }}</textarea>
+        </div>
+        <button type="submit" class="button">{{ 'templates.contact.form.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "get in touch" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>We usually reply within one business day.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ],
+  "presets": [ { "name": "Contact form" } ]
+}
+{% endschema %}

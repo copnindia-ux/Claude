@@ -1,0 +1,53 @@
+{%- comment -%}
+  Renders a product or variant price.
+  - product: product object (required)
+  - use_variant: boolean — use the selected/first available variant instead of the product range
+  - show_from: boolean — prefix "from" when variant prices differ
+{%- endcomment -%}
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign available = target.available | default: false
+
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+    assign money_compare = compare_at_price | money_with_currency
+  else
+    assign money_price = price | money
+    assign money_compare = compare_at_price | money
+  endif
+
+  if target == product and product.price_varies and show_from
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %}">
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+    <span class="price__current">{{ money_price }}</span>
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <s class="price__compare">{{ money_compare }}</s>
+  {%- else -%}
+    <span class="price__current">{{ money_price }}</span>
+  {%- endif -%}
+  {%- if use_variant and target.unit_price_measurement -%}
+    <span class="price__unit">
+      {{- target.unit_price | money -}}/
+      {%- if target.unit_price_measurement.reference_value != 1 -%}
+        {{- target.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{- target.unit_price_measurement.reference_unit -}}
+    </span>
+  {%- endif -%}
+</div>

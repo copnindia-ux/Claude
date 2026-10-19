@@ -1,0 +1,25 @@
+{%- comment -%}
+  Product badges: custom tag badges, sale and sold out.
+  - product
+  - class: optional wrapper class
+{%- endcomment -%}
+<div class="{{ class | default: 'card__badges' }}">
+  {%- for tag in product.tags -%}
+    {%- assign tag_down = tag | downcase -%}
+    {%- if tag_down contains 'badge:' -%}
+      <span class="badge">{{ tag | split: ':' | last | strip }}</span>
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if product.available == false and settings.badge_show_sold_out -%}
+    <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+  {%- elsif product.compare_at_price > product.price and settings.badge_show_sale -%}
+    <span class="badge badge--sale">
+      {%- if settings.badge_sale_style == 'percent' -%}
+        {%- assign savings = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+        {{ 'products.product.save_percent' | t: percent: savings }}
+      {%- else -%}
+        {{ 'products.product.on_sale' | t }}
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+</div>

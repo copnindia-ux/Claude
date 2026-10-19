@@ -1,0 +1,85 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#F6F3EF",
+            "background_gradient": "",
+            "text": "#2B2826",
+            "accent": "#B89A8E",
+            "button": "#2B2826",
+            "button_label": "#F6F3EF",
+            "card_background": "#EDE8E2",
+            "border": "#DDD6CE",
+            "badge": "#FFFFFF",
+            "badge_text": "#2B2826"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#FFFFFF",
+            "background_gradient": "",
+            "text": "#2B2826",
+            "accent": "#B89A8E",
+            "button": "#2B2826",
+            "button_label": "#FFFFFF",
+            "card_background": "#F3EFEA",
+            "border": "#E6E0D9",
+            "badge": "#F6F3EF",
+            "badge_text": "#2B2826"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#EADAD3",
+            "background_gradient": "",
+            "text": "#2B2826",
+            "accent": "#7F5F55",
+            "button": "#2B2826",
+            "button_label": "#EADAD3",
+            "card_background": "#F2E6E0",
+            "border": "#D6C2B9",
+            "badge": "#FFFFFF",
+            "badge_text": "#2B2826"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#2B2826",
+            "background_gradient": "",
+            "text": "#F6F3EF",
+            "accent": "#D9C3B8",
+            "button": "#F6F3EF",
+            "button_label": "#2B2826",
+            "card_background": "#3A3633",
+            "border": "#4A4542",
+            "badge": "#F6F3EF",
+            "badge_text": "#2B2826"
+          }
+        },
+        "scheme-5": {
+          "settings": {
+            "background": "#DDE1D6",
+            "background_gradient": "",
+            "text": "#2B2826",
+            "accent": "#5E6B57",
+            "button": "#2B2826",
+            "button_label": "#DDE1D6",
+            "card_background": "#E8EBE3",
+            "border": "#C6CCBD",
+            "badge": "#FFFFFF",
+            "badge_text": "#2B2826"
+          }
+        }
+      },
+      "type_header_font": "inter_n4",
+      "type_body_font": "inter_n4",
+      "text_transform": "lowercase",
+      "cart_type": "drawer",
+      "cart_free_shipping_enabled": true,
+      "cart_free_shipping_threshold": 50
+    }
+  }
+}

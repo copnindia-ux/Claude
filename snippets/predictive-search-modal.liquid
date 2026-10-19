@@ -1,0 +1,45 @@
+<search-modal class="modal search-modal" id="SearchModal" aria-hidden="true">
+  <div class="modal__overlay" data-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}" tabindex="-1">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+      {%- render 'icon', icon: 'search' -%}
+      <input
+        class="search-modal__input"
+        id="SearchModalInput"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="{{ 'general.search.search' | t }}"
+        {% if settings.predictive_search_enabled %}
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="PredictiveSearchResults"
+          aria-autocomplete="list"
+          data-predictive
+        {% endif %}
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="button" class="icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+    </form>
+    <div class="search-modal__results page-width page-width--full" id="PredictiveSearchResults" aria-live="polite">
+      {%- if settings.search_popular_menu != blank -%}
+        <div data-search-default>
+          <p class="predictive-search__heading">{{ 'general.search.popular' | t }}</p>
+          <ul class="predictive-search__list list-unstyled" role="list">
+            {%- for link in settings.search_popular_menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      <div data-search-results></div>
+    </div>
+  </div>
+</search-modal>

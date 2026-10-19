@@ -1,0 +1,141 @@
+{%- liquid
+  assign s = section.settings
+  assign box_align = ''
+  if s.content_position contains 'center'
+    assign box_align = 'banner__box--center'
+  elsif s.content_position contains 'right'
+    assign box_align = 'banner__box--right'
+  endif
+  if s.text_alignment_mobile == 'center'
+    assign box_align = box_align | append: ' mobile-center'
+  endif
+-%}
+
+{%- style -%}
+  #Banner-{{ section.id }} {
+    --banner-height: {{ s.height }}vh;
+    --banner-height-mobile: {{ s.height_mobile }}vh;
+    --overlay-opacity: {{ s.overlay_opacity | divided_by: 100.0 }};
+  }
+  @media (max-width: 749px) {
+    #Banner-{{ section.id }} .mobile-center { align-items: center; text-align: center; }
+    #Banner-{{ section.id }} .banner__content { {% if s.content_position_mobile == 'top' %}align-items: flex-start;{% elsif s.content_position_mobile == 'middle' %}align-items: center;{% else %}align-items: flex-end;{% endif %} justify-content: {% if s.text_alignment_mobile == 'center' %}center{% else %}flex-start{% endif %}; }
+  }
+{%- endstyle -%}
+
+<section id="Banner-{{ section.id }}" class="banner{% if s.height == 0 %} banner--adapt{% endif %} color-{{ s.color_scheme }}">
+  {%- if s.link != blank and s.button_label_1 == blank -%}
+    <a href="{{ s.link }}" class="banner__link" style="position:absolute;inset:0;z-index:3" aria-label="{{ s.heading | strip_html | escape }}"></a>
+  {%- endif -%}
+  {%- render 'banner-media', image: s.image, image_mobile: s.image_mobile, video: s.video, eager: true -%}
+  <div class="banner__content banner__content--{{ s.content_position }}">
+    <div class="page-width{% if s.full_width %} page-width--full{% endif %}" style="width:100%;display:flex;justify-content:inherit;padding:0">
+      <div class="banner__box {{ box_align }}{% if s.show_panel %} has-panel{% else %}{% if s.text_light %} banner__text-light{% endif %}{% endif %}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'caption' -%}
+              <p class="caption" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+            {%- when 'heading' -%}
+              <h2 class="banner__heading {{ block.settings.size }}" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+            {%- when 'text' -%}
+              <div class="rte" style="max-width:48rem" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when 'buttons' -%}
+              <div class="banner__buttons" {{ block.shopify_attributes }} style="position:relative;z-index:4">
+                {%- if block.settings.label_1 != blank -%}
+                  <a href="{{ block.settings.link_1 | default: '#' }}" class="button{% if block.settings.style_1 == 'secondary' %} button--secondary{% elsif block.settings.style_1 == 'light' %} button--light{% endif %}">{{ block.settings.label_1 | escape }}</a>
+                {%- endif -%}
+                {%- if block.settings.label_2 != blank -%}
+                  <a href="{{ block.settings.link_2 | default: '#' }}" class="button{% if block.settings.style_2 == 'secondary' %} button--secondary{% elsif block.settings.style_2 == 'light' %} button--light{% endif %}">{{ block.settings.label_2 | escape }}</a>
+                {%- endif -%}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "class": "section-hero",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Mobile image" },
+    { "type": "video", "id": "video", "label": "Background video", "info": "Shopify-hosted video. Overrides images." },
+    { "type": "url", "id": "link", "label": "Whole-banner link", "info": "Used when no buttons are present." },
+    { "type": "range", "id": "height", "min": 0, "max": 100, "step": 5, "unit": "vh", "label": "Desktop height", "info": "0 adapts to image.", "default": 90 },
+    { "type": "range", "id": "height_mobile", "min": 30, "max": 100, "step": 5, "unit": "vh", "label": "Mobile height", "default": 80 },
+    { "type": "range", "id": "overlay_opacity", "min": 0, "max": 80, "step": 5, "unit": "%", "label": "Overlay opacity", "default": 0 },
+    { "type": "header", "content": "Content" },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Desktop content position",
+      "options": [
+        { "value": "top-left", "label": "Top left" },
+        { "value": "top-center", "label": "Top center" },
+        { "value": "top-right", "label": "Top right" },
+        { "value": "middle-left", "label": "Middle left" },
+        { "value": "middle-center", "label": "Middle center" },
+        { "value": "middle-right", "label": "Middle right" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "bottom-right", "label": "Bottom right" }
+      ],
+      "default": "bottom-left"
+    },
+    {
+      "type": "select",
+      "id": "content_position_mobile",
+      "label": "Mobile content position",
+      "options": [ { "value": "top", "label": "Top" }, { "value": "middle", "label": "Middle" }, { "value": "bottom", "label": "Bottom" } ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment_mobile",
+      "label": "Mobile text alignment",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ],
+      "default": "left"
+    },
+    { "type": "checkbox", "id": "text_light", "label": "Light text over image", "default": true },
+    { "type": "checkbox", "id": "show_panel", "label": "Show content on a solid panel", "default": false },
+    { "type": "checkbox", "id": "full_width", "label": "Full-width content area", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme (panel and buttons)", "default": "scheme-1" }
+  ],
+  "blocks": [
+    { "type": "caption", "name": "Caption", "limit": 1, "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "new" } ] },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "skin, but softer" },
+        { "type": "select", "id": "size", "label": "Size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h0" }
+      ]
+    },
+    { "type": "text", "name": "Text", "limit": 1, "settings": [ { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Daily essentials that layer, hydrate and glow.</p>" } ] },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label_1", "label": "First button label", "default": "shop now" },
+        { "type": "url", "id": "link_1", "label": "First button link" },
+        { "type": "select", "id": "style_1", "label": "First button style", "options": [ { "value": "primary", "label": "Solid" }, { "value": "light", "label": "Light" }, { "value": "secondary", "label": "Outline" } ], "default": "light" },
+        { "type": "text", "id": "label_2", "label": "Second button label" },
+        { "type": "url", "id": "link_2", "label": "Second button link" },
+        { "type": "select", "id": "style_2", "label": "Second button style", "options": [ { "value": "primary", "label": "Solid" }, { "value": "light", "label": "Light" }, { "value": "secondary", "label": "Outline" } ], "default": "secondary" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner",
+      "blocks": [ { "type": "heading" }, { "type": "text" }, { "type": "buttons" } ]
+    }
+  ]
+}
+{% endschema %}

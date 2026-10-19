@@ -1,0 +1,26 @@
+{%- comment -%}
+  - article
+  - show_image, show_date, show_author, show_excerpt (booleans)
+{%- endcomment -%}
+<article class="article-card{% if settings.animations_enabled %} reveal{% endif %}">
+  {%- if show_image != false -%}
+    <a href="{{ article.url }}" class="media" tabindex="-1" aria-hidden="true">
+      {%- if article.image -%}
+        {{ article.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 33vw, 100vw', alt: article.image.alt | escape }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </a>
+  {%- endif -%}
+  <div class="article-card__meta caption">
+    {%- if show_date != false -%}<span>{{ article.published_at | time_tag: format: 'month_day_year' }}</span>{%- endif -%}
+    {%- if show_author -%}<span>{{ article.author }}</span>{%- endif -%}
+  </div>
+  <h3 class="article-card__title"><a href="{{ article.url }}">{{ article.title | escape }}</a></h3>
+  {%- if show_excerpt != false -%}
+    <p class="article-card__excerpt">
+      {%- if article.excerpt.size > 0 -%}{{ article.excerpt | strip_html | truncatewords: 26 }}{%- else -%}{{ article.content | strip_html | truncatewords: 26 }}{%- endif -%}
+    </p>
+  {%- endif -%}
+  <a href="{{ article.url }}" class="link-underline caption">{{ 'blogs.article.read_more' | t }}</a>
+</article>

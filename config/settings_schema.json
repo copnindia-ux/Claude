@@ -1,0 +1,179 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Halo",
+    "theme_version": "1.0.0",
+    "theme_author": "Halo Theme",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/"
+  },
+  {
+    "name": "Logo & favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "image_picker", "id": "logo_inverse", "label": "Inverse logo", "info": "Used on transparent headers over dark images." },
+      { "type": "range", "id": "logo_width", "min": 50, "max": 300, "step": 5, "unit": "px", "label": "Desktop logo width", "default": 110 },
+      { "type": "range", "id": "logo_width_mobile", "min": 40, "max": 200, "step": 5, "unit": "px", "label": "Mobile logo width", "default": 80 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Will be scaled down to 32 × 32px" }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          { "type": "color", "id": "background", "label": "Background", "default": "#F6F3EF" },
+          { "type": "color_background", "id": "background_gradient", "label": "Background gradient", "info": "Replaces solid background when used." },
+          { "type": "color", "id": "text", "label": "Text", "default": "#2B2826" },
+          { "type": "color", "id": "accent", "label": "Accent", "default": "#B89A8E" },
+          { "type": "color", "id": "button", "label": "Solid button background", "default": "#2B2826" },
+          { "type": "color", "id": "button_label", "label": "Solid button label", "default": "#F6F3EF" },
+          { "type": "color", "id": "card_background", "label": "Product card background", "default": "#EDE8E2" },
+          { "type": "color", "id": "border", "label": "Borders", "default": "#DDD6CE" },
+          { "type": "color", "id": "badge", "label": "Badge background", "default": "#FFFFFF" },
+          { "type": "color", "id": "badge_text", "label": "Badge text", "default": "#2B2826" }
+        ],
+        "role": {
+          "text": "text",
+          "background": { "solid": "background", "gradient": "background_gradient" },
+          "links": "accent",
+          "icons": "text",
+          "primary_button": "button",
+          "on_primary_button": "button_label",
+          "primary_button_border": "button",
+          "secondary_button": "background",
+          "on_secondary_button": "text",
+          "secondary_button_border": "text"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "header", "content": "Headings" },
+      { "type": "font_picker", "id": "type_header_font", "label": "Font", "default": "inter_n4" },
+      { "type": "range", "id": "heading_scale", "min": 80, "max": 150, "step": 5, "unit": "%", "label": "Font size scale", "default": 100 },
+      { "type": "range", "id": "heading_letter_spacing", "min": -50, "max": 100, "step": 5, "label": "Letter spacing (thousandths of em)", "default": -20 },
+      { "type": "header", "content": "Body" },
+      { "type": "font_picker", "id": "type_body_font", "label": "Font", "default": "inter_n4" },
+      { "type": "range", "id": "body_scale", "min": 85, "max": 130, "step": 5, "unit": "%", "label": "Font size scale", "default": 100 },
+      { "type": "range", "id": "body_letter_spacing", "min": -20, "max": 100, "step": 5, "label": "Letter spacing (thousandths of em)", "default": 0 },
+      { "type": "header", "content": "Text style" },
+      {
+        "type": "select",
+        "id": "text_transform",
+        "label": "Headings, navigation & buttons case",
+        "options": [
+          { "value": "none", "label": "As written" },
+          { "value": "lowercase", "label": "lowercase" },
+          { "value": "uppercase", "label": "UPPERCASE" }
+        ],
+        "default": "lowercase",
+        "info": "A lowercase style gives a soft, editorial look."
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      { "type": "range", "id": "page_width", "min": 1000, "max": 1800, "step": 50, "unit": "px", "label": "Page width", "default": 1600 },
+      { "type": "range", "id": "page_gutter", "min": 12, "max": 60, "step": 2, "unit": "px", "label": "Page side padding", "default": 24 },
+      { "type": "range", "id": "spacing_sections", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Space between template sections", "default": 0 },
+      { "type": "range", "id": "grid_gap", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Grid gap", "default": 12 },
+      { "type": "checkbox", "id": "animations_enabled", "label": "Reveal sections on scroll", "default": true }
+    ]
+  },
+  {
+    "name": "Buttons & inputs",
+    "settings": [
+      { "type": "range", "id": "button_radius", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Button corner radius", "default": 40 },
+      { "type": "range", "id": "button_height", "min": 36, "max": 64, "step": 2, "unit": "px", "label": "Button height", "default": 48 },
+      { "type": "range", "id": "input_radius", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Input corner radius", "default": 4 }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "Image ratio",
+        "options": [
+          { "value": "square", "label": "Square" },
+          { "value": "portrait", "label": "Portrait (4:5)" },
+          { "value": "tall", "label": "Tall (3:4)" }
+        ],
+        "default": "portrait"
+      },
+      { "type": "range", "id": "card_image_padding", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Image padding", "default": 0 },
+      { "type": "range", "id": "card_radius", "min": 0, "max": 24, "step": 1, "unit": "px", "label": "Card corner radius", "default": 0 },
+      { "type": "range", "id": "media_radius", "min": 0, "max": 24, "step": 1, "unit": "px", "label": "Media corner radius", "default": 0 },
+      { "type": "checkbox", "id": "card_show_secondary_image", "label": "Show second image on hover", "default": true },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Show vendor", "default": false },
+      { "type": "checkbox", "id": "card_show_subtitle", "label": "Show subtitle", "default": true, "info": "Uses the product metafield custom.subtitle." },
+      { "type": "checkbox", "id": "card_show_rating", "label": "Show product rating", "default": false, "info": "Requires a reviews app that writes to reviews.rating." },
+      { "type": "checkbox", "id": "card_show_swatches", "label": "Show color swatches", "default": true },
+      { "type": "text", "id": "swatch_option_names", "label": "Swatch option names", "default": "color, colour, shade, tint", "info": "Comma-separated option names displayed as swatches." },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Enable quick add", "default": true },
+      { "type": "header", "content": "Badges" },
+      { "type": "range", "id": "badge_radius", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Badge corner radius", "default": 40 },
+      { "type": "checkbox", "id": "badge_show_sale", "label": "Show sale badge", "default": true },
+      { "type": "select", "id": "badge_sale_style", "label": "Sale badge style", "options": [ { "value": "text", "label": "Text" }, { "value": "percent", "label": "Percent off" } ], "default": "text" },
+      { "type": "checkbox", "id": "badge_show_sold_out", "label": "Show sold out badge", "default": true },
+      { "type": "paragraph", "content": "Tag a product with 'badge:Your text' to show a custom badge, e.g. 'badge:new' or 'badge:bestseller'." }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          { "value": "drawer", "label": "Drawer" },
+          { "value": "page", "label": "Page" }
+        ],
+        "default": "drawer"
+      },
+      { "type": "range", "id": "drawer_width", "min": 360, "max": 600, "step": 10, "unit": "px", "label": "Drawer width", "default": 440 },
+      { "type": "checkbox", "id": "cart_show_note", "label": "Enable order notes", "default": false },
+      { "type": "header", "content": "Free shipping bar" },
+      { "type": "checkbox", "id": "cart_free_shipping_enabled", "label": "Show free shipping progress", "default": true },
+      { "type": "number", "id": "cart_free_shipping_threshold", "label": "Threshold (in store currency)", "default": 50 },
+      { "type": "header", "content": "Drawer upsell" },
+      { "type": "collection", "id": "cart_upsell_collection", "label": "Upsell collection", "info": "Shows up to 3 products not already in the cart." },
+      { "type": "text", "id": "cart_upsell_heading", "label": "Upsell heading", "default": "complete your routine" },
+      { "type": "header", "content": "Empty cart" },
+      { "type": "collection", "id": "cart_empty_collection", "label": "Featured collection when empty" }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      { "type": "checkbox", "id": "predictive_search_enabled", "label": "Enable search suggestions", "default": true },
+      { "type": "checkbox", "id": "predictive_search_show_price", "label": "Show product price", "default": true },
+      { "type": "link_list", "id": "search_popular_menu", "label": "Popular searches menu", "info": "Shown before typing." }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "text", "id": "social_instagram_link", "label": "Instagram", "info": "https://instagram.com/yourstore" },
+      { "type": "text", "id": "social_tiktok_link", "label": "TikTok" },
+      { "type": "text", "id": "social_facebook_link", "label": "Facebook" },
+      { "type": "text", "id": "social_twitter_link", "label": "X (Twitter)" },
+      { "type": "text", "id": "social_pinterest_link", "label": "Pinterest" },
+      { "type": "text", "id": "social_youtube_link", "label": "YouTube" }
+    ]
+  },
+  {
+    "name": "Currency format",
+    "settings": [
+      { "type": "checkbox", "id": "currency_code_enabled", "label": "Show currency codes", "default": false }
+    ]
+  }
+]

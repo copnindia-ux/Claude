@@ -1,0 +1,46 @@
+<div class="customer customer--wide">
+  <h1 class="h1">{{ 'customer.account.title' | t }}</h1>
+  <p class="text-center"><a href="{{ routes.account_logout_url }}" class="link-underline">{{ 'customer.log_out' | t }}</a></p>
+
+  <div class="account-grid" style="margin-top:4rem">
+    <div>
+      <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
+      {%- paginate customer.orders by 20 -%}
+        {%- if customer.orders.size > 0 -%}
+          <table class="order-table" role="table">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th scope="col" role="columnheader">{{ 'customer.orders.order_number' | t }}</th>
+                <th scope="col" role="columnheader">{{ 'customer.orders.date' | t }}</th>
+                <th scope="col" role="columnheader">{{ 'customer.orders.payment_status' | t }}</th>
+                <th scope="col" role="columnheader">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                <th scope="col" role="columnheader">{{ 'customer.orders.total' | t }}</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {%- for order in customer.orders -%}
+                <tr role="row">
+                  <td role="cell" data-label="{{ 'customer.orders.order_number' | t }}"><a href="{{ order.customer_url }}" class="link-underline">{{ order.name }}</a></td>
+                  <td role="cell" data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | time_tag: format: 'date' }}</td>
+                  <td role="cell" data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                  <td role="cell" data-label="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                  <td role="cell" data-label="{{ 'customer.orders.total' | t }}">{{ order.total_net_amount | money_with_currency }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        {%- else -%}
+          <p class="subtext">{{ 'customer.orders.none' | t }}</p>
+        {%- endif -%}
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    </div>
+    <div>
+      <h2 class="h3">{{ 'customer.account.details' | t }}</h2>
+      <div class="address-card">
+        {{ customer.default_address | format_address }}
+      </div>
+      <p style="margin-top:1.6rem"><a href="{{ routes.account_addresses_url }}" class="link-underline">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+    </div>
+  </div>
+</div>

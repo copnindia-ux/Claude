@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": { "type": "main-page", "settings": { "show_title": true, "center_title": true, "padding_bottom": 0 } },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "heading": "is it suitable for sensitive skin?", "content": "<p>Add a clear, helpful answer here.</p>" } },
+        "q2": { "type": "question", "settings": { "heading": "how long does shipping take?", "content": "<p>Add your shipping timelines here.</p>" } },
+        "q3": { "type": "question", "settings": { "heading": "what is your return policy?", "content": "<p>Summarize your return policy here.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": { "heading": "", "layout": "stacked", "open_first": true, "schema_markup": true }
+    }
+  },
+  "order": ["main", "faq"]
+}

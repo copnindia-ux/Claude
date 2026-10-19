@@ -1,0 +1,15 @@
+{%- comment -%}
+  Outputs an inline style setting --swatch-bg for a product_option_value.
+  - value: product_option_value
+{%- endcomment -%}
+{%- liquid
+  assign bg = blank
+  if value.swatch.image
+    assign bg = value.swatch.image | image_url: width: 72 | prepend: 'url(' | append: ')'
+  elsif value.swatch.color
+    assign bg = value.swatch.color
+  else
+    assign bg = value | downcase | remove: ' ' | remove: '-'
+  endif
+-%}
+style="--swatch-bg: {{ bg }};"

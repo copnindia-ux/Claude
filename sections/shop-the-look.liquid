@@ -1,0 +1,63 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <shop-the-look class="page-width shop-the-look">
+    <div class="shop-the-look__image">
+      <div class="media">
+        {%- if s.image != blank -%}
+          {{ s.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '600, 1000, 1400, 2000', sizes: '(min-width: 990px) 55vw, 100vw', alt: s.image.alt | escape }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+      {%- for block in section.blocks -%}
+        <button
+          type="button"
+          class="hotspot"
+          style="left: {{ block.settings.x }}%; top: {{ block.settings.y }}%;"
+          data-hotspot="{{ forloop.index0 }}"
+          aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+          aria-label="{{ block.settings.product.title | default: 'Product' | escape }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- render 'icon', icon: 'plus' -%}
+        </button>
+      {%- endfor -%}
+    </div>
+    <div>
+      {%- if s.heading != blank -%}<h2 class="h1">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.text != blank -%}<div class="rte subtext" style="margin-bottom:2.4rem">{{ s.text }}</div>{%- endif -%}
+      {%- for block in section.blocks -%}
+        <div data-hotspot-card="{{ forloop.index0 }}"{% unless forloop.first %} hidden{% endunless %} style="max-width:40rem">
+          {%- render 'product-card', product: block.settings.product, placeholder_index: forloop.index, sizes: '400px' -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </shop-the-look>
+</section>
+
+{% schema %}
+{
+  "name": "Shop the look",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "get the look" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Tap the hotspots to shop every product in this routine.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "x", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Horizontal position", "default": 40 },
+        { "type": "range", "id": "y", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Vertical position", "default": 50 }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Shop the look", "blocks": [ { "type": "hotspot" }, { "type": "hotspot", "settings": { "x": 65, "y": 30 } } ] } ]
+}
+{% endschema %}

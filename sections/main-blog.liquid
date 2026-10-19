@@ -1,0 +1,37 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width">
+    <h1 class="h1 text-center">{{ blog.title | escape }}</h1>
+    {%- if s.show_tags and blog.all_tags.size > 0 -%}
+      <nav class="blog-tags" aria-label="{{ 'blogs.article.tags' | t }}">
+        <a href="{{ blog.url }}" class="pill"{% unless current_tags %} aria-current="page"{% endunless %}>{{ 'blogs.article.all' | t }}</a>
+        {%- for tag in blog.all_tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="pill"{% if current_tags contains tag %} aria-current="page" style="background:rgb(var(--color-foreground));color:rgb(var(--color-background))"{% endif %}>{{ tag | escape }}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+    {%- paginate blog.articles by s.per_page -%}
+      <div class="grid" style="--cols-desktop: {{ s.columns_desktop }}; --cols-tablet: 2; --cols-mobile: 1;">
+        {%- for article in blog.articles -%}
+          {%- render 'article-card', article: article, show_author: s.show_author -%}
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    { "type": "range", "id": "per_page", "min": 3, "max": 24, "step": 3, "label": "Posts per page", "default": 9 },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 4, "step": 1, "label": "Columns (desktop)", "default": 3 },
+    { "type": "checkbox", "id": "show_tags", "label": "Show tag filter", "default": true },
+    { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ]
+}
+{% endschema %}

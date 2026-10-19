@@ -1,0 +1,41 @@
+{%- assign s = section.settings -%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <product-recommendations
+    class="page-width{% if s.full_width %} page-width--full{% endif %}"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ s.products_to_show }}&intent={{ s.intent }}"
+    data-target="Recommendations-{{ section.id }}"
+  >
+    <div id="Recommendations-{{ section.id }}">
+      {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+        <slider-component>
+          {%- render 'section-heading', heading: s.heading, slider: true -%}
+          <div class="slider" data-slider style="--per-view: {{ s.columns_desktop }}; --per-view-mobile: 2.2;">
+            {%- for rec in recommendations.products -%}
+              {%- render 'product-card', product: rec -%}
+            {%- endfor -%}
+          </div>
+        </slider-component>
+      {%- endif -%}
+    </div>
+  </product-recommendations>
+</section>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "class": "section-recommendations",
+  "settings": [
+    { "type": "paragraph", "content": "Recommendations are generated automatically, or can be curated with the Search & Discovery app." },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "you may also like" },
+    { "type": "select", "id": "intent", "label": "Type", "options": [ { "value": "related", "label": "Related" }, { "value": "complementary", "label": "Complementary" } ], "default": "related" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 10, "step": 1, "label": "Max products", "default": 8 },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 6, "step": 1, "label": "Products per row (desktop)", "default": 4 },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 48 }
+  ],
+  "presets": [ { "name": "Product recommendations" } ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

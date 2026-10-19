@@ -1,0 +1,46 @@
+{%- assign s = section.settings -%}
+{%- if s.enabled -%}
+  <newsletter-popup
+    class="modal newsletter-popup color-{{ s.color_scheme }}"
+    id="NewsletterPopup"
+    aria-hidden="true"
+    data-delay="{{ s.delay | times: 1000 }}"
+    data-frequency="{{ s.frequency }}"
+    data-design-mode="{{ request.design_mode }}"
+    {% if customer and s.hide_for_customers %}data-disabled{% endif %}
+  >
+    <div class="modal__overlay" data-close></div>
+    <div class="modal__panel{% if s.image != blank %} has-image{% endif %}" role="dialog" aria-modal="true" aria-label="{{ s.heading | strip_html | escape }}" tabindex="-1">
+      <button type="button" class="modal__close icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
+      {%- if s.image != blank -%}
+        <div class="media small-hide">
+          {{ s.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '40vw', alt: s.image.alt | escape }}
+        </div>
+      {%- endif -%}
+      <div class="newsletter-popup__content">
+        {%- if s.heading != blank -%}<h2 class="h1" style="margin:0">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+        {%- render 'newsletter-form', id: 'NewsletterPopupForm', form_id: section.id, button_style: 'button' -%}
+        <button type="button" class="button-link caption" data-close>{{ 'newsletter.no_thanks' | t }}</button>
+      </div>
+    </div>
+  </newsletter-popup>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Newsletter pop-up",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable pop-up", "default": false },
+    { "type": "range", "id": "delay", "min": 0, "max": 60, "step": 1, "unit": "s", "label": "Delay", "default": 8 },
+    { "type": "range", "id": "frequency", "min": 1, "max": 30, "step": 1, "unit": "d", "label": "Show again after", "default": 7 },
+    { "type": "checkbox", "id": "hide_for_customers", "label": "Hide for logged-in customers", "default": true },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "10% off your first order" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Join the list for early access and a welcome treat.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "Newsletter pop-up" } ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

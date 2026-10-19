@@ -1,0 +1,98 @@
+{%- comment -%}
+  Desktop navigation.
+  - menu: linklist
+  - promos: mega_promo blocks
+  - mega: 'mega' | 'dropdown'
+{%- endcomment -%}
+<nav class="nav" aria-label="{{ 'sections.header.main_menu' | t }}">
+  <ul class="list-unstyled" role="list" style="display:flex">
+    {%- for link in menu.links -%}
+      {%- liquid
+        assign link_title = link.title | downcase | strip
+        assign promo_count = 0
+        for promo in promos
+          assign promo_target = promo.settings.menu_item | downcase | strip
+          if promo_target == link_title
+            assign promo_count = promo_count | plus: 1
+          endif
+        endfor
+      -%}
+      {%- if link.links != blank -%}
+        <li class="nav-item{% if mega == 'dropdown' %} nav-item--dropdown{% endif %}" data-nav-item>
+          <button type="button" class="nav-link" aria-expanded="false" aria-controls="MegaMenu-{{ forloop.index }}"{% if link.child_active or link.active %} aria-current="page"{% endif %}>
+            {{- link.title | escape -}}
+          </button>
+          <div class="mega-menu" id="MegaMenu-{{ forloop.index }}">
+            {%- if mega == 'dropdown' -%}
+              <div class="mega-menu__inner">
+                <ul class="mega-menu__list list-unstyled" role="list">
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                    {%- for grandchild in child.links -%}
+                      <li><a href="{{ grandchild.url }}" style="padding-left:1.2rem">{{ grandchild.title | escape }}</a></li>
+                    {%- endfor -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- else -%}
+              {%- liquid
+                assign has_grandchildren = false
+                for child in link.links
+                  if child.links != blank
+                    assign has_grandchildren = true
+                    break
+                  endif
+                endfor
+                if has_grandchildren
+                  assign link_cols = link.links.size | at_most: 4
+                else
+                  assign link_cols = 1
+                endif
+              -%}
+              <div class="page-width mega-menu__inner{% if promo_count > 0 %} has-promos{% endif %}" style="--link-cols: {{ link_cols }}; --promo-cols: {{ promo_count | at_most: 3 }};">
+                {%- if has_grandchildren -%}
+                  {%- for child in link.links -%}
+                    <div>
+                      <a href="{{ child.url }}" class="mega-menu__heading">{{ child.title | escape }}</a>
+                      <ul class="mega-menu__list list-unstyled" role="list">
+                        {%- for grandchild in child.links -%}
+                          <li><a href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endfor -%}
+                {%- else -%}
+                  <ul class="mega-menu__list list-unstyled" role="list">
+                    {%- for child in link.links -%}
+                      <li><a href="{{ child.url }}" class="h3" style="margin:0"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+                {%- for promo in promos -%}
+                  {%- assign promo_target = promo.settings.menu_item | downcase | strip -%}
+                  {%- if promo_target == link_title -%}
+                  <a href="{{ promo.settings.link | default: link.url }}" class="mega-menu__promo" {{ promo.shopify_attributes }}>
+                    <div class="media">
+                      {%- if promo.settings.image != blank -%}
+                        {{ promo.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '25vw', alt: promo.settings.image.alt | escape }}
+                      {%- else -%}
+                        {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </div>
+                    {%- if promo.settings.heading != blank -%}<span>{{ promo.settings.heading | escape }}</span>{%- endif -%}
+                    {%- if promo.settings.caption != blank -%}<span class="caption link-underline">{{ promo.settings.caption | escape }}</span>{%- endif -%}
+                  </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- else -%}
+        <li class="nav-item">
+          <a href="{{ link.url }}" class="nav-link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</nav>

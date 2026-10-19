@@ -1,0 +1,64 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "join the list",
+            "text": "<p>early access to launches, restocks and routines worth trying.</p>",
+            "show_social": true
+          }
+        },
+        "menu-shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu-help": {
+          "type": "menu",
+          "settings": {
+            "heading": "help",
+            "menu": "footer"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter",
+        "menu-shop",
+        "menu-help"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_wordmark": true,
+        "show_localization": true,
+        "show_payment_icons": true,
+        "show_policies": true,
+        "show_powered_by": false,
+        "padding_top": 64,
+        "padding_bottom": 24
+      }
+    },
+    "newsletter-popup": {
+      "type": "newsletter-popup",
+      "settings": {
+        "enabled": false,
+        "delay": 8,
+        "frequency": 7,
+        "hide_for_customers": true,
+        "heading": "10% off your first order",
+        "text": "<p>Join the list for early access and a welcome treat.</p>",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "footer",
+    "newsletter-popup"
+  ]
+}

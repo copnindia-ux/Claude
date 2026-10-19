@@ -1,0 +1,54 @@
+{%- comment -%}Rendered by /search/suggest?section_id=predictive-search{%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- if predictive_search.resources.products.size > 0
+    or predictive_search.resources.queries.size > 0
+    or predictive_search.resources.collections.size > 0
+    or predictive_search.resources.pages.size > 0
+    or predictive_search.resources.articles.size > 0
+  -%}
+    <div class="predictive-search__grid" id="predictive-search-results">
+      <div>
+        {%- if predictive_search.resources.queries.size > 0 -%}
+          <p class="predictive-search__heading">{{ 'general.search.suggestions' | t }}</p>
+          <ul class="predictive-search__list list-unstyled" role="list">
+            {%- for query in predictive_search.resources.queries -%}
+              <li><a href="{{ query.url }}">{{ query.styled_text }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- if predictive_search.resources.collections.size > 0 -%}
+          <p class="predictive-search__heading" style="margin-top:2rem">{{ 'general.search.collections' | t }}</p>
+          <ul class="predictive-search__list list-unstyled" role="list">
+            {%- for collection in predictive_search.resources.collections -%}
+              <li><a href="{{ collection.url }}">{{ collection.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {%- assign content = predictive_search.resources.pages | concat: predictive_search.resources.articles -%}
+        {%- if content.size > 0 -%}
+          <p class="predictive-search__heading" style="margin-top:2rem">{{ 'general.search.pages' | t }}</p>
+          <ul class="predictive-search__list list-unstyled" role="list">
+            {%- for item in content -%}
+              <li><a href="{{ item.url }}">{{ item.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+      <div>
+        {%- if predictive_search.resources.products.size > 0 -%}
+          <p class="predictive-search__heading">{{ 'general.search.products' | t }}</p>
+          <div class="grid predictive-search__products">
+            {%- for product in predictive_search.resources.products limit: 4 -%}
+              {%- render 'product-card', product: product, sizes: '(min-width: 990px) 20vw, 50vw', show_quick_add: false -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <a class="button button--secondary predictive-search__view-all" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last">
+          {{- 'general.search.view_all' | t: terms: predictive_search.terms -}}
+        </a>
+      </div>
+    </div>
+  {%- else -%}
+    <p>{{ 'general.search.no_results_html' | t: terms: predictive_search.terms }}</p>
+  {%- endif -%}
+{%- endif -%}

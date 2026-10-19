@@ -1,0 +1,118 @@
+{%- comment -%}
+  Slide-out cart. Its inner markup is re-rendered through the Section Rendering API
+  (sections/cart-drawer.liquid) after every cart change.
+{%- endcomment -%}
+<cart-drawer class="drawer cart-drawer" id="CartDrawer" aria-hidden="true">
+  <div class="drawer__overlay" data-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle" tabindex="-1">
+    <div id="CartDrawer-inner" class="cart-drawer__inner" style="display:flex;flex-direction:column;height:100%;">
+      <div class="drawer__header">
+        <h2 class="drawer__title" id="CartDrawerTitle">
+          {{- 'sections.cart.title' | t }}{% if cart.item_count > 0 %} ({{ cart.item_count }}){% endif -%}
+        </h2>
+        <button type="button" class="icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">
+          {%- render 'icon', icon: 'close' -%}
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        {%- render 'free-shipping-bar' -%}
+
+        {%- if cart.item_count > 0 -%}
+          <div class="cart-drawer__items" data-cart-items>
+            {%- render 'cart-line-items' -%}
+          </div>
+
+          {%- if settings.cart_upsell_collection != blank -%}
+            {%- liquid
+              assign cart_product_ids = cart.items | map: 'product_id'
+              assign upsell_count = 0
+            -%}
+            <div class="cart-upsell">
+              {%- if settings.cart_upsell_heading != blank -%}
+                <h3 class="cart-upsell__title">{{ settings.cart_upsell_heading | escape }}</h3>
+              {%- endif -%}
+              {%- for upsell in settings.cart_upsell_collection.products limit: 12 -%}
+                {%- if upsell_count < 3 and upsell.available -%}
+                  {%- unless cart_product_ids contains upsell.id -%}
+                    {%- assign upsell_count = upsell_count | plus: 1 -%}
+                    <div class="cart-upsell__item">
+                      <a href="{{ upsell.url }}" class="media" tabindex="-1" aria-hidden="true">
+                        {%- if upsell.featured_media -%}
+                          {{ upsell.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                        {%- endif -%}
+                      </a>
+                      <div>
+                        <a href="{{ upsell.url }}" class="mini-card__title">{{ upsell.title | escape }}</a>
+                        <div class="mini-card__price">{{ upsell.price | money }}</div>
+                      </div>
+                      {%- if upsell.variants.size == 1 -%}
+                        {%- form 'product', upsell, data-product-form: '', novalidate: 'novalidate' -%}
+                          <input type="hidden" name="id" value="{{ upsell.selected_or_first_available_variant.id }}">
+                          <button type="submit" class="button button--secondary button--small">{{ 'products.product.add' | t }}</button>
+                        {%- endform -%}
+                      {%- else -%}
+                        <button type="button" class="button button--secondary button--small" data-quick-view="{{ upsell.url }}">{{ 'products.product.add' | t }}</button>
+                      {%- endif -%}
+                    </div>
+                  {%- endunless -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="cart-drawer__empty">
+            <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+            <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+            {%- if settings.cart_empty_collection != blank -%}
+              <div class="grid" style="--cols-desktop: 2; --cols-tablet: 2; --cols-mobile: 2;">
+                {%- for p in settings.cart_empty_collection.products limit: 4 -%}
+                  {%- render 'product-card', product: p, sizes: '200px', show_quick_add: false -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if cart.item_count > 0 -%}
+        <div class="drawer__footer">
+          {%- if settings.cart_show_note -%}
+            <details class="cart-note">
+              <summary>{{ 'sections.cart.note' | t }}</summary>
+              <textarea class="textarea" name="note" data-cart-note aria-label="{{ 'sections.cart.note' | t }}">{{ cart.note }}</textarea>
+            </details>
+          {%- endif -%}
+
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            <ul class="cart-discounts">
+              {%- for discount in cart.cart_level_discount_applications -%}
+                <li>{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <div class="cart-totals">
+            <span>{{ 'sections.cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="cart-tax-note">
+            {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+              {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+            {%- elsif cart.taxes_included -%}
+              {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+            {%- else -%}
+              {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+            {%- endif -%}
+          </p>
+          <form action="{{ routes.cart_url }}" method="post" class="cart-checkout-buttons">
+            <button type="submit" name="checkout" class="button button--full">
+              {{- 'sections.cart.checkout' | t }} &middot; {{ cart.total_price | money -}}
+            </button>
+            <a href="{{ routes.cart_url }}" class="button-link text-center" style="font-size:1.3rem">{{ 'sections.cart.view_cart' | t }}</a>
+          </form>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</cart-drawer>

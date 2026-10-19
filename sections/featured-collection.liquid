@@ -1,0 +1,108 @@
+{%- liquid
+  assign s = section.settings
+  assign tabs = section.blocks | where: 'type', 'collection'
+  if tabs.size == 0
+    assign use_tabs = false
+  else
+    assign use_tabs = true
+  endif
+  assign is_slider = false
+  if s.layout == 'slider'
+    assign is_slider = true
+  endif
+  assign card_sizes = '(min-width: 990px) calc(100vw / ' | append: s.columns_desktop | append: '), 50vw'
+-%}
+
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <slider-component class="page-width{% if s.full_width %} page-width--full{% endif %} slider-wrap" data-tabs>
+    {%- render 'section-heading', heading: s.heading, text: s.text, link_label: s.link_label, link_url: s.link_url, align: s.heading_align, slider: is_slider -%}
+
+    {%- if use_tabs and tabs.size > 1 -%}
+      <div class="tabs" role="tablist" style="margin-bottom:2.4rem;{% if s.heading_align == 'center' %}justify-content:center;{% endif %}">
+        {%- for block in tabs -%}
+          <button type="button" role="tab" class="tab-label" id="Tab-{{ block.id }}" aria-controls="TabPanel-{{ block.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" data-tab {{ block.shopify_attributes }}>
+            {{- block.settings.title | default: block.settings.collection.title | escape -}}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if use_tabs -%}
+      {%- for block in tabs -%}
+        <div role="tabpanel" id="TabPanel-{{ block.id }}" aria-labelledby="Tab-{{ block.id }}"{% unless forloop.first %} hidden{% endunless %} data-tab-panel>
+          <div class="{% if is_slider %}slider{% else %}grid{% endif %}" data-slider style="--cols-desktop: {{ s.columns_desktop }}; --cols-tablet: {{ s.columns_desktop | at_most: 3 }}; --cols-mobile: {{ s.columns_mobile }}; --per-view: {{ s.columns_desktop }}; --per-view-mobile: {{ s.columns_mobile | plus: 0.3 }};">
+            {%- if block.settings.collection != blank -%}
+              {%- for product in block.settings.collection.products limit: s.products_to_show -%}
+                {%- render 'product-card', product: product, sizes: card_sizes -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for i in (1..s.columns_desktop) -%}
+                {%- render 'product-card', product: blank, placeholder_index: i -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+          {%- if block.settings.collection != blank and s.show_view_all -%}
+            <div class="text-center" style="margin-top:3.2rem">
+              <a href="{{ block.settings.collection.url }}" class="button button--secondary">{{ 'sections.featured_collection.view_all' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="{% if is_slider %}slider{% else %}grid{% endif %}" data-slider style="--cols-desktop: {{ s.columns_desktop }}; --cols-tablet: {{ s.columns_desktop | at_most: 3 }}; --cols-mobile: {{ s.columns_mobile }}; --per-view: {{ s.columns_desktop }}; --per-view-mobile: {{ s.columns_mobile | plus: 0.3 }};">
+        {%- if s.collection != blank -%}
+          {%- for product in s.collection.products limit: s.products_to_show -%}
+            {%- render 'product-card', product: product, sizes: card_sizes -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..s.products_to_show) -%}
+            {%- render 'product-card', product: blank, placeholder_index: i -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      {%- if s.collection != blank and s.show_view_all -%}
+        <div class="text-center" style="margin-top:3.2rem">
+          <a href="{{ s.collection.url }}" class="button button--secondary">{{ 'sections.featured_collection.view_all' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if is_slider -%}<div class="slider-progress medium-up-hide"><span data-slider-progress></span></div>{%- endif -%}
+  </slider-component>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "class": "section-featured-collection",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "bestsellers" },
+    { "type": "richtext", "id": "text", "label": "Description" },
+    { "type": "select", "id": "heading_align", "label": "Heading alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "left" },
+    { "type": "text", "id": "link_label", "label": "Header link label", "default": "shop all" },
+    { "type": "url", "id": "link_url", "label": "Header link" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Ignored when collection tabs are added as blocks." },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 24, "step": 1, "label": "Products to show", "default": 8 },
+    { "type": "select", "id": "layout", "label": "Layout", "options": [ { "value": "slider", "label": "Carousel" }, { "value": "grid", "label": "Grid" } ], "default": "slider" },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 6, "step": 1, "label": "Products per row (desktop)", "default": 4 },
+    { "type": "select", "id": "columns_mobile", "label": "Products per row (mobile)", "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ], "default": "2" },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show 'view all' button", "default": false },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Top padding", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Bottom padding", "default": 56 }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection tab",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Tab label", "info": "Defaults to collection title." },
+        { "type": "collection", "id": "collection", "label": "Collection" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Featured collection" } ]
+}
+{% endschema %}
