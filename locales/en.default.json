@@ -35,7 +35,18 @@
     "share": {
       "label": "share",
       "success_message": "Link copied to clipboard"
-    }
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "add": "add to wishlist",
+      "remove": "saved to wishlist",
+      "removed": "removed from your wishlist",
+      "saved": "saved",
+      "clear": "clear all",
+      "empty": "nothing saved yet",
+      "empty_text": "Tap the heart on any product to save it for later."
+    },
+    "back_to_top": "Back to top"
   },
   "accessibility": {
     "skip_to_text": "Skip to content",
@@ -101,7 +112,11 @@
         "open_zoom": "Open image in full screen",
         "load_image": "Show image {{ index }}",
         "gallery_viewer": "Gallery viewer"
-      }
+      },
+      "added": "added to your bag",
+      "delivery_html": "order within {{ countdown }} to get it {{ date }}",
+      "delivery_simple_html": "get it {{ date }}",
+      "delivery_fallback": "delivers in {{ min }} to {{ max }} business days"
     },
     "quick_view": {
       "label": "Quick view"
@@ -133,7 +148,8 @@
       "cart_count": {
         "one": "{{ count }} item",
         "other": "{{ count }} items"
-      }
+      },
+      "shop_all": "shop all {{ title }}"
     },
     "cart": {
       "title": "bag",
@@ -178,6 +194,30 @@
     },
     "before_after": {
       "slider_label": "Drag to compare before and after"
+    },
+    "mobile_bar": {
+      "label": "Quick navigation"
+    },
+    "reels": {
+      "play": "Play reel: {{ title }}",
+      "placeholder": "add a reel",
+      "sound": "Sound"
+    },
+    "quiz": {
+      "meta": {
+        "one": "{{ count }} question, under a minute",
+        "other": "{{ count }} questions, under 2 minutes"
+      },
+      "back": "Previous question",
+      "restart": "retake the quiz"
+    },
+    "routine": {
+      "total": "routine total"
+    },
+    "comparison": {
+      "feature": "Feature",
+      "yes": "Yes",
+      "no": "No"
     }
   },
   "templates": {

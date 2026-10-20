@@ -1,0 +1,86 @@
+{%- comment -%}
+  Illustrated menu tile used by the mega menu, menu drawer and discover sheet.
+  - link: menu link (or pass title + url)
+  - title, url: used when no link is given
+  - blocks: header 'menu_illustration' blocks that override the art for a title
+  - image: optional image that overrides everything
+  - art: optional illustration name that overrides the automatic match
+  - size: 'sm' | 'md' (default) | 'lg'
+{%- endcomment -%}
+{%- liquid
+  if link
+    assign t_title = link.title
+    assign t_url = link.url
+    assign t_current = link.current
+  else
+    assign t_title = title
+    assign t_url = url
+    assign t_current = false
+  endif
+  assign key = t_title | downcase | strip
+  assign t_image = image
+  assign t_art = art
+  assign t_attrs = ''
+
+  for b in blocks
+    assign b_key = b.settings.menu_item | downcase | strip
+    if b_key == key
+      if b.settings.image != blank
+        assign t_image = b.settings.image
+      endif
+      assign t_art = b.settings.illustration
+      assign t_attrs = b.shopify_attributes
+      break
+    endif
+  endfor
+
+  if t_art == blank
+    if key contains 'serum' or key contains 'treatment' or key contains 'oil'
+      assign t_art = 'serum'
+    elsif key contains 'moistur' or key contains 'cream' or key contains 'balm'
+      assign t_art = 'cream'
+    elsif key contains 'cleans' or key contains 'wash' or key contains 'foam'
+      assign t_art = 'cleanser'
+    elsif key contains 'spf' or key contains 'sun'
+      assign t_art = 'sunscreen'
+    elsif key contains 'toner' or key contains 'essence' or key contains 'mist'
+      assign t_art = 'toner'
+    elsif key contains 'mask' or key contains 'exfol' or key contains 'peel'
+      assign t_art = 'mask'
+    elsif key contains 'eye'
+      assign t_art = 'eye'
+    elsif key contains 'lip'
+      assign t_art = 'lip'
+    elsif key contains 'body' or key contains 'hand' or key contains 'lotion'
+      assign t_art = 'body'
+    elsif key contains 'tool' or key contains 'roller' or key contains 'gua'
+      assign t_art = 'tools'
+    elsif key contains 'set' or key contains 'gift' or key contains 'kit' or key contains 'bundle'
+      assign t_art = 'sets'
+    elsif key contains 'new'
+      assign t_art = 'new'
+    elsif key contains 'best' or key contains 'top'
+      assign t_art = 'bestsellers'
+    elsif key contains 'night'
+      assign t_art = 'moon'
+    elsif key contains 'morning'
+      assign t_art = 'sun'
+    elsif key contains 'hydrat' or key contains 'dry'
+      assign t_art = 'drop'
+    elsif key contains 'clean' or key contains 'vegan' or key contains 'natural'
+      assign t_art = 'leaf'
+    else
+      assign t_art = 'face'
+    endif
+  endif
+-%}
+<a href="{{ t_url }}" class="illus-tile illus-tile--{{ size | default: 'md' }}"{% if t_current %} aria-current="page"{% endif %} {{ t_attrs }}>
+  <span class="illus-tile__art">
+    {%- if t_image != blank -%}
+      {{ t_image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120, 240', sizes: '120px', alt: '' }}
+    {%- else -%}
+      {%- render 'illustration', name: t_art -%}
+    {%- endif -%}
+  </span>
+  <span class="illus-tile__label">{{ t_title | escape }}</span>
+</a>

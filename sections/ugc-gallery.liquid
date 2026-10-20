@@ -21,7 +21,7 @@
             {%- if b.video != blank -%}
               {{ b.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '600x' }}
             {%- elsif b.image != blank -%}
-              {{ b.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 500, 700, 900', sizes: '(min-width: 990px) 20vw, 50vw', alt: b.image.alt | escape }}
+              {{ b.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 500, 700, 900', sizes: '(min-width: 990px) 20vw, 50vw', alt: b.image.alt }}
             {%- else -%}
               {%- assign ph = forloop.index | modulo: 2 | plus: 1 -%}
               {{ 'lifestyle-' | append: ph | placeholder_svg_tag: 'placeholder-svg' }}

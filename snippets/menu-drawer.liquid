@@ -2,6 +2,7 @@
   Mobile navigation drawer.
   - menu, secondary_menu: linklists
   - promos: mega_promo blocks (first two shown)
+  - illustrated, illus_blocks: illustrated tiles for second-level links
 {%- endcomment -%}
 <menu-drawer class="drawer drawer--left menu-drawer" id="MenuDrawer" aria-hidden="true">
   <div class="drawer__overlay" data-close></div>
@@ -23,6 +24,14 @@
                     <span>{{ link.title | escape }}</span>
                     {%- render 'icon', icon: 'plus' -%}
                   </summary>
+                  {%- if illustrated -%}
+                    <div class="menu-drawer__tiles">
+                      {%- for child in link.links -%}
+                        {%- render 'menu-tile', link: child, blocks: illus_blocks, size: 'sm' -%}
+                      {%- endfor -%}
+                    </div>
+                    <a href="{{ link.url }}" class="menu-drawer__view-all caption link-underline">{{ 'sections.header.shop_all' | t: title: link.title }}</a>
+                  {%- else -%}
                   <div class="menu-drawer__sub">
                     <a href="{{ link.url }}">{{ 'sections.header.view_all' | t }}</a>
                     {%- for child in link.links -%}
@@ -32,6 +41,7 @@
                       {%- endfor -%}
                     {%- endfor -%}
                   </div>
+                  {%- endif -%}
                 </details>
               {%- else -%}
                 <a href="{{ link.url }}" class="menu-drawer__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
@@ -50,7 +60,7 @@
             <a href="{{ promo.settings.link }}" class="mega-menu__promo">
               <div class="media">
                 {%- if promo.settings.image != blank -%}
-                  {{ promo.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: promo.settings.image.alt | escape }}
+                  {{ promo.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: promo.settings.image.alt }}
                 {%- else -%}
                   {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 {%- endif -%}

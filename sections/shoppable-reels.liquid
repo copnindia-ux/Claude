@@ -1,0 +1,184 @@
+{%- liquid
+  assign s = section.settings
+  assign reels = section.blocks | where: 'type', 'reel'
+-%}
+{{ 'section-reels.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-reels.js' | asset_url }}" defer="defer"></script>
+
+<shoppable-reels
+  class="reels color-{{ s.color_scheme }} section-padding"
+  style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }}; --reel-cols: {{ s.columns_desktop }};"
+  data-autoplay="{{ s.autoplay }}"
+  data-section="{{ section.id }}"
+>
+  <slider-component class="page-width{% if s.full_width %} page-width--full{% endif %}">
+    {%- if s.heading != blank or s.caption != blank -%}
+      <div class="section-header{% if s.heading_align == 'center' %} section-header--center{% endif %}">
+        <div>
+          {%- if s.caption != blank -%}<p class="caption reels__caption">{{ s.caption | escape }}</p>{%- endif -%}
+          {%- if s.heading != blank -%}<h2 class="section-header__title {{ s.heading_size }}">{{ s.heading | escape }}</h2>{%- endif -%}
+        </div>
+        {%- if s.heading_align != 'center' -%}
+          <div class="slider-buttons small-hide">
+            <button type="button" class="icon-button slider-button" data-slider-prev aria-label="{{ 'accessibility.previous_slide' | t }}">{%- render 'icon', icon: 'chevron-left' -%}</button>
+            <button type="button" class="icon-button slider-button" data-slider-next aria-label="{{ 'accessibility.next_slide' | t }}">{%- render 'icon', icon: 'chevron-right' -%}</button>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="slider reels__track list-unstyled" role="list" data-slider style="--per-view: {{ s.columns_desktop }}; --per-view-mobile: {{ s.columns_mobile }};">
+      {%- for block in reels -%}
+        {%- assign reel_product = block.settings.products.first -%}
+        <li class="reel" data-reel="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <button type="button" class="reel__open" data-reel-open="{{ forloop.index0 }}" aria-label="{{ 'sections.reels.play' | t: title: block.settings.title }}">
+            <span class="reel__media media">
+              {%- if block.settings.video != blank -%}
+                {{ block.settings.video | video_tag: image_size: '540x', autoplay: false, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', class: 'reel__video' }}
+              {%- elsif block.settings.poster != blank -%}
+                {{ block.settings.poster | image_url: width: 540 | image_tag: loading: 'lazy', alt: '' }}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </span>
+            <span class="reel__shade" aria-hidden="true"></span>
+            <span class="reel__top">
+              {%- if block.settings.views != blank -%}<span class="reel__pill">{%- render 'icon', icon: 'play' -%}{{ block.settings.views | escape }}</span>{%- endif -%}
+            </span>
+            {%- if block.settings.title != blank -%}<span class="reel__title">{{ block.settings.title | escape }}</span>{%- endif -%}
+          </button>
+          {%- if s.show_product and reel_product != blank -%}
+            <div class="reel__product">
+              <a href="{{ reel_product.url }}" class="reel__product-media" tabindex="-1" aria-hidden="true">
+                {%- if reel_product.featured_media -%}{{ reel_product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+              </a>
+              <a href="{{ reel_product.url }}" class="reel__product-info">
+                <span class="reel__product-title">{{ reel_product.title | escape }}</span>
+                <span class="reel__product-price">{{ reel_product.price | money }}</span>
+              </a>
+            </div>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        {%- for i in (1..5) -%}
+          <li class="reel">
+            <div class="reel__open">
+              <span class="reel__media media">{{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}</span>
+              <span class="reel__title">{{ 'sections.reels.placeholder' | t }}</span>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+    <div class="slider-progress medium-up-hide"><span data-slider-progress></span></div>
+  </slider-component>
+
+  {%- if reels.size > 0 -%}
+    <reels-viewer class="modal reels-viewer" id="ReelsViewer-{{ section.id }}" aria-hidden="true" data-no-drawer>
+      <div class="modal__overlay" data-close></div>
+      <div class="modal__panel reels-viewer__panel" role="dialog" aria-modal="true" aria-label="{{ s.heading | default: 'Reels' | escape }}" tabindex="-1">
+        <div class="reels-viewer__controls">
+          <button type="button" class="reels-viewer__btn" data-reels-mute aria-pressed="true" aria-label="{{ 'sections.reels.sound' | t }}">
+            <span class="reels-viewer__muted">{%- render 'icon', icon: 'mute' -%}</span>
+            <span class="reels-viewer__unmuted">{%- render 'icon', icon: 'volume' -%}</span>
+          </button>
+          <button type="button" class="reels-viewer__btn" data-close aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
+        </div>
+        <button type="button" class="reels-viewer__nav reels-viewer__nav--prev small-hide" data-reels-prev aria-label="{{ 'accessibility.previous_slide' | t }}">{%- render 'icon', icon: 'chevron-left' -%}</button>
+        <button type="button" class="reels-viewer__nav reels-viewer__nav--next small-hide" data-reels-next aria-label="{{ 'accessibility.next_slide' | t }}">{%- render 'icon', icon: 'chevron-right' -%}</button>
+
+        <div class="reels-viewer__track" data-reels-track>
+          {%- for block in reels -%}
+            <section class="reels-viewer__slide" data-reels-slide="{{ forloop.index0 }}" aria-label="{{ forloop.index }} / {{ reels.size }}">
+              <div class="reels-viewer__progress" aria-hidden="true"><span data-reels-progress></span></div>
+              <div class="reels-viewer__media">
+                {%- if block.settings.video != blank -%}
+                  {{ block.settings.video | video_tag: image_size: '1080x', autoplay: false, loop: false, muted: true, controls: false, playsinline: true, preload: 'none' }}
+                {%- elsif block.settings.poster != blank -%}
+                  {{ block.settings.poster | image_url: width: 1080 | image_tag: loading: 'lazy', alt: '' }}
+                {%- endif -%}
+              </div>
+              <div class="reels-viewer__info">
+                {%- if block.settings.title != blank -%}<p class="reels-viewer__title h4">{{ block.settings.title | escape }}</p>{%- endif -%}
+                {%- if block.settings.products != blank -%}
+                  <div class="reels-viewer__products">
+                    {%- for p in block.settings.products -%}
+                      <div class="reels-product">
+                        <a href="{{ p.url }}" class="reels-product__media" tabindex="-1" aria-hidden="true">
+                          {%- if p.featured_media -%}{{ p.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+                        </a>
+                        <a href="{{ p.url }}" class="reels-product__info">
+                          <span class="reels-product__title">{{ p.title | escape }}</span>
+                          <span class="reels-product__price">{% render 'price', product: p, show_from: true %}</span>
+                        </a>
+                        {%- if p.available -%}
+                          {%- if p.variants.size == 1 -%}
+                            {%- form 'product', p, data-product-form: '', novalidate: 'novalidate' -%}
+                              <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}">
+                              <button type="submit" class="button button--small reels-product__add" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ p.title | escape }}">{%- render 'icon', icon: 'plus' -%}<span class="small-hide">{{ 'products.product.add' | t }}</span></button>
+                            {%- endform -%}
+                          {%- else -%}
+                            <button type="button" class="button button--small reels-product__add" data-quick-view="{{ p.url }}" aria-label="{{ 'products.product.choose_options' | t }}: {{ p.title | escape }}">{%- render 'icon', icon: 'plus' -%}<span class="small-hide">{{ 'products.product.add' | t }}</span></button>
+                          {%- endif -%}
+                        {%- else -%}
+                          <span class="caption subtext">{{ 'products.product.sold_out' | t }}</span>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </section>
+          {%- endfor -%}
+        </div>
+      </div>
+    </reels-viewer>
+  {%- endif -%}
+</shoppable-reels>
+
+{% schema %}
+{
+  "name": "Shoppable reels",
+  "class": "section-reels",
+  "settings": [
+    { "type": "text", "id": "caption", "label": "Caption", "default": "as seen on you" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "shop the reels" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "select", "id": "heading_align", "label": "Heading alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "left" },
+    { "type": "range", "id": "columns_desktop", "min": 3, "max": 6, "step": 1, "label": "Reels per row on desktop", "default": 5 },
+    { "type": "select", "id": "columns_mobile", "label": "Reels visible on mobile", "options": [ { "value": "1.6", "label": "1.5" }, { "value": "2.2", "label": "2" } ], "default": "2.2" },
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay muted previews", "default": true, "info": "Previews play when in view and pause when scrolled away." },
+    { "type": "checkbox", "id": "show_product", "label": "Show product under each reel", "default": true },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel",
+      "limit": 16,
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video", "info": "Vertical 9:16 MP4 uploaded to Shopify works best." },
+        { "type": "image_picker", "id": "poster", "label": "Image (used when there is no video)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "my 3-step glow routine" },
+        { "type": "text", "id": "views", "label": "Views label", "default": "12.4k" },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 3 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shoppable reels",
+      "blocks": [
+        { "type": "reel", "settings": { "title": "my 3-step glow routine" } },
+        { "type": "reel", "settings": { "title": "how I layer serum + spf", "views": "8.1k" } },
+        { "type": "reel", "settings": { "title": "night routine, 2 minutes", "views": "21k" } },
+        { "type": "reel", "settings": { "title": "the dewy skin trick", "views": "5.6k" } },
+        { "type": "reel", "settings": { "title": "week 4 results", "views": "33k" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

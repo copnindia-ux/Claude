@@ -14,7 +14,7 @@
       <button type="button" class="modal__close icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
       {%- if s.image != blank -%}
         <div class="media small-hide">
-          {{ s.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '40vw', alt: s.image.alt | escape }}
+          {{ s.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '40vw', alt: s.image.alt }}
         </div>
       {%- endif -%}
       <div class="newsletter-popup__content">

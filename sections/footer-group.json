@@ -55,10 +55,108 @@
         "text": "<p>Join the list for early access and a welcome treat.</p>",
         "color_scheme": "scheme-1"
       }
+    },
+    "mobile-nav-bar": {
+      "type": "mobile-nav-bar",
+      "blocks": {
+        "tile-1": {
+          "type": "tile",
+          "settings": {
+            "title": "new",
+            "illustration": "new",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-2": {
+          "type": "tile",
+          "settings": {
+            "title": "bestsellers",
+            "illustration": "bestsellers",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-3": {
+          "type": "tile",
+          "settings": {
+            "title": "serums",
+            "illustration": "serum",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-4": {
+          "type": "tile",
+          "settings": {
+            "title": "moisturizers",
+            "illustration": "cream",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-5": {
+          "type": "tile",
+          "settings": {
+            "title": "cleansers",
+            "illustration": "cleanser",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-6": {
+          "type": "tile",
+          "settings": {
+            "title": "spf",
+            "illustration": "sunscreen",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-7": {
+          "type": "tile",
+          "settings": {
+            "title": "eyes",
+            "illustration": "eye",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-8": {
+          "type": "tile",
+          "settings": {
+            "title": "sets",
+            "illustration": "sets",
+            "link": "shopify://collections/all"
+          }
+        },
+        "tile-9": {
+          "type": "tile",
+          "settings": {
+            "title": "lips",
+            "illustration": "lip",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "tile-1",
+        "tile-2",
+        "tile-3",
+        "tile-4",
+        "tile-5",
+        "tile-6",
+        "tile-7",
+        "tile-8",
+        "tile-9"
+      ],
+      "settings": {
+        "style": "floating",
+        "show_labels": true,
+        "hide_on_scroll": false,
+        "color_scheme": "scheme-2",
+        "first_item": "menu",
+        "discover_action": "sheet",
+        "sheet_color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
     "footer",
-    "newsletter-popup"
+    "newsletter-popup",
+    "mobile-nav-bar"
   ]
 }

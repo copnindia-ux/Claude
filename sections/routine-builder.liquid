@@ -1,0 +1,171 @@
+{%- liquid
+  assign s = section.settings
+  assign am_count = 0
+  assign pm_count = 0
+  for block in section.blocks
+    if block.settings.routine == 'pm'
+      assign pm_count = pm_count | plus: 1
+    else
+      assign am_count = am_count | plus: 1
+    endif
+  endfor
+  assign has_both = false
+  if am_count > 0 and pm_count > 0
+    assign has_both = true
+  endif
+-%}
+<slider-component
+  class="routine color-{{ s.color_scheme }} section-padding"
+  style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};"
+>
+  <div class="page-width{% if s.full_width %} page-width--full{% endif %}">
+    <div class="section-header routine__header">
+      <div>
+        {%- if s.caption != blank -%}<p class="caption routine__caption">{{ s.caption | escape }}</p>{%- endif -%}
+        <h2 class="section-header__title {{ s.heading_size }}">{{ s.heading | escape }}</h2>
+        {%- if s.text != blank -%}<div class="rte subtext section-header__text" style="margin-top:.8rem">{{ s.text }}</div>{%- endif -%}
+      </div>
+      {%- if has_both -%}
+        <div class="segmented" role="tablist" aria-label="{{ s.heading | escape }}">
+          <button type="button" class="segmented__option" role="tab" data-tab aria-selected="true" aria-controls="Routine-{{ section.id }}-am" id="RoutineTab-{{ section.id }}-am">
+            {%- render 'icon', icon: 'sun' -%}{{ s.am_label | escape }}
+          </button>
+          <button type="button" class="segmented__option" role="tab" data-tab aria-selected="false" aria-controls="Routine-{{ section.id }}-pm" id="RoutineTab-{{ section.id }}-pm">
+            {%- render 'icon', icon: 'moon' -%}{{ s.pm_label | escape }}
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- for routine in (1..2) -%}
+      {%- liquid
+        if routine == 1
+          assign step_count = am_count
+          assign key = 'am'
+        else
+          assign step_count = pm_count
+          assign key = 'pm'
+        endif
+        assign step_num = 0
+        assign total = 0
+        assign addable = 0
+      -%}
+      {%- if step_count > 0 -%}
+        <div class="routine__panel" id="Routine-{{ section.id }}-{{ key }}" role="tabpanel"{% if has_both %} data-tab-panel aria-labelledby="RoutineTab-{{ section.id }}-{{ key }}"{% endif %}{% if has_both and routine == 2 %} hidden{% endif %}>
+          <ol class="routine__steps list-unstyled" role="list">
+            {%- for block in section.blocks -%}
+              {%- assign block_key = block.settings.routine | default: 'am' -%}
+              {%- if block_key != key -%}{%- continue -%}{%- endif -%}
+              {%- assign step_num = step_num | plus: 1 -%}
+              {%- assign p = block.settings.product -%}
+              <li class="routine-step" style="--i: {{ step_num | minus: 1 }};" {{ block.shopify_attributes }}>
+                <div class="routine-step__head">
+                  <span class="routine-step__num">{{ step_num }}</span>
+                  <span class="routine-step__label">{{ block.settings.label | escape }}</span>
+                </div>
+                {%- if p != blank -%}
+                  {%- liquid
+                    assign total = total | plus: p.price
+                    if p.available and p.variants.size == 1
+                      assign addable = addable | plus: 1
+                    endif
+                  -%}
+                  <a href="{{ p.url }}" class="routine-step__media media">
+                    {%- if p.featured_media -%}
+                      {%- assign p_alt = p.featured_media.alt | default: p.title -%}
+                      {{ p.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', widths: '200, 400, 600', sizes: '(min-width: 990px) 20vw, 60vw', alt: p_alt }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {%- endif -%}
+                  </a>
+                  <div class="routine-step__info">
+                    <a href="{{ p.url }}" class="routine-step__title">{{ p.title | escape }}</a>
+                    <span class="routine-step__price">{% render 'price', product: p, show_from: true %}</span>
+                  </div>
+                {%- else -%}
+                  <div class="routine-step__media media">{{ 'product-' | append: step_num | placeholder_svg_tag: 'placeholder-svg' }}</div>
+                  <div class="routine-step__info">
+                    <span class="routine-step__title">{{ 'onboarding.product_title' | t }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.note != blank -%}
+                  <p class="routine-step__note">{%- render 'icon', icon: 'clock' -%}{{ block.settings.note | escape }}</p>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ol>
+
+          {%- if addable > 0 -%}
+            <div class="routine__footer">
+              <div>
+                <p class="routine__total">{{ 'sections.routine.total' | t }} <strong>{{ total | money }}</strong></p>
+                {%- if s.footer_note != blank -%}<p class="caption subtext">{{ s.footer_note | escape }}</p>{%- endif -%}
+              </div>
+              <form action="{{ routes.cart_add_url }}" method="post" data-product-form>
+                {%- assign n = 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- assign block_key = block.settings.routine | default: 'am' -%}
+                  {%- assign p = block.settings.product -%}
+                  {%- if block_key == key and p != blank and p.available and p.variants.size == 1 -%}
+                    <input type="hidden" name="items[{{ n }}][id]" value="{{ p.selected_or_first_available_variant.id }}">
+                    <input type="hidden" name="items[{{ n }}][quantity]" value="1">
+                    {%- assign n = n | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                <button type="submit" class="button">{%- render 'icon', icon: 'bag' -%}{{ s.add_all_label | escape }}</button>
+              </form>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</slider-component>
+
+{% schema %}
+{
+  "name": "Routine builder",
+  "class": "section-routine",
+  "settings": [
+    { "type": "text", "id": "caption", "label": "Caption", "default": "the routine" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "your 4-step ritual" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "am_label", "label": "Morning tab label", "default": "morning" },
+    { "type": "text", "id": "pm_label", "label": "Night tab label", "default": "night" },
+    { "type": "text", "id": "add_all_label", "label": "Add all button label", "default": "add the routine" },
+    { "type": "text", "id": "footer_note", "label": "Footer note", "default": "single-variant products are added together." },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 12,
+      "settings": [
+        { "type": "select", "id": "routine", "label": "Routine", "options": [ { "value": "am", "label": "Morning" }, { "value": "pm", "label": "Night" } ], "default": "am" },
+        { "type": "text", "id": "label", "label": "Step name", "default": "cleanse" },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "note", "label": "Tip", "default": "massage in for 60 seconds" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Routine builder",
+      "blocks": [
+        { "type": "step", "settings": { "routine": "am", "label": "cleanse", "note": "massage in for 60 seconds" } },
+        { "type": "step", "settings": { "routine": "am", "label": "treat", "note": "3 drops on damp skin" } },
+        { "type": "step", "settings": { "routine": "am", "label": "moisturize", "note": "press, don't rub" } },
+        { "type": "step", "settings": { "routine": "am", "label": "protect", "note": "two finger lengths of spf" } },
+        { "type": "step", "settings": { "routine": "pm", "label": "cleanse", "note": "double cleanse if wearing spf" } },
+        { "type": "step", "settings": { "routine": "pm", "label": "exfoliate", "note": "2 to 3 nights a week" } },
+        { "type": "step", "settings": { "routine": "pm", "label": "repair", "note": "a pea-sized amount" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

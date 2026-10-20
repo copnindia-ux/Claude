@@ -18,6 +18,7 @@
 {%- if product != blank -%}
   {%- liquid
     assign primary = product.featured_media
+    assign primary_alt = primary.alt | default: product.title
     assign secondary = product.media[1]
     assign has_secondary = false
     if settings.card_show_secondary_image and secondary != blank and secondary.media_type == 'image'
@@ -51,7 +52,7 @@
               sizes: sizes,
               widths: '300, 450, 600, 800, 1000, 1200',
               class: 'card__image--primary',
-              alt: primary.alt | default: product.title | escape
+              alt: primary_alt
           }}
           {%- if has_secondary -%}
             {{
@@ -71,6 +72,9 @@
       </div>
 
       {%- render 'card-badges', product: product -%}
+      {%- if settings.card_show_wishlist -%}
+        {%- render 'wishlist-button', product: product -%}
+      {%- endif -%}
 
       {%- if quick_add and product.available -%}
         <div class="card__quick-add">

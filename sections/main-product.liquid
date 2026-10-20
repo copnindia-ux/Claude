@@ -217,6 +217,106 @@
                   </button>
                 </share-button>
 
+              {%- when 'wishlist' -%}
+                <div {{ block.shopify_attributes }}>{%- render 'wishlist-button', product: product, style: 'button' -%}</div>
+
+              {%- when 'skin_profile' -%}
+                {%- liquid
+                  assign skin_types = product.metafields.custom.skin_types.value
+                  if skin_types == blank and block.settings.skin_types != blank
+                    assign skin_types = block.settings.skin_types | split: ','
+                  endif
+                  assign concerns = product.metafields.custom.concerns.value
+                  if concerns == blank and block.settings.concerns != blank
+                    assign concerns = block.settings.concerns | split: ','
+                  endif
+                -%}
+                {%- if skin_types != blank or concerns != blank -%}
+                  <div class="skin-profile" {{ block.shopify_attributes }}>
+                    {%- if skin_types != blank -%}
+                      <div class="skin-profile__row">
+                        <span class="caption subtext">{{ block.settings.skin_types_label | escape }}</span>
+                        <ul class="chip-list list-unstyled" role="list">
+                          {%- for t in skin_types -%}<li class="chip chip--static">{{ t | strip | escape }}</li>{%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endif -%}
+                    {%- if concerns != blank -%}
+                      <div class="skin-profile__row">
+                        <span class="caption subtext">{{ block.settings.concerns_label | escape }}</span>
+                        <ul class="chip-list list-unstyled" role="list">
+                          {%- for t in concerns -%}<li class="chip chip--static">{{ t | strip | escape }}</li>{%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'key_ingredients' -%}
+                <div class="key-ingredients" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}<p class="h5 key-ingredients__heading">{{ block.settings.heading | escape }}</p>{%- endif -%}
+                  <ul class="key-ingredients__list list-unstyled" role="list">
+                    {%- for i in (1..3) -%}
+                      {%- assign n_key = 'name_' | append: i -%}
+                      {%- assign d_key = 'benefit_' | append: i -%}
+                      {%- assign a_key = 'art_' | append: i -%}
+                      {%- if block.settings[n_key] != blank -%}
+                        <li class="key-ingredient">
+                          <span class="key-ingredient__art">{%- render 'illustration', name: block.settings[a_key] -%}</span>
+                          <span class="key-ingredient__name">{{ block.settings[n_key] | escape }}</span>
+                          {%- if block.settings[d_key] != blank -%}<span class="key-ingredient__benefit">{{ block.settings[d_key] | escape }}</span>{%- endif -%}
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                </div>
+
+              {%- when 'results' -%}
+                <div class="product-results" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}<p class="h5 key-ingredients__heading">{{ block.settings.heading | escape }}</p>{%- endif -%}
+                  <ul class="product-results__list list-unstyled" role="list">
+                    {%- for i in (1..3) -%}
+                      {%- assign v_key = 'value_' | append: i -%}
+                      {%- assign l_key = 'label_' | append: i -%}
+                      {%- if block.settings[l_key] != blank -%}
+                        <li class="product-result" data-count-up style="--progress: {{ block.settings[v_key] }};">
+                          <span class="product-result__value"><span data-count-to="{{ block.settings[v_key] }}">{{ block.settings[v_key] }}</span>%</span>
+                          <span class="product-result__meter" aria-hidden="true"><span></span></span>
+                          <span class="product-result__label">{{ block.settings[l_key] | escape }}</span>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                  {%- if block.settings.footnote != blank -%}<p class="product-results__footnote">{{ block.settings.footnote | escape }}</p>{%- endif -%}
+                </div>
+
+              {%- when 'delivery' -%}
+                <delivery-estimate
+                  class="delivery-estimate"
+                  data-min="{{ block.settings.min_days }}"
+                  data-max="{{ block.settings.max_days }}"
+                  data-cutoff="{{ block.settings.cutoff_hour }}"
+                  data-skip-weekends="{{ block.settings.skip_weekends }}"
+                  data-locale="{{ request.locale.iso_code }}"
+                  data-template="{{ 'products.product.delivery_html' | t: date: '[date]', countdown: '[countdown]' | escape }}"
+                  data-template-simple="{{ 'products.product.delivery_simple_html' | t: date: '[date]' | escape }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- render 'icon', icon: 'truck' -%}
+                  <span data-delivery-text>{{ 'products.product.delivery_fallback' | t: min: block.settings.min_days, max: block.settings.max_days }}</span>
+                </delivery-estimate>
+
+              {%- when 'trust_badges' -%}
+                <ul class="trust-badges list-unstyled" role="list" {{ block.shopify_attributes }}>
+                  {%- for i in (1..4) -%}
+                    {%- assign t_key = 'text_' | append: i -%}
+                    {%- assign i_key = 'icon_' | append: i -%}
+                    {%- if block.settings[t_key] != blank -%}
+                      <li class="trust-badge">{%- render 'icon', icon: block.settings[i_key] -%}<span>{{ block.settings[t_key] | escape }}</span></li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+
               {%- when 'custom_liquid' -%}
                 <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
 
@@ -366,6 +466,77 @@
       "settings": [
         { "type": "text", "id": "label", "label": "Link label", "default": "shipping & returns" },
         { "type": "page", "id": "page", "label": "Page" }
+      ]
+    },
+    { "type": "wishlist", "name": "Wishlist button", "limit": 1, "settings": [ { "type": "paragraph", "content": "Turn on the wishlist in theme settings." } ] },
+    {
+      "type": "skin_profile",
+      "name": "Skin type & concerns",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Uses the list metafields custom.skin_types and custom.concerns when set." },
+        { "type": "text", "id": "skin_types_label", "label": "Skin type label", "default": "good for" },
+        { "type": "text", "id": "skin_types", "label": "Fallback skin types", "default": "dry, normal, combination", "info": "Comma-separated." },
+        { "type": "text", "id": "concerns_label", "label": "Concerns label", "default": "targets" },
+        { "type": "text", "id": "concerns", "label": "Fallback concerns", "default": "dullness, dehydration", "info": "Comma-separated." }
+      ]
+    },
+    {
+      "type": "key_ingredients",
+      "name": "Key ingredients",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "key ingredients" },
+        { "type": "text", "id": "name_1", "label": "Ingredient 1", "default": "niacinamide" },
+        { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "refines pores" },
+        { "type": "select", "id": "art_1", "label": "Illustration 1", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "serum", "label": "Serum" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "new", "label": "Sparkle" }, { "value": "cream", "label": "Cream" } ], "default": "serum" },
+        { "type": "text", "id": "name_2", "label": "Ingredient 2", "default": "hyaluronic acid" },
+        { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "deep hydration" },
+        { "type": "select", "id": "art_2", "label": "Illustration 2", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "serum", "label": "Serum" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "new", "label": "Sparkle" }, { "value": "cream", "label": "Cream" } ], "default": "drop" },
+        { "type": "text", "id": "name_3", "label": "Ingredient 3", "default": "squalane" },
+        { "type": "text", "id": "benefit_3", "label": "Benefit 3", "default": "locks in moisture" },
+        { "type": "select", "id": "art_3", "label": "Illustration 3", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "serum", "label": "Serum" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "new", "label": "Sparkle" }, { "value": "cream", "label": "Cream" } ], "default": "leaf" }
+      ]
+    },
+    {
+      "type": "results",
+      "name": "Results",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "proven results" },
+        { "type": "range", "id": "value_1", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Result 1", "default": 94 },
+        { "type": "text", "id": "label_1", "label": "Result 1 label", "default": "felt more hydrated" },
+        { "type": "range", "id": "value_2", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Result 2", "default": 89 },
+        { "type": "text", "id": "label_2", "label": "Result 2 label", "default": "saw a brighter complexion" },
+        { "type": "range", "id": "value_3", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Result 3", "default": 86 },
+        { "type": "text", "id": "label_3", "label": "Result 3 label", "default": "said skin felt smoother" },
+        { "type": "text", "id": "footnote", "label": "Footnote", "default": "*Consumer study, 4 weeks of daily use." }
+      ]
+    },
+    {
+      "type": "delivery",
+      "name": "Delivery estimate",
+      "limit": 1,
+      "settings": [
+        { "type": "range", "id": "min_days", "min": 0, "max": 20, "step": 1, "label": "Minimum business days", "default": 2 },
+        { "type": "range", "id": "max_days", "min": 1, "max": 30, "step": 1, "label": "Maximum business days", "default": 4 },
+        { "type": "range", "id": "cutoff_hour", "min": 0, "max": 23, "step": 1, "label": "Same-day dispatch cutoff (hour, shopper's time)", "default": 14 },
+        { "type": "checkbox", "id": "skip_weekends", "label": "Skip weekends", "default": true }
+      ]
+    },
+    {
+      "type": "trust_badges",
+      "name": "Trust badges",
+      "limit": 2,
+      "settings": [
+        { "type": "select", "id": "icon_1", "label": "Icon 1", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "rabbit", "label": "Cruelty free" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "heart", "label": "Heart" }, { "value": "truck", "label": "Truck" }, { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "check", "label": "Check" }, { "value": "shield", "label": "Shield" }, { "value": "flask", "label": "Flask" }, { "value": "calendar", "label": "Calendar" } ], "default": "truck" },
+        { "type": "text", "id": "text_1", "label": "Text 1", "default": "free shipping over $50" },
+        { "type": "select", "id": "icon_2", "label": "Icon 2", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "rabbit", "label": "Cruelty free" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "heart", "label": "Heart" }, { "value": "truck", "label": "Truck" }, { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "check", "label": "Check" }, { "value": "shield", "label": "Shield" }, { "value": "flask", "label": "Flask" }, { "value": "calendar", "label": "Calendar" } ], "default": "return" },
+        { "type": "text", "id": "text_2", "label": "Text 2", "default": "30-day happy skin guarantee" },
+        { "type": "select", "id": "icon_3", "label": "Icon 3", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "rabbit", "label": "Cruelty free" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "heart", "label": "Heart" }, { "value": "truck", "label": "Truck" }, { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "check", "label": "Check" }, { "value": "shield", "label": "Shield" }, { "value": "flask", "label": "Flask" }, { "value": "calendar", "label": "Calendar" } ], "default": "shield" },
+        { "type": "text", "id": "text_3", "label": "Text 3", "default": "dermatologist tested" },
+        { "type": "select", "id": "icon_4", "label": "Icon 4", "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "rabbit", "label": "Cruelty free" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "heart", "label": "Heart" }, { "value": "truck", "label": "Truck" }, { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "check", "label": "Check" }, { "value": "shield", "label": "Shield" }, { "value": "flask", "label": "Flask" }, { "value": "calendar", "label": "Calendar" } ], "default": "lock" },
+        { "type": "text", "id": "text_4", "label": "Text 4", "default": "secure checkout" }
       ]
     },
     { "type": "custom_liquid", "name": "Custom liquid", "settings": [ { "type": "liquid", "id": "custom_liquid", "label": "Custom liquid" } ] }

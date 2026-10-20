@@ -28,7 +28,7 @@
                 <button type="button" class="product__media-zoom" data-zoom="{{ forloop.index0 }}" aria-label="{{ 'products.product.media.open_zoom' | t }}">
               {%- endif -%}
               <div class="media">
-                {{ media | image_url: width: 2000 | image_tag: loading: loading, widths: '400, 600, 800, 1000, 1400, 2000', sizes: '(min-width: 990px) 60vw, 100vw', alt: media.alt | escape }}
+                {{ media | image_url: width: 2000 | image_tag: loading: loading, widths: '400, 600, 800, 1000, 1400, 2000', sizes: '(min-width: 990px) 60vw, 100vw', alt: media.alt }}
               </div>
               {%- if enable_zoom -%}</button>{%- endif -%}
             {%- when 'video' -%}
@@ -75,7 +75,7 @@
         <div class="lightbox__list">
           {%- for media in product.media -%}
             {%- if media.media_type == 'image' -%}
-              {{ media | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '1000, 1600, 2400', sizes: '100vw', data-lightbox-index: forloop.index0, alt: media.alt | escape }}
+              {{ media | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '1000, 1600, 2400', sizes: '100vw', data-lightbox-index: forloop.index0, alt: media.alt }}
             {%- endif -%}
           {%- endfor -%}
         </div>

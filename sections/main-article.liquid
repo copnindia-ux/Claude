@@ -3,7 +3,7 @@
   {%- if s.show_image and article.image -%}
     <div class="article-template__hero">
       <div class="media" style="border-radius:0">
-        {{ article.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '800, 1200, 1800, 2400', sizes: '100vw', alt: article.image.alt | escape }}
+        {{ article.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '800, 1200, 1800, 2400', sizes: '100vw', alt: article.image.alt }}
       </div>
     </div>
   {%- endif -%}

@@ -3,11 +3,35 @@
     "hero": {
       "type": "hero-banner",
       "blocks": {
-        "heading": { "type": "heading", "settings": { "heading": "skin, but softer", "size": "h0" } },
-        "text": { "type": "text", "settings": { "text": "<p>Daily essentials that layer, hydrate and glow.</p>" } },
-        "buttons": { "type": "buttons", "settings": { "label_1": "shop now", "link_1": "shopify://collections/all", "style_1": "light", "label_2": "", "style_2": "secondary" } }
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "skin, but softer",
+            "size": "h0"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Daily essentials that layer, hydrate and glow.</p>"
+          }
+        },
+        "buttons": {
+          "type": "buttons",
+          "settings": {
+            "label_1": "shop now",
+            "link_1": "shopify://collections/all",
+            "style_1": "light",
+            "label_2": "",
+            "style_2": "secondary"
+          }
+        }
       },
-      "block_order": ["heading", "text", "buttons"],
+      "block_order": [
+        "heading",
+        "text",
+        "buttons"
+      ],
       "settings": {
         "height": 90,
         "height_mobile": 80,
@@ -42,71 +66,760 @@
     "split": {
       "type": "split-hero",
       "blocks": {
-        "panel-1": { "type": "panel", "settings": { "heading": "the lip edit", "button_label": "shop lips", "text_light": true, "content_position": "bottom-left", "overlay_opacity": 0 } },
-        "panel-2": { "type": "panel", "settings": { "heading": "the skin edit", "button_label": "shop skin", "text_light": true, "content_position": "bottom-left", "overlay_opacity": 0 } }
+        "panel-1": {
+          "type": "panel",
+          "settings": {
+            "heading": "the lip edit",
+            "button_label": "shop lips",
+            "text_light": true,
+            "content_position": "bottom-left",
+            "overlay_opacity": 0
+          }
+        },
+        "panel-2": {
+          "type": "panel",
+          "settings": {
+            "heading": "the skin edit",
+            "button_label": "shop skin",
+            "text_light": true,
+            "content_position": "bottom-left",
+            "overlay_opacity": 0
+          }
+        }
       },
-      "block_order": ["panel-1", "panel-2"],
-      "settings": { "color_scheme": "scheme-1", "height": 85 }
+      "block_order": [
+        "panel-1",
+        "panel-2"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "height": 85
+      }
     },
     "marquee": {
       "type": "marquee",
       "blocks": {
-        "t1": { "type": "text", "settings": { "text": "clean formulas" } },
-        "t2": { "type": "text", "settings": { "text": "dermatologist tested" } },
-        "t3": { "type": "text", "settings": { "text": "cruelty free" } },
-        "t4": { "type": "text", "settings": { "text": "fragrance free" } }
+        "t1": {
+          "type": "text",
+          "settings": {
+            "text": "clean formulas"
+          }
+        },
+        "t2": {
+          "type": "text",
+          "settings": {
+            "text": "dermatologist tested"
+          }
+        },
+        "t3": {
+          "type": "text",
+          "settings": {
+            "text": "cruelty free"
+          }
+        },
+        "t4": {
+          "type": "text",
+          "settings": {
+            "text": "fragrance free"
+          }
+        }
       },
-      "block_order": ["t1", "t2", "t3", "t4"],
-      "settings": { "color_scheme": "scheme-3", "text_size": "h4", "separator": "✦", "speed": 40, "reverse": false, "pause_on_hover": true, "padding_top": 16, "padding_bottom": 16, "logo_height": 28 }
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "text_size": "h4",
+        "separator": "✦",
+        "speed": 40,
+        "reverse": false,
+        "pause_on_hover": true,
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "logo_height": 28
+      }
     },
     "story": {
       "type": "image-with-text",
       "blocks": {
-        "caption": { "type": "caption", "settings": { "text": "our philosophy" } },
-        "heading": { "type": "heading", "settings": { "heading": "fewer steps, better skin", "size": "h1" } },
-        "text": { "type": "text", "settings": { "text": "<p>We make a short edit of hardworking essentials, so your routine stays simple and your skin stays happy.</p>" } },
-        "button": { "type": "button", "settings": { "label": "our story", "link": "", "style": "secondary" } }
+        "caption": {
+          "type": "caption",
+          "settings": {
+            "text": "our philosophy"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "fewer steps, better skin",
+            "size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We make a short edit of hardworking essentials, so your routine stays simple and your skin stays happy.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "label": "our story",
+            "link": "",
+            "style": "secondary"
+          }
+        }
       },
-      "block_order": ["caption", "heading", "text", "button"],
-      "settings": { "layout": "left", "media_width": 50, "image_height": "fill", "content_vertical": "center", "text_align": "left", "full_width": true, "color_scheme": "scheme-2", "padding_top": 48, "padding_bottom": 48 }
+      "block_order": [
+        "caption",
+        "heading",
+        "text",
+        "button"
+      ],
+      "settings": {
+        "layout": "left",
+        "media_width": 50,
+        "image_height": "fill",
+        "content_vertical": "center",
+        "text_align": "left",
+        "full_width": true,
+        "color_scheme": "scheme-2",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
     },
     "benefits": {
       "type": "multicolumn",
       "blocks": {
-        "c1": { "type": "column", "settings": { "icon": "drop", "title": "hydrating", "text": "<p>Formulated to support a healthy moisture barrier.</p>" } },
-        "c2": { "type": "column", "settings": { "icon": "leaf", "title": "clean formulas", "text": "<p>Thoughtful ingredients, nothing unnecessary.</p>" } },
-        "c3": { "type": "column", "settings": { "icon": "rabbit", "title": "cruelty free", "text": "<p>Never tested on animals.</p>" } },
-        "c4": { "type": "column", "settings": { "icon": "sparkle", "title": "everyday glow", "text": "<p>Layers beautifully, morning or night.</p>" } }
+        "c1": {
+          "type": "column",
+          "settings": {
+            "icon": "drop",
+            "title": "hydrating",
+            "text": "<p>Formulated to support a healthy moisture barrier.</p>"
+          }
+        },
+        "c2": {
+          "type": "column",
+          "settings": {
+            "icon": "leaf",
+            "title": "clean formulas",
+            "text": "<p>Thoughtful ingredients, nothing unnecessary.</p>"
+          }
+        },
+        "c3": {
+          "type": "column",
+          "settings": {
+            "icon": "rabbit",
+            "title": "cruelty free",
+            "text": "<p>Never tested on animals.</p>"
+          }
+        },
+        "c4": {
+          "type": "column",
+          "settings": {
+            "icon": "sparkle",
+            "title": "everyday glow",
+            "text": "<p>Layers beautifully, morning or night.</p>"
+          }
+        }
       },
-      "block_order": ["c1", "c2", "c3", "c4"],
-      "settings": { "heading": "why you'll love it", "heading_align": "center", "image_style": "image", "image_ratio": "portrait", "icon_size": 36, "text_align": "center", "show_card": false, "columns_desktop": 4, "columns_mobile": "2", "full_width": false, "color_scheme": "scheme-1", "padding_top": 64, "padding_bottom": 64 }
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "heading": "why you'll love it",
+        "heading_align": "center",
+        "image_style": "image",
+        "image_ratio": "portrait",
+        "icon_size": 36,
+        "text_align": "center",
+        "show_card": false,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "full_width": false,
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
     },
     "reviews": {
       "type": "testimonials",
       "blocks": {
-        "r1": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>Light, quick to absorb and my skin feels comfortable all day. It's become a non-negotiable.</p>", "author": "Customer name", "verified": true } },
-        "r2": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>The sheerest wash of color with real hydration. I keep one in every bag.</p>", "author": "Customer name", "verified": true } },
-        "r3": { "type": "testimonial", "settings": { "rating": 5, "quote": "<p>Simple routine, visibly smoother skin. Exactly what I wanted.</p>", "author": "Customer name", "verified": true } }
+        "r1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Light, quick to absorb and my skin feels comfortable all day. It's become a non-negotiable.</p>",
+            "author": "Customer name",
+            "verified": true
+          }
+        },
+        "r2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>The sheerest wash of color with real hydration. I keep one in every bag.</p>",
+            "author": "Customer name",
+            "verified": true
+          }
+        },
+        "r3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Simple routine, visibly smoother skin. Exactly what I wanted.</p>",
+            "author": "Customer name",
+            "verified": true
+          }
+        }
       },
-      "block_order": ["r1", "r2", "r3"],
-      "settings": { "heading": "in their words", "heading_align": "left", "columns_desktop": 3, "full_width": true, "color_scheme": "scheme-1", "padding_top": 56, "padding_bottom": 56 }
-    },
-    "gallery": {
-      "type": "ugc-gallery",
-      "blocks": {
-        "i1": { "type": "item", "settings": {} },
-        "i2": { "type": "item", "settings": {} },
-        "i3": { "type": "item", "settings": {} },
-        "i4": { "type": "item", "settings": {} },
-        "i5": { "type": "item", "settings": {} }
-      },
-      "block_order": ["i1", "i2", "i3", "i4", "i5"],
-      "settings": { "heading": "as seen on you", "heading_align": "left", "link_label": "follow us", "carousel": true, "image_ratio": "story", "columns_desktop": 5, "full_width": true, "color_scheme": "scheme-1", "padding_top": 56, "padding_bottom": 56 }
+      "block_order": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "settings": {
+        "heading": "in their words",
+        "heading_align": "left",
+        "columns_desktop": 3,
+        "full_width": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": { "heading": "be the first to know", "text": "<p>Launches, restocks and the occasional routine tip. No spam, ever.</p>", "button_style": "button", "align": "center", "color_scheme": "scheme-3", "padding_top": 80, "padding_bottom": 80 }
+      "settings": {
+        "heading": "be the first to know",
+        "text": "<p>Launches, restocks and the occasional routine tip. No spam, ever.</p>",
+        "button_style": "button",
+        "align": "center",
+        "color_scheme": "scheme-3",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "categories": {
+      "type": "illustrated-categories",
+      "blocks": {
+        "c1": {
+          "type": "tile",
+          "settings": {
+            "title": "cleansers",
+            "illustration": "cleanser",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c2": {
+          "type": "tile",
+          "settings": {
+            "title": "toners",
+            "illustration": "toner",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c3": {
+          "type": "tile",
+          "settings": {
+            "title": "serums",
+            "illustration": "serum",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c4": {
+          "type": "tile",
+          "settings": {
+            "title": "moisturizers",
+            "illustration": "cream",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c5": {
+          "type": "tile",
+          "settings": {
+            "title": "spf",
+            "illustration": "sunscreen",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c6": {
+          "type": "tile",
+          "settings": {
+            "title": "masks",
+            "illustration": "mask",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c7": {
+          "type": "tile",
+          "settings": {
+            "title": "eyes",
+            "illustration": "eye",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c8": {
+          "type": "tile",
+          "settings": {
+            "title": "sets",
+            "illustration": "sets",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ],
+      "settings": {
+        "heading": "shop by category",
+        "heading_size": "h2",
+        "heading_align": "left",
+        "style": "card",
+        "columns_desktop": 8,
+        "full_width": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 32,
+        "padding_bottom": 16
+      }
+    },
+    "reels": {
+      "type": "shoppable-reels",
+      "blocks": {
+        "r1": {
+          "type": "reel",
+          "settings": {
+            "title": "my 3-step glow routine",
+            "views": "12.4k"
+          }
+        },
+        "r2": {
+          "type": "reel",
+          "settings": {
+            "title": "how I layer serum + spf",
+            "views": "8.1k"
+          }
+        },
+        "r3": {
+          "type": "reel",
+          "settings": {
+            "title": "night routine, 2 minutes",
+            "views": "21k"
+          }
+        },
+        "r4": {
+          "type": "reel",
+          "settings": {
+            "title": "the dewy skin trick",
+            "views": "5.6k"
+          }
+        },
+        "r5": {
+          "type": "reel",
+          "settings": {
+            "title": "week 4 results",
+            "views": "33k"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "caption": "as seen on you",
+        "heading": "shop the reels",
+        "heading_size": "h1",
+        "heading_align": "left",
+        "columns_desktop": 5,
+        "columns_mobile": "2.2",
+        "autoplay": true,
+        "show_product": true,
+        "full_width": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "results": {
+      "type": "results",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": 93,
+            "suffix": "%",
+            "label": "saw brighter, more even skin",
+            "display": "ring"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": 88,
+            "suffix": "%",
+            "label": "said skin felt plumper",
+            "display": "ring"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": 97,
+            "suffix": "%",
+            "label": "had more hydrated skin",
+            "display": "ring"
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "value": 81,
+            "suffix": "%",
+            "label": "noticed smaller-looking pores",
+            "display": "ring"
+          }
+        },
+        "t1": {
+          "type": "timeline_step",
+          "settings": {
+            "label": "week 0"
+          }
+        },
+        "t2": {
+          "type": "timeline_step",
+          "settings": {
+            "label": "week 2"
+          }
+        },
+        "t3": {
+          "type": "timeline_step",
+          "settings": {
+            "label": "week 4"
+          }
+        },
+        "t4": {
+          "type": "timeline_step",
+          "settings": {
+            "label": "week 8"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "layout": "split",
+        "stat_columns": 2,
+        "color_scheme": "scheme-2",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "full_width": true
+      }
+    },
+    "ingredients": {
+      "type": "ingredients",
+      "blocks": {
+        "i1": {
+          "type": "ingredient",
+          "settings": {}
+        },
+        "i2": {
+          "type": "ingredient",
+          "settings": {
+            "name": "hyaluronic acid",
+            "amount": "2%",
+            "origin": "multi-weight",
+            "benefit": "<p>Draws water into the skin for plump, bouncy hydration that lasts all day.</p>",
+            "tags": "hydrating, plumping",
+            "illustration": "serum"
+          }
+        },
+        "i3": {
+          "type": "ingredient",
+          "settings": {
+            "name": "squalane",
+            "amount": "",
+            "origin": "olive-derived",
+            "benefit": "<p>A weightless oil that locks in moisture and leaves a soft, healthy glow.</p>",
+            "tags": "nourishing, non-comedogenic",
+            "illustration": "leaf"
+          }
+        },
+        "i4": {
+          "type": "ingredient",
+          "settings": {
+            "name": "ceramides",
+            "amount": "3%",
+            "origin": "skin-identical lipids",
+            "benefit": "<p>Rebuilds the moisture barrier so skin stays calm, smooth and resilient.</p>",
+            "tags": "barrier, soothing",
+            "illustration": "new"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-5"
+      }
+    },
+    "routine": {
+      "type": "routine-builder",
+      "blocks": {
+        "st1": {
+          "type": "step",
+          "settings": {
+            "routine": "am",
+            "label": "cleanse",
+            "note": "massage in for 60 seconds"
+          }
+        },
+        "st2": {
+          "type": "step",
+          "settings": {
+            "routine": "am",
+            "label": "treat",
+            "note": "3 drops on damp skin"
+          }
+        },
+        "st3": {
+          "type": "step",
+          "settings": {
+            "routine": "am",
+            "label": "moisturize",
+            "note": "press, don't rub"
+          }
+        },
+        "st4": {
+          "type": "step",
+          "settings": {
+            "routine": "am",
+            "label": "protect",
+            "note": "two finger lengths of spf"
+          }
+        },
+        "st5": {
+          "type": "step",
+          "settings": {
+            "routine": "pm",
+            "label": "cleanse",
+            "note": "double cleanse if wearing spf"
+          }
+        },
+        "st6": {
+          "type": "step",
+          "settings": {
+            "routine": "pm",
+            "label": "exfoliate",
+            "note": "2 to 3 nights a week"
+          }
+        },
+        "st7": {
+          "type": "step",
+          "settings": {
+            "routine": "pm",
+            "label": "repair",
+            "note": "a pea-sized amount"
+          }
+        }
+      },
+      "block_order": [
+        "st1",
+        "st2",
+        "st3",
+        "st4",
+        "st5",
+        "st6",
+        "st7"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
+    },
+    "quiz": {
+      "type": "skin-quiz",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {}
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "what's your main concern?",
+            "answer_1": "dullness",
+            "answer_1_result": "dry",
+            "answer_1_art": "new",
+            "answer_2": "breakouts",
+            "answer_2_result": "oily",
+            "answer_2_art": "mask",
+            "answer_3": "uneven texture",
+            "answer_3_result": "combination",
+            "answer_3_art": "serum",
+            "answer_4": "redness",
+            "answer_4_result": "sensitive",
+            "answer_4_art": "leaf"
+          }
+        },
+        "r1": {
+          "type": "result",
+          "settings": {
+            "key": "dry",
+            "heading": "the hydration ritual"
+          }
+        },
+        "r2": {
+          "type": "result",
+          "settings": {
+            "key": "oily",
+            "heading": "the balancing ritual",
+            "text": "<p>Lightweight, oil-free layers that keep shine in check without stripping.</p>"
+          }
+        },
+        "r3": {
+          "type": "result",
+          "settings": {
+            "key": "combination",
+            "heading": "the smoothing ritual",
+            "text": "<p>Gentle exfoliation plus balanced hydration for every zone.</p>"
+          }
+        },
+        "r4": {
+          "type": "result",
+          "settings": {
+            "key": "sensitive",
+            "heading": "the calming ritual",
+            "text": "<p>Fragrance-free, barrier-first formulas that soothe and protect.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3"
+      }
+    },
+    "comparison": {
+      "type": "comparison",
+      "blocks": {
+        "row1": {
+          "type": "row",
+          "settings": {
+            "feature": "clinically tested",
+            "us": "yes",
+            "us_text": "",
+            "them": "no",
+            "them_text": ""
+          }
+        },
+        "row2": {
+          "type": "row",
+          "settings": {
+            "feature": "fragrance free",
+            "us": "yes",
+            "us_text": "",
+            "them": "no",
+            "them_text": ""
+          }
+        },
+        "row3": {
+          "type": "row",
+          "settings": {
+            "feature": "active concentration",
+            "us": "text",
+            "us_text": "10%",
+            "them": "text",
+            "them_text": "1 to 2%"
+          }
+        },
+        "row4": {
+          "type": "row",
+          "settings": {
+            "feature": "refillable packaging",
+            "us": "yes",
+            "us_text": "",
+            "them": "no",
+            "them_text": ""
+          }
+        },
+        "row5": {
+          "type": "row",
+          "settings": {
+            "feature": "cruelty free",
+            "us": "yes",
+            "us_text": "",
+            "them": "yes",
+            "them_text": ""
+          }
+        }
+      },
+      "block_order": [
+        "row1",
+        "row2",
+        "row3",
+        "row4",
+        "row5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {}
     }
   },
-  "order": ["hero", "bestsellers", "split", "marquee", "story", "benefits", "reviews", "gallery", "newsletter"]
+  "order": [
+    "hero",
+    "categories",
+    "bestsellers",
+    "reels",
+    "results",
+    "marquee",
+    "ingredients",
+    "routine",
+    "split",
+    "quiz",
+    "comparison",
+    "story",
+    "benefits",
+    "reviews",
+    "recent",
+    "newsletter"
+  ]
 }

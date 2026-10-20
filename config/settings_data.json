@@ -5,72 +5,86 @@
       "color_schemes": {
         "scheme-1": {
           "settings": {
-            "background": "#F6F3EF",
+            "background": "#F5F1EA",
             "background_gradient": "",
-            "text": "#2B2826",
-            "accent": "#B89A8E",
-            "button": "#2B2826",
-            "button_label": "#F6F3EF",
-            "card_background": "#EDE8E2",
-            "border": "#DDD6CE",
+            "text": "#1D1B18",
+            "accent": "#C4673F",
+            "button": "#1D1B18",
+            "button_label": "#F5F1EA",
+            "card_background": "#ECE5DA",
+            "border": "#E2D9CC",
             "badge": "#FFFFFF",
-            "badge_text": "#2B2826"
+            "badge_text": "#1D1B18"
           }
         },
         "scheme-2": {
           "settings": {
             "background": "#FFFFFF",
             "background_gradient": "",
-            "text": "#2B2826",
-            "accent": "#B89A8E",
-            "button": "#2B2826",
+            "text": "#1D1B18",
+            "accent": "#C4673F",
+            "button": "#1D1B18",
             "button_label": "#FFFFFF",
-            "card_background": "#F3EFEA",
-            "border": "#E6E0D9",
-            "badge": "#F6F3EF",
-            "badge_text": "#2B2826"
+            "card_background": "#F5F1EA",
+            "border": "#ECE6DD",
+            "badge": "#F5F1EA",
+            "badge_text": "#1D1B18"
           }
         },
         "scheme-3": {
           "settings": {
-            "background": "#EADAD3",
+            "background": "#EBD9C8",
             "background_gradient": "",
-            "text": "#2B2826",
-            "accent": "#7F5F55",
-            "button": "#2B2826",
-            "button_label": "#EADAD3",
-            "card_background": "#F2E6E0",
-            "border": "#D6C2B9",
+            "text": "#1D1B18",
+            "accent": "#9A4A2B",
+            "button": "#1D1B18",
+            "button_label": "#EBD9C8",
+            "card_background": "#F3E7DB",
+            "border": "#D9C3AE",
             "badge": "#FFFFFF",
-            "badge_text": "#2B2826"
+            "badge_text": "#1D1B18"
           }
         },
         "scheme-4": {
           "settings": {
-            "background": "#2B2826",
+            "background": "#161513",
             "background_gradient": "",
-            "text": "#F6F3EF",
-            "accent": "#D9C3B8",
-            "button": "#F6F3EF",
-            "button_label": "#2B2826",
-            "card_background": "#3A3633",
-            "border": "#4A4542",
-            "badge": "#F6F3EF",
-            "badge_text": "#2B2826"
+            "text": "#F5F1EA",
+            "accent": "#E39B78",
+            "button": "#F5F1EA",
+            "button_label": "#161513",
+            "card_background": "#24221F",
+            "border": "#3A3733",
+            "badge": "#F5F1EA",
+            "badge_text": "#1D1B18"
           }
         },
         "scheme-5": {
           "settings": {
-            "background": "#DDE1D6",
+            "background": "#DCDFCF",
             "background_gradient": "",
-            "text": "#2B2826",
-            "accent": "#5E6B57",
-            "button": "#2B2826",
-            "button_label": "#DDE1D6",
-            "card_background": "#E8EBE3",
-            "border": "#C6CCBD",
+            "text": "#1D1B18",
+            "accent": "#5C6843",
+            "button": "#1D1B18",
+            "button_label": "#DCDFCF",
+            "card_background": "#E8EADF",
+            "border": "#C5CAB5",
             "badge": "#FFFFFF",
-            "badge_text": "#2B2826"
+            "badge_text": "#1D1B18"
+          }
+        },
+        "scheme-6": {
+          "settings": {
+            "background": "#C4673F",
+            "background_gradient": "",
+            "text": "#FFF8F0",
+            "accent": "#FFF8F0",
+            "button": "#FFF8F0",
+            "button_label": "#C4673F",
+            "card_background": "#CF7A55",
+            "border": "#D68E6E",
+            "badge": "#FFF8F0",
+            "badge_text": "#C4673F"
           }
         }
       },
@@ -79,7 +93,14 @@
       "text_transform": "lowercase",
       "cart_type": "drawer",
       "cart_free_shipping_enabled": true,
-      "cart_free_shipping_threshold": 50
+      "cart_free_shipping_threshold": 50,
+      "heading_letter_spacing": -40,
+      "body_letter_spacing": -10,
+      "section_padding_scale": 70,
+      "card_radius": 12,
+      "media_radius": 12,
+      "input_radius": 12,
+      "enable_wishlist": true
     }
   }
 }
