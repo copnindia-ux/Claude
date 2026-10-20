@@ -1,0 +1,145 @@
+{%- liquid
+  assign s = section.settings
+  assign questions = section.blocks | where: 'type', 'question'
+  assign results = section.blocks | where: 'type', 'result'
+-%}
+<skin-quiz
+  class="quiz color-{{ s.color_scheme }} section-padding"
+  style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};"
+  data-total="{{ questions.size }}"
+>
+  <div class="page-width">
+    <div class="quiz__card">
+      <div class="quiz__screen is-active" data-quiz-screen="intro">
+        <div class="quiz__intro">
+          {%- render 'illustration', name: 'face', class: 'quiz__art' -%}
+          {%- if s.caption != blank -%}<p class="caption quiz__caption">{{ s.caption | escape }}</p>{%- endif -%}
+          <h2 class="{{ s.heading_size }}">{{ s.heading | escape }}</h2>
+          {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+          <button type="button" class="button" data-quiz-start>{{ s.start_label | escape }}</button>
+          {%- if questions.size > 0 -%}
+            <p class="caption subtext quiz__meta">{%- render 'icon', icon: 'clock' -%} {{ 'sections.quiz.meta' | t: count: questions.size }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- for block in questions -%}
+        <fieldset class="quiz__screen" data-quiz-screen="q" data-quiz-step="{{ forloop.index }}" {{ block.shopify_attributes }} hidden>
+          <div class="quiz__top">
+            <button type="button" class="icon-button quiz__back" data-quiz-back aria-label="{{ 'sections.quiz.back' | t }}">{%- render 'icon', icon: 'chevron-left' -%}</button>
+            <div class="quiz__progress" aria-hidden="true"><span style="width: {{ forloop.index | times: 100 | divided_by: questions.size }}%"></span></div>
+            <span class="caption subtext">{{ forloop.index }}/{{ questions.size }}</span>
+          </div>
+          <legend class="h2 quiz__question">{{ block.settings.question | escape }}</legend>
+          {%- if block.settings.hint != blank -%}<p class="subtext quiz__hint">{{ block.settings.hint | escape }}</p>{%- endif -%}
+          <div class="quiz__answers">
+            {%- for i in (1..4) -%}
+              {%- assign label_key = 'answer_' | append: i -%}
+              {%- assign result_key = 'answer_' | append: i | append: '_result' -%}
+              {%- assign art_key = 'answer_' | append: i | append: '_art' -%}
+              {%- if block.settings[label_key] != blank -%}
+                <button type="button" class="quiz__answer" data-quiz-answer="{{ block.settings[result_key] | downcase | strip | escape }}" style="--i: {{ forloop.index0 }};">
+                  {%- if block.settings[art_key] != 'none' -%}
+                    <span class="quiz__answer-art">{%- render 'illustration', name: block.settings[art_key] -%}</span>
+                  {%- endif -%}
+                  <span>{{ block.settings[label_key] | escape }}</span>
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+      {%- endfor -%}
+
+      {%- for block in results -%}
+        <div class="quiz__screen quiz__result" data-quiz-screen="result" data-quiz-result="{{ block.settings.key | downcase | strip | escape }}" {{ block.shopify_attributes }} hidden>
+          <div class="quiz__result-head">
+            <p class="caption quiz__caption">{{ s.result_caption | escape }}</p>
+            <h2 class="h1">{{ block.settings.heading | escape }}</h2>
+            {%- if block.settings.text != blank -%}<div class="rte subtext">{{ block.settings.text }}</div>{%- endif -%}
+          </div>
+          {%- if block.settings.products != blank -%}
+            <div class="grid quiz__products" style="--cols-desktop: {{ block.settings.products.count | at_most: 4 }}; --cols-mobile: 2;">
+              {%- for product in block.settings.products -%}
+                {%- render 'product-card', product: product, sizes: '(min-width: 990px) 20vw, 45vw' -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          <div class="quiz__result-actions">
+            {%- if block.settings.button_label != blank -%}
+              <a href="{{ block.settings.button_link }}" class="button">{{ block.settings.button_label | escape }}</a>
+            {%- endif -%}
+            <button type="button" class="button button--secondary" data-quiz-restart>{{ 'sections.quiz.restart' | t }}</button>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</skin-quiz>
+
+{% schema %}
+{
+  "name": "Skin quiz",
+  "class": "section-quiz",
+  "settings": [
+    { "type": "paragraph", "content": "Each answer points to a result key. The result whose key is picked most often is shown. Add Result blocks with matching keys." },
+    { "type": "text", "id": "caption", "label": "Caption", "default": "2-minute skin quiz" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "find your routine" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Answer a few quick questions and we'll match you with the products your skin will love.</p>" },
+    { "type": "text", "id": "start_label", "label": "Start button label", "default": "start the quiz" },
+    { "type": "text", "id": "result_caption", "label": "Result caption", "default": "your match" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "limit": 8,
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "how does your skin feel by midday?" },
+        { "type": "text", "id": "hint", "label": "Hint" },
+        { "type": "text", "id": "answer_1", "label": "Answer 1", "default": "tight and dry" },
+        { "type": "text", "id": "answer_1_result", "label": "Answer 1 result key", "default": "dry" },
+        { "type": "select", "id": "answer_1_art", "label": "Answer 1 illustration", "options": [ { "value": "none", "label": "None" }, { "value": "drop", "label": "Drop" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "leaf", "label": "Leaf" }, { "value": "face", "label": "Face" }, { "value": "serum", "label": "Serum" }, { "value": "cream", "label": "Cream" }, { "value": "mask", "label": "Mask" }, { "value": "new", "label": "Sparkle" } ], "default": "drop" },
+        { "type": "text", "id": "answer_2", "label": "Answer 2", "default": "shiny all over" },
+        { "type": "text", "id": "answer_2_result", "label": "Answer 2 result key", "default": "oily" },
+        { "type": "select", "id": "answer_2_art", "label": "Answer 2 illustration", "options": [ { "value": "none", "label": "None" }, { "value": "drop", "label": "Drop" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "leaf", "label": "Leaf" }, { "value": "face", "label": "Face" }, { "value": "serum", "label": "Serum" }, { "value": "cream", "label": "Cream" }, { "value": "mask", "label": "Mask" }, { "value": "new", "label": "Sparkle" } ], "default": "sun" },
+        { "type": "text", "id": "answer_3", "label": "Answer 3", "default": "shiny in the t-zone" },
+        { "type": "text", "id": "answer_3_result", "label": "Answer 3 result key", "default": "combination" },
+        { "type": "select", "id": "answer_3_art", "label": "Answer 3 illustration", "options": [ { "value": "none", "label": "None" }, { "value": "drop", "label": "Drop" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "leaf", "label": "Leaf" }, { "value": "face", "label": "Face" }, { "value": "serum", "label": "Serum" }, { "value": "cream", "label": "Cream" }, { "value": "mask", "label": "Mask" }, { "value": "new", "label": "Sparkle" } ], "default": "face" },
+        { "type": "text", "id": "answer_4", "label": "Answer 4", "default": "red or easily irritated" },
+        { "type": "text", "id": "answer_4_result", "label": "Answer 4 result key", "default": "sensitive" },
+        { "type": "select", "id": "answer_4_art", "label": "Answer 4 illustration", "options": [ { "value": "none", "label": "None" }, { "value": "drop", "label": "Drop" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "leaf", "label": "Leaf" }, { "value": "face", "label": "Face" }, { "value": "serum", "label": "Serum" }, { "value": "cream", "label": "Cream" }, { "value": "mask", "label": "Mask" }, { "value": "new", "label": "Sparkle" } ], "default": "leaf" }
+      ]
+    },
+    {
+      "type": "result",
+      "name": "Result",
+      "limit": 8,
+      "settings": [
+        { "type": "text", "id": "key", "label": "Result key", "default": "dry", "info": "Must match the result key on answers." },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "the hydration ritual" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Your skin is thirsty. Layer water-based hydration, then seal it in with a rich cream.</p>" },
+        { "type": "product_list", "id": "products", "label": "Recommended products", "limit": 4 },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "shop the routine" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Skin quiz",
+      "blocks": [
+        { "type": "question" },
+        { "type": "question", "settings": { "question": "what's your main concern?", "answer_1": "dullness", "answer_1_result": "dry", "answer_1_art": "new", "answer_2": "breakouts", "answer_2_result": "oily", "answer_2_art": "mask", "answer_3": "uneven texture", "answer_3_result": "combination", "answer_3_art": "serum", "answer_4": "redness", "answer_4_result": "sensitive", "answer_4_art": "leaf" } },
+        { "type": "result", "settings": { "key": "dry", "heading": "the hydration ritual" } },
+        { "type": "result", "settings": { "key": "oily", "heading": "the balancing ritual", "text": "<p>Lightweight, oil-free layers that keep shine in check without stripping.</p>" } },
+        { "type": "result", "settings": { "key": "combination", "heading": "the smoothing ritual", "text": "<p>Gentle exfoliation plus balanced hydration for every zone.</p>" } },
+        { "type": "result", "settings": { "key": "sensitive", "heading": "the calming ritual", "text": "<p>Fragrance-free, barrier-first formulas that soothe and protect.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

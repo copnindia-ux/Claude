@@ -1,0 +1,97 @@
+{%- liquid
+  assign s = section.settings
+-%}
+<section class="comparison color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width page-width--narrow">
+    <div class="section-header section-header--center">
+      {%- if s.caption != blank -%}<p class="caption comparison__caption">{{ s.caption | escape }}</p>{%- endif -%}
+      <h2 class="section-header__title {{ s.heading_size }}">{{ s.heading | escape }}</h2>
+    </div>
+    <div class="comparison__table" role="table" aria-label="{{ s.heading | escape }}">
+      <div class="comparison__row comparison__row--head" role="row">
+        <span role="columnheader"><span class="visually-hidden">{{ 'sections.comparison.feature' | t }}</span></span>
+        <span role="columnheader" class="comparison__us">
+          {%- if s.logo != blank -%}
+            {%- assign logo_alt = s.us_label | escape -%}
+            {{ s.logo | image_url: width: 240 | image_tag: loading: 'lazy', alt: logo_alt, class: 'comparison__logo' }}
+          {%- else -%}
+            {{ s.us_label | escape }}
+          {%- endif -%}
+        </span>
+        <span role="columnheader">{{ s.them_label | escape }}</span>
+      </div>
+      {%- for block in section.blocks -%}
+        <div class="comparison__row" role="row" {{ block.shopify_attributes }}>
+          <span role="rowheader" class="comparison__feature">{{ block.settings.feature | escape }}</span>
+          {%- for col in (1..2) -%}
+            {%- liquid
+              if col == 1
+                assign mark = block.settings.us
+                assign text = block.settings.us_text
+              else
+                assign mark = block.settings.them
+                assign text = block.settings.them_text
+              endif
+            -%}
+            <span role="cell" class="comparison__cell{% if col == 1 %} comparison__us{% endif %}">
+              {%- case mark -%}
+                {%- when 'yes' -%}
+                  <span class="comparison__mark comparison__mark--yes">{%- render 'icon', icon: 'check' -%}<span class="visually-hidden">{{ 'sections.comparison.yes' | t }}</span></span>
+                {%- when 'no' -%}
+                  <span class="comparison__mark comparison__mark--no">{%- render 'icon', icon: 'x' -%}<span class="visually-hidden">{{ 'sections.comparison.no' | t }}</span></span>
+                {%- else -%}
+                  {{ text | escape }}
+              {%- endcase -%}
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if s.footnote != blank -%}<p class="comparison__footnote caption subtext">{{ s.footnote | escape }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "class": "section-comparison",
+  "settings": [
+    { "type": "text", "id": "caption", "label": "Caption", "default": "why barcelona" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "the difference is in the formula" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "text", "id": "us_label", "label": "Your column label", "default": "us" },
+    { "type": "image_picker", "id": "logo", "label": "Your logo", "info": "Replaces your column label." },
+    { "type": "text", "id": "them_label", "label": "Other column label", "default": "others" },
+    { "type": "text", "id": "footnote", "label": "Footnote" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 48 }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "limit": 12,
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature", "default": "clinically tested" },
+        { "type": "select", "id": "us", "label": "Your value", "options": [ { "value": "yes", "label": "Check" }, { "value": "no", "label": "Cross" }, { "value": "text", "label": "Text" } ], "default": "yes" },
+        { "type": "text", "id": "us_text", "label": "Your text" },
+        { "type": "select", "id": "them", "label": "Other value", "options": [ { "value": "yes", "label": "Check" }, { "value": "no", "label": "Cross" }, { "value": "text", "label": "Text" } ], "default": "no" },
+        { "type": "text", "id": "them_text", "label": "Other text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison table",
+      "blocks": [
+        { "type": "row", "settings": { "feature": "clinically tested" } },
+        { "type": "row", "settings": { "feature": "fragrance free" } },
+        { "type": "row", "settings": { "feature": "active concentration", "us": "text", "us_text": "10%", "them": "text", "them_text": "1 to 2%" } },
+        { "type": "row", "settings": { "feature": "refillable packaging" } },
+        { "type": "row", "settings": { "feature": "cruelty free", "them": "yes" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

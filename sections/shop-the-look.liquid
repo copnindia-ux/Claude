@@ -4,7 +4,7 @@
     <div class="shop-the-look__image">
       <div class="media">
         {%- if s.image != blank -%}
-          {{ s.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '600, 1000, 1400, 2000', sizes: '(min-width: 990px) 55vw, 100vw', alt: s.image.alt | escape }}
+          {{ s.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '600, 1000, 1400, 2000', sizes: '(min-width: 990px) 55vw, 100vw', alt: s.image.alt }}
         {%- else -%}
           {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
         {%- endif -%}

@@ -1,0 +1,29 @@
+{%- comment -%}
+  Wishlist toggle. State lives in localStorage and is synced by theme.js.
+  - product: product object
+  - style: 'icon' (default, floats on cards) | 'button' (product page)
+{%- endcomment -%}
+{%- if settings.enable_wishlist and product != blank -%}
+  {%- if style == 'button' -%}
+    <button
+      type="button"
+      class="button button--secondary button--full wishlist-button wishlist-button--full"
+      data-wishlist-toggle="{{ product.handle }}"
+      aria-pressed="false"
+      aria-label="{{ 'general.wishlist.add' | t }}: {{ product.title | escape }}"
+    >
+      {%- render 'icon', icon: 'heart' -%}
+      <span data-wishlist-label>{{ 'general.wishlist.add' | t }}</span>
+    </button>
+  {%- else -%}
+    <button
+      type="button"
+      class="wishlist-button wishlist-button--icon"
+      data-wishlist-toggle="{{ product.handle }}"
+      aria-pressed="false"
+      aria-label="{{ 'general.wishlist.add' | t }}: {{ product.title | escape }}"
+    >
+      {%- render 'icon', icon: 'heart' -%}
+    </button>
+  {%- endif -%}
+{%- endif -%}

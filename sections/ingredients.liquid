@@ -1,0 +1,114 @@
+{%- liquid
+  assign s = section.settings
+-%}
+<slider-component
+  class="ingredients color-{{ s.color_scheme }} section-padding"
+  style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};"
+>
+  <div class="page-width{% if s.full_width %} page-width--full{% endif %}">
+    <div class="ingredients__layout">
+      <div class="ingredients__list">
+        {%- if s.caption != blank -%}<p class="caption ingredients__caption">{{ s.caption | escape }}</p>{%- endif -%}
+        <h2 class="{{ s.heading_size }}">{{ s.heading | escape }}</h2>
+        {%- if s.text != blank -%}<div class="rte subtext">{{ s.text }}</div>{%- endif -%}
+        <div class="ingredients__tabs" role="tablist" aria-label="{{ s.heading | escape }}">
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="ingredient-tab"
+              role="tab"
+              data-tab
+              id="IngredientTab-{{ block.id }}"
+              aria-controls="Ingredient-{{ block.id }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="ingredient-tab__name h3">{{ block.settings.name | escape }}</span>
+              {%- if block.settings.amount != blank -%}<span class="ingredient-tab__amount">{{ block.settings.amount | escape }}</span>{%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
+        {%- if s.button_label != blank -%}
+          <a href="{{ s.button_link }}" class="button button--secondary ingredients__button">{{ s.button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="ingredients__panels">
+        {%- for block in section.blocks -%}
+          <div class="ingredient-panel" id="Ingredient-{{ block.id }}" role="tabpanel" aria-labelledby="IngredientTab-{{ block.id }}" data-tab-panel{% unless forloop.first %} hidden{% endunless %}>
+            <div class="ingredient-panel__media media">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw', alt: block.settings.image.alt }}
+              {%- else -%}
+                <span class="ingredient-panel__art">{%- render 'illustration', name: block.settings.illustration -%}</span>
+              {%- endif -%}
+            </div>
+            <div class="ingredient-panel__card">
+              {%- if block.settings.origin != blank -%}<p class="caption subtext">{{ block.settings.origin | escape }}</p>{%- endif -%}
+              <p class="h4 ingredient-panel__title">{{ block.settings.name | escape }}</p>
+              {%- if block.settings.benefit != blank -%}<div class="rte">{{ block.settings.benefit }}</div>{%- endif -%}
+              {%- if block.settings.tags != blank -%}
+                <ul class="chip-list list-unstyled" role="list">
+                  {%- assign tags = block.settings.tags | split: ',' -%}
+                  {%- for tag in tags -%}<li class="chip chip--static">{{ tag | strip | escape }}</li>{%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</slider-component>
+
+{% schema %}
+{
+  "name": "Ingredient spotlight",
+  "class": "section-ingredients",
+  "settings": [
+    { "type": "text", "id": "caption", "label": "Caption", "default": "what's inside" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "hardworking ingredients, nothing else" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "full ingredient glossary" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 48 }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "limit": 8,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "niacinamide" },
+        { "type": "text", "id": "amount", "label": "Concentration", "default": "5%" },
+        { "type": "text", "id": "origin", "label": "Origin or type", "default": "vitamin b3" },
+        { "type": "richtext", "id": "benefit", "label": "Benefit", "default": "<p>Visibly refines pores, evens tone and supports a stronger skin barrier.</p>" },
+        { "type": "text", "id": "tags", "label": "Tags", "default": "brightening, barrier, all skin types", "info": "Comma-separated." },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        {
+          "type": "select",
+          "id": "illustration",
+          "label": "Illustration (when no image)",
+          "options": [ { "value": "drop", "label": "Drop" }, { "value": "leaf", "label": "Leaf" }, { "value": "serum", "label": "Serum" }, { "value": "sun", "label": "Sun" }, { "value": "moon", "label": "Moon" }, { "value": "new", "label": "Sparkle" } ],
+          "default": "drop"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient spotlight",
+      "blocks": [
+        { "type": "ingredient" },
+        { "type": "ingredient", "settings": { "name": "hyaluronic acid", "amount": "2%", "origin": "multi-weight", "benefit": "<p>Draws water into the skin for plump, bouncy hydration that lasts all day.</p>", "tags": "hydrating, plumping", "illustration": "serum" } },
+        { "type": "ingredient", "settings": { "name": "squalane", "amount": "", "origin": "olive-derived", "benefit": "<p>A weightless oil that locks in moisture and leaves a soft, healthy glow.</p>", "tags": "nourishing, non-comedogenic", "illustration": "leaf" } },
+        { "type": "ingredient", "settings": { "name": "ceramides", "amount": "3%", "origin": "skin-identical lipids", "benefit": "<p>Rebuilds the moisture barrier so skin stays calm, smooth and resilient.</p>", "tags": "barrier, soothing", "illustration": "new" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

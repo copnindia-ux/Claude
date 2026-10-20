@@ -3,7 +3,7 @@
     <span class="marquee__item" {{ block.shopify_attributes }}>
       {%- if block.type == 'logo' and block.settings.image != blank -%}
         {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
-        {{ block.settings.image | image_url: height: 120 | image_tag: loading: 'lazy', alt: block.settings.image.alt | escape }}
+        {{ block.settings.image | image_url: height: 120 | image_tag: loading: 'lazy', alt: block.settings.image.alt }}
         {%- if block.settings.link != blank -%}</a>{%- endif -%}
       {%- else -%}
         {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.text }}</a>{%- else -%}{{ block.settings.text }}{%- endif -%}

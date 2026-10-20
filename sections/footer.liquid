@@ -44,7 +44,7 @@
               {%- when 'image' -%}
                 {%- if block.settings.image != blank -%}
                   <div style="max-width: {{ block.settings.width }}px">
-                    {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '200, 400, 800', alt: block.settings.image.alt | escape }}
+                    {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '200, 400, 800', alt: block.settings.image.alt }}
                   </div>
                 {%- endif -%}
             {%- endcase -%}

@@ -1,0 +1,206 @@
+{%- liquid
+  assign s = section.settings
+  assign tiles = section.blocks | where: 'type', 'tile'
+  assign account_url = routes.account_login_url
+  if customer
+    assign account_url = routes.account_url
+  endif
+  assign wishlist_url = settings.wishlist_page.url | default: routes.root_url
+  case template.name
+    when 'index'
+      assign active = 'home'
+    when 'cart'
+      assign active = 'cart'
+    when 'collection', 'list-collections', 'search'
+      assign active = 'discover'
+    else
+      assign active = ''
+  endcase
+  if template.name contains 'customers'
+    assign active = 'account'
+  endif
+  if template.suffix == 'wishlist'
+    assign active = 'wishlist'
+  endif
+-%}
+
+<mobile-nav-bar
+  class="mobile-bar mobile-bar--{{ s.style }}{% unless s.show_labels %} mobile-bar--no-labels{% endunless %} color-{{ s.color_scheme }}"
+  data-hide-on-scroll="{{ s.hide_on_scroll }}"
+>
+  <nav class="mobile-bar__inner" aria-label="{{ 'sections.mobile_bar.label' | t }}">
+    {%- if s.first_item == 'home' -%}
+      <a href="{{ routes.root_url }}" class="mobile-bar__item"{% if active == 'home' %} aria-current="page"{% endif %}>
+        {%- render 'icon', icon: 'home' -%}
+        <span class="mobile-bar__label">{{ s.home_label | escape }}</span>
+      </a>
+    {%- else -%}
+      <button type="button" class="mobile-bar__item" data-drawer-open="MenuDrawer" aria-controls="MenuDrawer" aria-expanded="false">
+        {%- render 'icon', icon: 'menu' -%}
+        <span class="mobile-bar__label">{{ s.menu_label | escape }}</span>
+      </button>
+    {%- endif -%}
+
+    {%- case s.discover_action -%}
+      {%- when 'search' -%}
+        <button type="button" class="mobile-bar__item" data-search-open>
+          {%- render 'icon', icon: 'compass' -%}
+          <span class="mobile-bar__label">{{ s.discover_label | escape }}</span>
+        </button>
+      {%- when 'link' -%}
+        <a href="{{ s.discover_link | default: routes.all_products_collection_url }}" class="mobile-bar__item"{% if active == 'discover' %} aria-current="page"{% endif %}>
+          {%- render 'icon', icon: 'compass' -%}
+          <span class="mobile-bar__label">{{ s.discover_label | escape }}</span>
+        </a>
+      {%- else -%}
+        <button type="button" class="mobile-bar__item"{% if active == 'discover' %} aria-current="page"{% endif %} data-drawer-open="DiscoverSheet-{{ section.id }}" aria-controls="DiscoverSheet-{{ section.id }}" aria-expanded="false">
+          {%- render 'icon', icon: 'compass' -%}
+          <span class="mobile-bar__label">{{ s.discover_label | escape }}</span>
+        </button>
+    {%- endcase -%}
+
+    {%- if settings.enable_wishlist -%}
+      <a href="{{ wishlist_url }}" class="mobile-bar__item" data-wishlist-link{% if active == 'wishlist' %} aria-current="page"{% endif %}>
+        <span class="mobile-bar__icon">
+          {%- render 'icon', icon: 'heart' -%}
+          <span class="mobile-bar__badge" data-wishlist-count hidden></span>
+        </span>
+        <span class="mobile-bar__label">{{ s.wishlist_label | escape }}</span>
+      </a>
+    {%- endif -%}
+
+    <a href="{{ routes.cart_url }}" class="mobile-bar__item" data-cart-open{% if active == 'cart' %} aria-current="page"{% endif %}>
+      <span class="mobile-bar__icon">
+        {%- render 'icon', icon: 'bag' -%}
+        <span class="mobile-bar__badge" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>
+          {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
+        </span>
+      </span>
+      <span class="mobile-bar__label">{{ s.cart_label | escape }}</span>
+    </a>
+
+    {%- if shop.customer_accounts_enabled -%}
+      <a href="{{ account_url }}" class="mobile-bar__item"{% if active == 'account' %} aria-current="page"{% endif %}>
+        {%- render 'icon', icon: 'account' -%}
+        <span class="mobile-bar__label">{{ s.account_label | escape }}</span>
+      </a>
+    {%- endif -%}
+  </nav>
+</mobile-nav-bar>
+
+{%- if s.discover_action == 'sheet' -%}
+  <modal-dialog class="drawer drawer--bottom discover-sheet color-{{ s.sheet_color_scheme }}" id="DiscoverSheet-{{ section.id }}" aria-hidden="true">
+    <div class="drawer__overlay" data-close></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ s.discover_label | escape }}" tabindex="-1">
+      <div class="discover-sheet__grabber" aria-hidden="true"></div>
+      <div class="drawer__header">
+        <span class="drawer__title h4">{{ s.sheet_heading | escape }}</span>
+        <button type="button" class="icon-button" data-close aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
+      </div>
+      <div class="drawer__body">
+        <button type="button" class="discover-sheet__search" data-search-open>
+          {%- render 'icon', icon: 'search' -%}
+          <span>{{ 'general.search.placeholder' | t }}</span>
+        </button>
+
+        {%- if tiles.size > 0 -%}
+          <div class="discover-sheet__tiles">
+            {%- for block in tiles -%}
+              <div {{ block.shopify_attributes }}>
+                {%- render 'menu-tile', title: block.settings.title, url: block.settings.link, image: block.settings.image, art: block.settings.illustration, size: 'sm' -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if s.trending_menu != blank -%}
+          <p class="caption subtext discover-sheet__label">{{ s.trending_heading | escape }}</p>
+          <ul class="chip-list list-unstyled" role="list">
+            {%- for link in s.trending_menu.links -%}
+              <li><a href="{{ link.url }}" class="chip">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if s.sheet_collection != blank -%}
+          <p class="caption subtext discover-sheet__label">{{ s.sheet_collection_heading | escape }}</p>
+          <div class="slider discover-sheet__products" style="--per-view-mobile: 2.3;">
+            {%- for product in s.sheet_collection.products limit: 8 -%}
+              {%- render 'product-card', product: product, sizes: '45vw', show_quick_add: false -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </modal-dialog>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Mobile navigation bar",
+  "class": "section-mobile-bar",
+  "settings": [
+    { "type": "paragraph", "content": "A fixed app-style bar on phones and small tablets: menu, discover, wishlist, cart and account." },
+    { "type": "select", "id": "style", "label": "Style", "options": [ { "value": "floating", "label": "Floating pill" }, { "value": "docked", "label": "Docked to bottom" } ], "default": "floating" },
+    { "type": "checkbox", "id": "show_labels", "label": "Show labels", "default": true },
+    { "type": "checkbox", "id": "hide_on_scroll", "label": "Hide while scrolling down", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    { "type": "header", "content": "Items" },
+    { "type": "select", "id": "first_item", "label": "First item", "options": [ { "value": "menu", "label": "Menu" }, { "value": "home", "label": "Home" } ], "default": "menu" },
+    { "type": "text", "id": "menu_label", "label": "Menu label", "default": "menu" },
+    { "type": "text", "id": "home_label", "label": "Home label", "default": "home" },
+    { "type": "text", "id": "discover_label", "label": "Discover label", "default": "discover" },
+    { "type": "select", "id": "discover_action", "label": "Discover opens", "options": [ { "value": "sheet", "label": "Discover sheet" }, { "value": "search", "label": "Search" }, { "value": "link", "label": "A link" } ], "default": "sheet" },
+    { "type": "url", "id": "discover_link", "label": "Discover link" },
+    { "type": "text", "id": "wishlist_label", "label": "Wishlist label", "default": "wishlist" },
+    { "type": "text", "id": "cart_label", "label": "Cart label", "default": "bag" },
+    { "type": "text", "id": "account_label", "label": "Account label", "default": "account" },
+    { "type": "header", "content": "Discover sheet" },
+    { "type": "text", "id": "sheet_heading", "label": "Heading", "default": "discover" },
+    { "type": "color_scheme", "id": "sheet_color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "text", "id": "trending_heading", "label": "Trending heading", "default": "trending now" },
+    { "type": "link_list", "id": "trending_menu", "label": "Trending searches menu" },
+    { "type": "text", "id": "sheet_collection_heading", "label": "Collection heading", "default": "most loved" },
+    { "type": "collection", "id": "sheet_collection", "label": "Collection" }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "limit": 12,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "serums" },
+        { "type": "url", "id": "link", "label": "Link" },
+        {
+          "type": "select",
+          "id": "illustration",
+          "label": "Illustration",
+          "options": [
+            { "value": "serum", "label": "Serum" },
+            { "value": "cream", "label": "Moisturizer" },
+            { "value": "cleanser", "label": "Cleanser" },
+            { "value": "sunscreen", "label": "Sunscreen" },
+            { "value": "toner", "label": "Toner" },
+            { "value": "mask", "label": "Mask" },
+            { "value": "eye", "label": "Eye care" },
+            { "value": "lip", "label": "Lip care" },
+            { "value": "body", "label": "Body" },
+            { "value": "tools", "label": "Tools" },
+            { "value": "sets", "label": "Sets & gifts" },
+            { "value": "new", "label": "New" },
+            { "value": "bestsellers", "label": "Bestsellers" },
+            { "value": "face", "label": "Face" },
+            { "value": "drop", "label": "Hydration" },
+            { "value": "leaf", "label": "Clean" },
+            { "value": "sun", "label": "Morning" },
+            { "value": "moon", "label": "Night" }
+          ],
+          "default": "serum"
+        },
+        { "type": "image_picker", "id": "image", "label": "Custom image" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

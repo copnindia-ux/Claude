@@ -19,9 +19,9 @@
   {%- if video != blank -%}
     {{ video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1920x' }}
   {%- elsif image != blank -%}
-    {{ image | image_url: width: 3000 | image_tag: loading: loading, fetchpriority: priority, sizes: sizes, widths: '600, 900, 1200, 1600, 2000, 2400, 3000', class: 'media--desktop', alt: image.alt | escape }}
+    {{ image | image_url: width: 3000 | image_tag: loading: loading, fetchpriority: priority, sizes: sizes, widths: '600, 900, 1200, 1600, 2000, 2400, 3000', class: 'media--desktop', alt: image.alt }}
     {%- if image_mobile != blank -%}
-      {{ image_mobile | image_url: width: 1500 | image_tag: loading: loading, sizes: '100vw', widths: '400, 600, 900, 1200, 1500', class: 'media--mobile', alt: image_mobile.alt | escape }}
+      {{ image_mobile | image_url: width: 1500 | image_tag: loading: loading, sizes: '100vw', widths: '400, 600, 900, 1200, 1500', class: 'media--mobile', alt: image_mobile.alt }}
     {%- endif -%}
   {%- else -%}
     {{ placeholder | default: 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}

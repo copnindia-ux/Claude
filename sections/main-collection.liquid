@@ -72,7 +72,7 @@
                         <a href="{{ promo.settings.link | default: '#' }}" class="grid__promo" style="--span: {{ promo.settings.span }};" {{ promo.shopify_attributes }}>
                           <div class="media">
                             {%- if promo.settings.image != blank -%}
-                              {{ promo.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400, 800, 1400', sizes: '50vw', alt: promo.settings.image.alt | escape }}
+                              {{ promo.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400, 800, 1400', sizes: '50vw', alt: promo.settings.image.alt }}
                             {%- else -%}
                               {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
                             {%- endif -%}

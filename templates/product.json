@@ -3,22 +3,151 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "title": { "type": "title", "settings": { "size": "h1" } },
-        "subtitle": { "type": "subtitle", "settings": {} },
-        "rating": { "type": "rating", "settings": { "anchor": "reviews" } },
-        "price": { "type": "price", "settings": {} },
-        "variant_picker": { "type": "variant_picker", "settings": { "picker_style": "pills" } },
-        "buy_buttons": { "type": "buy_buttons", "settings": { "show_quantity": false, "show_dynamic_checkout": true, "show_pickup": true } },
-        "inventory": { "type": "inventory", "settings": { "threshold": 10 } },
-        "description": { "type": "description", "settings": {} },
-        "highlights": { "type": "highlights", "settings": { "icon_1": "drop", "text_1": "deeply hydrating", "icon_2": "rabbit", "text_2": "cruelty free", "icon_3": "leaf", "text_3": "fragrance free", "icon_4": "sparkle", "text_4": "dewy finish" } },
-        "tab_benefits": { "type": "collapsible_tab", "settings": { "heading": "benefits", "content": "<p>Connect this tab to a product metafield to show per-product benefits.</p>", "open": false } },
-        "tab_how": { "type": "collapsible_tab", "settings": { "heading": "how to use", "content": "<p>Connect this tab to a product metafield to show usage instructions.</p>", "open": false } },
-        "tab_ingredients": { "type": "collapsible_tab", "settings": { "heading": "ingredients", "content": "<p>Connect this tab to a product metafield to show the full ingredient list.</p>", "open": false } },
-        "complementary": { "type": "complementary", "settings": { "heading": "pairs well with", "limit": 3 } },
-        "share": { "type": "share", "settings": { "label": "share" } }
+        "title": {
+          "type": "title",
+          "settings": {
+            "size": "h1"
+          }
+        },
+        "subtitle": {
+          "type": "subtitle",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {
+            "anchor": "reviews"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_style": "pills"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity": false,
+            "show_dynamic_checkout": true,
+            "show_pickup": true
+          }
+        },
+        "inventory": {
+          "type": "inventory",
+          "settings": {
+            "threshold": 10
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "icon_1": "drop",
+            "text_1": "deeply hydrating",
+            "icon_2": "rabbit",
+            "text_2": "cruelty free",
+            "icon_3": "leaf",
+            "text_3": "fragrance free",
+            "icon_4": "sparkle",
+            "text_4": "dewy finish"
+          }
+        },
+        "tab_benefits": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "benefits",
+            "content": "<p>Connect this tab to a product metafield to show per-product benefits.</p>",
+            "open": false
+          }
+        },
+        "tab_how": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "how to use",
+            "content": "<p>Connect this tab to a product metafield to show usage instructions.</p>",
+            "open": false
+          }
+        },
+        "tab_ingredients": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "ingredients",
+            "content": "<p>Connect this tab to a product metafield to show the full ingredient list.</p>",
+            "open": false
+          }
+        },
+        "complementary": {
+          "type": "complementary",
+          "settings": {
+            "heading": "pairs well with",
+            "limit": 3
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "label": "share"
+          }
+        },
+        "skin_profile": {
+          "type": "skin_profile",
+          "settings": {}
+        },
+        "wishlist": {
+          "type": "wishlist",
+          "settings": {}
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {
+            "min_days": 2,
+            "max_days": 4,
+            "cutoff_hour": 14,
+            "skip_weekends": true
+          }
+        },
+        "key_ingredients": {
+          "type": "key_ingredients",
+          "settings": {}
+        },
+        "results": {
+          "type": "results",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust_badges",
+          "settings": {}
+        }
       },
-      "block_order": ["title", "subtitle", "rating", "price", "variant_picker", "buy_buttons", "inventory", "description", "highlights", "tab_benefits", "tab_how", "tab_ingredients", "complementary", "share"],
+      "block_order": [
+        "title",
+        "subtitle",
+        "rating",
+        "price",
+        "skin_profile",
+        "variant_picker",
+        "buy_buttons",
+        "wishlist",
+        "delivery",
+        "inventory",
+        "description",
+        "key_ingredients",
+        "results",
+        "tab_benefits",
+        "tab_how",
+        "tab_ingredients",
+        "trust",
+        "complementary",
+        "share"
+      ],
       "settings": {
         "media_layout": "grid",
         "media_width": 60,
@@ -29,13 +158,33 @@
         "full_width": true,
         "color_scheme": "scheme-1",
         "padding_top": 16,
-        "padding_bottom": 48
+        "padding_bottom": 32
       }
     },
     "recommendations": {
       "type": "product-recommendations",
-      "settings": { "heading": "you may also like", "intent": "related", "products_to_show": 8, "columns_desktop": 4, "full_width": true, "color_scheme": "scheme-1", "padding_top": 48, "padding_bottom": 48 }
+      "settings": {
+        "heading": "you may also like",
+        "intent": "related",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "full_width": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {
+        "padding_top": 24,
+        "padding_bottom": 40
+      }
     }
   },
-  "order": ["main", "recommendations"]
+  "order": [
+    "main",
+    "recommendations",
+    "recent"
+  ]
 }

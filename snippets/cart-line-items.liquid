@@ -6,7 +6,7 @@
   <div class="cart-item" id="CartItem-{{ item.index | plus: 1 }}" data-cart-item data-line="{{ item.index | plus: 1 }}" data-key="{{ item.key }}">
     <a href="{{ item.url }}" class="cart-item__media media" tabindex="-1" aria-hidden="true">
       {%- if item.image -%}
-        {{ item.image | image_url: width: 300 | image_tag: loading: 'lazy', widths: '150, 300', alt: item.image.alt | escape }}
+        {{ item.image | image_url: width: 300 | image_tag: loading: 'lazy', widths: '150, 300', alt: item.image.alt }}
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
       {%- endif -%}

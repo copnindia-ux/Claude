@@ -4,6 +4,8 @@
     assign transparent = true
   endif
   assign promos = section.blocks | where: 'type', 'mega_promo'
+  assign illus_blocks = section.blocks | where: 'type', 'menu_illustration'
+  assign illustrated = section.settings.illustrated_menu
 -%}
 
 {%- style -%}
@@ -34,7 +36,7 @@
           {%- render 'header-logo' -%}
         {%- endif -%}
         {%- if section.settings.logo_position == 'center' -%}
-          {%- render 'header-nav', menu: section.settings.menu, promos: promos, mega: section.settings.mega_menu -%}
+          {%- render 'header-nav', menu: section.settings.menu, promos: promos, mega: section.settings.mega_menu, illustrated: illustrated, illus_blocks: illus_blocks -%}
         {%- endif -%}
       </div>
 
@@ -42,7 +44,7 @@
         {%- render 'header-logo' -%}
       {%- else -%}
         <div class="site-header__center" style="display:flex;justify-content:center">
-          {%- render 'header-nav', menu: section.settings.menu, promos: promos, mega: section.settings.mega_menu -%}
+          {%- render 'header-nav', menu: section.settings.menu, promos: promos, mega: section.settings.mega_menu, illustrated: illustrated, illus_blocks: illus_blocks -%}
         </div>
       {%- endif -%}
 
@@ -64,6 +66,12 @@
             {%- render 'icon', icon: 'account' -%}
           </a>
         {%- endif -%}
+        {%- if settings.enable_wishlist and section.settings.show_wishlist -%}
+          <a href="{{ settings.wishlist_page.url | default: routes.root_url }}" class="icon-button small-hide" data-wishlist-link aria-label="{{ 'general.wishlist.title' | t }}">
+            {%- render 'icon', icon: 'heart' -%}
+            <span class="cart-count" data-wishlist-count hidden></span>
+          </a>
+        {%- endif -%}
         <a href="{{ routes.cart_url }}" class="icon-button" id="cart-icon-bubble" data-cart-open aria-label="{{ 'sections.cart.title' | t }}">
           {%- if section.settings.cart_style == 'text' -%}
             <span class="header-cart-text nav-link">{{ 'sections.cart.title' | t }} (<span data-cart-count-text>{{ cart.item_count }}</span>)</span>
@@ -81,7 +89,7 @@
   </header>
 </sticky-header>
 
-{%- render 'menu-drawer', menu: section.settings.menu, secondary_menu: section.settings.secondary_menu, promos: promos -%}
+{%- render 'menu-drawer', menu: section.settings.menu, secondary_menu: section.settings.secondary_menu, promos: promos, illustrated: illustrated, illus_blocks: illus_blocks -%}
 
 <script type="application/ld+json">
   {
@@ -141,6 +149,7 @@
       "options": [ { "value": "mega", "label": "Full-width mega menu" }, { "value": "dropdown", "label": "Simple dropdown" } ],
       "default": "mega"
     },
+    { "type": "checkbox", "id": "illustrated_menu", "label": "Illustrated menu", "default": true, "info": "Shows second-level links as illustrated tiles in the mega menu and mobile menu. Art is matched from link titles (serum, cream, cleanser, spf, lip, eye...) or set with 'Menu illustration' blocks." },
     {
       "type": "select",
       "id": "sticky",
@@ -155,6 +164,7 @@
     { "type": "checkbox", "id": "show_border", "label": "Show bottom border", "default": false },
     { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
     { "type": "checkbox", "id": "show_account", "label": "Show account icon", "default": true },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Show wishlist icon", "default": true, "info": "Turn on the wishlist in theme settings." },
     {
       "type": "select",
       "id": "cart_style",
@@ -167,6 +177,40 @@
     { "type": "color", "id": "transparent_text_color", "label": "Transparent header text", "default": "#FFFFFF" }
   ],
   "blocks": [
+    {
+      "type": "menu_illustration",
+      "name": "Menu illustration",
+      "settings": [
+        { "type": "text", "id": "menu_item", "label": "Menu link title", "info": "Exact title of a second-level link, e.g. 'serums'." },
+        {
+          "type": "select",
+          "id": "illustration",
+          "label": "Illustration",
+          "options": [
+            { "value": "serum", "label": "Serum" },
+            { "value": "cream", "label": "Moisturizer" },
+            { "value": "cleanser", "label": "Cleanser" },
+            { "value": "sunscreen", "label": "Sunscreen" },
+            { "value": "toner", "label": "Toner" },
+            { "value": "mask", "label": "Mask" },
+            { "value": "eye", "label": "Eye care" },
+            { "value": "lip", "label": "Lip care" },
+            { "value": "body", "label": "Body" },
+            { "value": "tools", "label": "Tools" },
+            { "value": "sets", "label": "Sets & gifts" },
+            { "value": "new", "label": "New" },
+            { "value": "bestsellers", "label": "Bestsellers" },
+            { "value": "face", "label": "Face" },
+            { "value": "drop", "label": "Hydration" },
+            { "value": "leaf", "label": "Clean" },
+            { "value": "sun", "label": "Morning" },
+            { "value": "moon", "label": "Night" }
+          ],
+          "default": "serum"
+        },
+        { "type": "image_picker", "id": "image", "label": "Custom image", "info": "Replaces the illustration. Transparent PNGs work best." }
+      ]
+    },
     {
       "type": "mega_promo",
       "name": "Mega menu promo",

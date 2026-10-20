@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Halo — theme scripts (vanilla JS, custom elements)
+   Barcelona — theme scripts (vanilla JS, custom elements)
    ========================================================================== */
 (() => {
   'use strict';
@@ -155,6 +155,8 @@
     const searchOpener = e.target.closest('[data-search-open]');
     if (searchOpener) {
       const el = document.getElementById('SearchModal');
+      const parent = searchOpener.closest('.drawer.is-open, .modal.is-open');
+      if (parent && parent !== el && parent.close) parent.close();
       if (el) { e.preventDefault(); el.open(searchOpener); }
       return;
     }
@@ -246,7 +248,8 @@
       }
     }
   };
-  window.HaloCart = Cart;
+  window.BarcelonaCart = Cart;
+  window.Barcelona = { OverlayElement, Cart, toast, formatMoney };
 
   class CartDrawer extends OverlayElement {}
   customElements.define('cart-drawer', CartDrawer);
@@ -303,6 +306,10 @@
       await Cart.add(new FormData(form));
       const quickView = document.getElementById('QuickView');
       if (quickView && quickView.contains(form)) quickView.close();
+      if (form.closest('[data-no-drawer]')) {
+        toast(theme.strings.added || theme.strings.addToCart);
+        return;
+      }
       const drawer = document.getElementById('CartDrawer');
       if (drawer && theme.cartType === 'drawer') drawer.open(button);
     } catch (err) {
@@ -1093,7 +1100,7 @@
     connectedCallback() {
       super.connectedCallback();
       if (this.hasAttribute('data-disabled') || this.dataset.designMode === 'true') return;
-      const key = 'halo-newsletter-popup';
+      const key = 'barcelona-newsletter-popup';
       let last = 0;
       try { last = Number(localStorage.getItem(key)) || 0; } catch (e) { /* storage blocked */ }
       const days = Number(this.dataset.frequency) || 7;
@@ -1108,6 +1115,312 @@
     }
   }
   customElements.define('newsletter-popup', NewsletterPopup);
+
+  /* ==========================================================================
+     Wishlist (stored in the browser, no app needed)
+     ========================================================================== */
+  const store = {
+    read(key) {
+      try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; }
+    },
+    write(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage blocked */ }
+    }
+  };
+
+  const Wishlist = {
+    key: 'barcelona-wishlist',
+    get() { return store.read(this.key); },
+    has(handle) { return this.get().includes(handle); },
+    toggle(handle) {
+      let list = this.get();
+      const adding = !list.includes(handle);
+      list = adding ? [handle, ...list] : list.filter((h) => h !== handle);
+      store.write(this.key, list.slice(0, 100));
+      this.sync();
+      document.dispatchEvent(new CustomEvent('wishlist:change', { detail: { handle, adding, list } }));
+      return adding;
+    },
+    clear() {
+      store.write(this.key, []);
+      this.sync();
+      document.dispatchEvent(new CustomEvent('wishlist:change', { detail: { list: [] } }));
+    },
+    sync(root = document) {
+      const list = this.get();
+      qsa('[data-wishlist-toggle]', root).forEach((btn) => {
+        const on = list.includes(btn.dataset.wishlistToggle);
+        btn.setAttribute('aria-pressed', String(on));
+        btn.classList.toggle('is-active', on);
+        const label = qs('[data-wishlist-label]', btn);
+        if (label) label.textContent = on ? theme.strings.wishlistRemove : theme.strings.wishlistAdd;
+      });
+      qsa('[data-wishlist-count]').forEach((el) => {
+        el.textContent = list.length;
+        el.hidden = list.length === 0;
+      });
+      qsa('[data-wishlist-count-text]').forEach((el) => { el.textContent = list.length; });
+    }
+  };
+  window.BarcelonaWishlist = Wishlist;
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-wishlist-toggle]');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const added = Wishlist.toggle(btn.dataset.wishlistToggle);
+      btn.classList.remove('is-bump');
+      void btn.offsetWidth;
+      btn.classList.add('is-bump');
+      toast(added ? (theme.strings.wishlistAdded || theme.strings.wishlistAdd) : theme.strings.wishlistRemoved);
+      return;
+    }
+    if (e.target.closest('[data-wishlist-clear]')) {
+      e.preventDefault();
+      Wishlist.clear();
+    }
+  });
+
+  /* Recently viewed */
+  const Recent = {
+    key: 'barcelona-recent',
+    get() { return store.read(this.key); },
+    add(handle) {
+      if (!handle) return;
+      store.write(this.key, [handle, ...this.get().filter((h) => h !== handle)].slice(0, 20));
+    }
+  };
+
+  /* Renders product cards for a list of handles (wishlist, recently viewed) */
+  class ProductListLoader extends HTMLElement {
+    connectedCallback() {
+      this.render();
+      if (this.dataset.source === 'wishlist') {
+        this._onChange = (e) => { if (!e.detail || !e.detail.adding) this.render(); };
+        document.addEventListener('wishlist:change', this._onChange);
+      }
+    }
+    disconnectedCallback() {
+      if (this._onChange) document.removeEventListener('wishlist:change', this._onChange);
+    }
+    async render() {
+      const grid = qs('[data-list-grid]', this);
+      const empty = qs('[data-list-empty]', this);
+      const limit = Number(this.dataset.limit) || 12;
+      const exclude = this.dataset.exclude;
+      const source = this.dataset.source === 'wishlist' ? Wishlist.get() : Recent.get();
+      const handles = source.filter((h) => h !== exclude).slice(0, limit);
+
+      if (!handles.length) {
+        if (grid) grid.innerHTML = '';
+        if (empty) empty.hidden = false;
+        if (this.hasAttribute('data-hide-empty')) this.hidden = true;
+        return;
+      }
+      if (empty) empty.hidden = true;
+
+      const root = (theme.routes.root || '/').replace(/\/$/, '');
+      const cards = await Promise.all(handles.map(async (handle) => {
+        try {
+          const res = await fetch(`${root}/products/${encodeURIComponent(handle)}?section_id=product-card-fragment`);
+          if (!res.ok) return '';
+          const doc = parseHTML(await res.text());
+          const card = qs('.product-card', doc);
+          return card ? `<div class="list-item">${card.outerHTML}</div>` : '';
+        } catch (err) { return ''; }
+      }));
+      const html = cards.filter(Boolean).join('');
+      if (!html) {
+        if (empty) empty.hidden = false;
+        if (this.hasAttribute('data-hide-empty')) this.hidden = true;
+        return;
+      }
+      grid.innerHTML = html;
+      this.hidden = false;
+      Wishlist.sync(grid);
+      qsa('.reveal', grid).forEach((el) => el.classList.add('is-revealed'));
+      const slider = this.querySelector('slider-component');
+      if (slider && slider._update) requestAnimationFrame(slider._update);
+    }
+  }
+  customElements.define('product-list-loader', ProductListLoader);
+
+  /* ==========================================================================
+     Mobile navigation bar
+     ========================================================================== */
+  class MobileNavBar extends HTMLElement {
+    connectedCallback() {
+      const setHeight = () => {
+        const visible = window.getComputedStyle(this).display !== 'none';
+        document.documentElement.style.setProperty('--mobile-bar-height', visible ? `${this.offsetHeight}px` : '0px');
+      };
+      setHeight();
+      window.addEventListener('resize', debounce(setHeight, 150));
+      if (this.dataset.hideOnScroll === 'true') {
+        let lastY = window.scrollY;
+        window.addEventListener('scroll', () => {
+          const y = window.scrollY;
+          this.classList.toggle('is-hidden', y > lastY && y > 200);
+          lastY = y;
+        }, { passive: true });
+      }
+    }
+  }
+  customElements.define('mobile-nav-bar', MobileNavBar);
+
+  /* ==========================================================================
+     Count-up numbers (results)
+     ========================================================================== */
+  const runCountUp = (el) => {
+    el.classList.add('is-counted');
+    qsa('[data-count-to]', el).forEach((num) => {
+      const target = Number(num.dataset.countTo) || 0;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { num.textContent = target; return; }
+      const start = performance.now();
+      const duration = 1400;
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        num.textContent = Math.round(target * eased);
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      num.textContent = '0';
+      requestAnimationFrame(tick);
+    });
+  };
+  let countObserver;
+  const observeCountUp = (root = document) => {
+    const els = qsa('[data-count-up]:not(.is-counted)', root);
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) { els.forEach(runCountUp); return; }
+    countObserver = countObserver || new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        runCountUp(entry.target);
+        countObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.4 });
+    els.forEach((el) => countObserver.observe(el));
+  };
+
+  /* ==========================================================================
+     Skin quiz
+     ========================================================================== */
+  class SkinQuiz extends HTMLElement {
+    connectedCallback() {
+      this.screens = qsa('[data-quiz-screen]', this);
+      this.questions = qsa('[data-quiz-screen="q"]', this);
+      this.answers = [];
+      this.addEventListener('click', (e) => {
+        if (e.target.closest('[data-quiz-start]')) return this.show(this.questions[0]);
+        if (e.target.closest('[data-quiz-restart]')) { this.answers = []; return this.show(this.screens[0]); }
+        if (e.target.closest('[data-quiz-back]')) {
+          const idx = this.questions.indexOf(this.current);
+          if (idx <= 0) { this.answers = []; return this.show(this.screens[0]); }
+          this.answers.length = idx - 1;
+          return this.show(this.questions[idx - 1]);
+        }
+        const answer = e.target.closest('[data-quiz-answer]');
+        if (answer) {
+          const idx = Math.max(0, this.questions.indexOf(this.current));
+          this.answers.length = idx;
+          this.answers.push(answer.dataset.quizAnswer);
+          this.show(this.questions[idx + 1] || this.result());
+        }
+      });
+    }
+    result() {
+      const tally = {};
+      this.answers.forEach((key) => { if (key) tally[key] = (tally[key] || 0) + 1; });
+      const ranked = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
+      const results = qsa('[data-quiz-result]', this);
+      return ranked.map((k) => results.find((r) => r.dataset.quizResult === k)).find(Boolean) || results[0] || this.screens[0];
+    }
+    show(screen) {
+      if (!screen) return;
+      this.current = screen;
+      this.screens.forEach((s) => {
+        const on = s === screen;
+        s.hidden = !on;
+        s.classList.toggle('is-active', on);
+      });
+      const focusable = qs('legend, h2, button', screen);
+      if (focusable) {
+        if (!focusable.hasAttribute('tabindex') && focusable.tagName !== 'BUTTON') focusable.setAttribute('tabindex', '-1');
+        focusable.focus({ preventScroll: true });
+      }
+      const top = this.getBoundingClientRect().top;
+      if (top < 0) this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      Wishlist.sync(screen);
+    }
+  }
+  customElements.define('skin-quiz', SkinQuiz);
+
+  /* ==========================================================================
+     Delivery estimate
+     ========================================================================== */
+  class DeliveryEstimate extends HTMLElement {
+    connectedCallback() {
+      const min = Number(this.dataset.min) || 0;
+      const max = Number(this.dataset.max) || min;
+      const cutoff = Number(this.dataset.cutoff);
+      const skipWeekends = this.dataset.skipWeekends === 'true';
+      const now = new Date();
+      const addDays = (from, days) => {
+        const d = new Date(from);
+        let added = 0;
+        while (added < days) {
+          d.setDate(d.getDate() + 1);
+          if (!skipWeekends || (d.getDay() !== 0 && d.getDay() !== 6)) added += 1;
+        }
+        return d;
+      };
+      let start = new Date(now);
+      const pastCutoff = now.getHours() >= cutoff;
+      if (pastCutoff || (skipWeekends && (now.getDay() === 0 || now.getDay() === 6))) start = addDays(now, 1);
+      const fmt = new Intl.DateTimeFormat(this.dataset.locale || undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+      const from = addDays(start, min);
+      const to = addDays(start, max);
+      const range = min === max ? fmt.format(from) : `${fmt.format(from)} – ${fmt.format(to)}`;
+      const text = qs('[data-delivery-text]', this);
+      if (!text) return;
+
+      if (!pastCutoff && !(skipWeekends && (now.getDay() === 0 || now.getDay() === 6))) {
+        const end = new Date(now); end.setHours(cutoff, 0, 0, 0);
+        const update = () => {
+          const diff = Math.max(0, end - new Date());
+          const h = Math.floor(diff / 36e5);
+          const m = Math.floor((diff % 36e5) / 6e4);
+          const countdown = `<strong>${h}h ${m}m</strong>`;
+          text.innerHTML = this.dataset.template.replace('[date]', `<strong>${range}</strong>`).replace('[countdown]', countdown);
+        };
+        update();
+        this.timer = setInterval(update, 30000);
+      } else {
+        text.innerHTML = this.dataset.templateSimple.replace('[date]', `<strong>${range}</strong>`);
+      }
+    }
+    disconnectedCallback() { clearInterval(this.timer); }
+  }
+  customElements.define('delivery-estimate', DeliveryEstimate);
+
+  /* Back to top */
+  const backToTop = qs('[data-back-to-top]');
+  if (backToTop) {
+    window.addEventListener('scroll', debounce(() => { backToTop.hidden = window.scrollY < window.innerHeight * 1.5; }, 100), { passive: true });
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
+  const initBarcelona = () => {
+    Wishlist.sync();
+    observeCountUp();
+    const productSection = qs('.section-main-product [data-product-handle]');
+    if (productSection) Recent.add(productSection.dataset.productHandle);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBarcelona);
+  else initBarcelona();
+  document.addEventListener('cart:changed', () => Wishlist.sync());
 
   /* Scroll reveal */
   let revealObserver;
@@ -1136,6 +1449,8 @@
   if (window.Shopify && Shopify.designMode) {
     document.addEventListener('shopify:section:load', (e) => {
       qsa('.reveal', e.target).forEach((el) => el.classList.add('is-revealed'));
+      Wishlist.sync(e.target);
+      observeCountUp(e.target);
       if (qs('newsletter-popup', e.target)) qs('newsletter-popup', e.target).open();
     });
     document.addEventListener('shopify:section:select', (e) => {
@@ -1156,6 +1471,8 @@
         const idx = Array.from(sl?.children || []).indexOf(block);
         if (idx > -1) slider.goTo(idx);
       }
+      const sheet = block.closest('.discover-sheet');
+      if (sheet && sheet.open) sheet.open();
       const navItem = qs('.mega-menu', document) && block.classList.contains('mega-menu__promo') ? block.closest('[data-nav-item]') : null;
       if (navItem) navItem.classList.add('is-open');
     });

@@ -1,0 +1,14 @@
+{%- comment -%}
+  Renders one product card for the current product. Fetched by the wishlist,
+  recently viewed and reels scripts via /products/<handle>?section_id=product-card-fragment
+{%- endcomment -%}
+{%- if product -%}
+  {%- render 'product-card', product: product, sizes: '(min-width: 990px) 25vw, 50vw' -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product card fragment",
+  "settings": []
+}
+{% endschema %}

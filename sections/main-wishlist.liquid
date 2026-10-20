@@ -1,0 +1,39 @@
+{%- liquid
+  assign s = section.settings
+-%}
+<section class="color-{{ s.color_scheme }} section-padding" style="--pt: {{ s.padding_top }}; --pb: {{ s.padding_bottom }};">
+  <div class="page-width">
+    <div class="section-header">
+      <div>
+        <h1 class="section-header__title {{ s.heading_size }}">{{ s.heading | default: page.title | escape }}</h1>
+        <p class="subtext" style="margin:.4rem 0 0"><span data-wishlist-count-text>0</span> {{ 'general.wishlist.saved' | t }}</p>
+      </div>
+      <button type="button" class="button-link caption" data-wishlist-clear>{{ 'general.wishlist.clear' | t }}</button>
+    </div>
+
+    <product-list-loader data-source="wishlist" data-limit="48">
+      <div class="grid product-grid" style="--cols-desktop: {{ s.columns_desktop }}; --cols-mobile: 2;" data-list-grid></div>
+      <div class="empty-state" data-list-empty hidden>
+        {%- render 'icon', icon: 'heart' -%}
+        <p class="h3">{{ 'general.wishlist.empty' | t }}</p>
+        <p class="subtext">{{ 'general.wishlist.empty_text' | t }}</p>
+        <a href="{{ s.empty_link | default: routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+      </div>
+    </product-list-loader>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wishlist",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "your wishlist" },
+    { "type": "select", "id": "heading_size", "label": "Heading size", "options": [ { "value": "h2", "label": "Small" }, { "value": "h1", "label": "Medium" }, { "value": "h0", "label": "Large" } ], "default": "h1" },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 5, "step": 1, "label": "Columns on desktop", "default": 4 },
+    { "type": "url", "id": "empty_link", "label": "Empty state button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 64 }
+  ]
+}
+{% endschema %}

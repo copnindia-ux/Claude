@@ -35,6 +35,9 @@
     {% render 'theme-styles' %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {%- if settings.page_transitions -%}
+      <style>@view-transition { navigation: auto; } @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }</style>
+    {%- endif -%}
 
 
     <script>
@@ -50,14 +53,23 @@
           predictiveSearch: {{ routes.predictive_search_url | json }},
           productRecommendations: {{ routes.product_recommendations_url | json }}
         },
+        wishlist: {
+          enabled: {{ settings.enable_wishlist | json }},
+          url: {{ settings.wishlist_page.url | default: '' | json }}
+        },
         cartType: {{ settings.cart_type | json }},
         strings: {
           addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          added: {{ 'products.product.added' | t | json }},
           soldOut: {{ 'products.product.sold_out' | t | json }},
           unavailable: {{ 'products.product.unavailable' | t | json }},
           cartError: {{ 'sections.cart.cart_error' | t | json }},
           quantityError: {{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' | json }},
-          copied: {{ 'general.share.success_message' | t | json }}
+          copied: {{ 'general.share.success_message' | t | json }},
+          wishlistAdded: {{ settings.wishlist_added_message | default: '' | json }},
+          wishlistRemoved: {{ 'general.wishlist.removed' | t | json }},
+          wishlistAdd: {{ 'general.wishlist.add' | t | json }},
+          wishlistRemove: {{ 'general.wishlist.remove' | t | json }}
         },
         moneyFormat: {{ shop.money_format | json }}
       };
@@ -94,6 +106,12 @@
     </quick-view-modal>
 
     <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
+    {%- if settings.back_to_top -%}
+      <button type="button" class="back-to-top" data-back-to-top aria-label="{{ 'general.back_to_top' | t }}" hidden>
+        {%- render 'icon', icon: 'arrow-up' -%}
+      </button>
+    {%- endif -%}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>

@@ -5,7 +5,7 @@
       <before-after class="before-after" style="--ratio: {{ s.ratio }};">
         <div class="media">
           {%- if s.before_image != blank -%}
-            {{ s.before_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.before_image.alt | escape }}
+            {{ s.before_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.before_image.alt }}
           {%- else -%}
             {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
           {%- endif -%}
@@ -13,7 +13,7 @@
         <div class="before-after__after">
           <div class="media">
             {%- if s.after_image != blank -%}
-              {{ s.after_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.after_image.alt | escape }}
+              {{ s.after_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 1000, 1600', sizes: '(min-width: 990px) 50vw, 100vw', alt: s.after_image.alt }}
             {%- else -%}
               {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
             {%- endif -%}

@@ -1,0 +1,154 @@
+/* Shoppable reels */
+.reels__caption { color: rgb(var(--color-accent)); margin-bottom: 0.6rem; }
+.reels__track { padding-bottom: 0.4rem; }
+.reel { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
+.reel__open {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  text-align: left;
+  border-radius: calc(var(--media-radius) + 4px);
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+  transition: transform var(--duration-default) var(--ease-out), box-shadow var(--duration-default);
+}
+@media (hover: hover) {
+  .reel__open:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+}
+.reel__media { padding-top: 177.78%; border-radius: 0; }
+.reel__media video, .reel__media img { object-fit: cover; }
+.reel__shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+}
+.reel__top { position: absolute; top: 1rem; left: 1rem; right: 1rem; display: flex; justify-content: space-between; }
+.reel__pill {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+  font-size: 1.1rem;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.18);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.reel__pill .icon { width: 1rem; height: 1rem; }
+.reel__title {
+  position: absolute; left: 1.2rem; right: 1.2rem; bottom: 1.2rem;
+  font-size: 1.4rem; line-height: 1.25; letter-spacing: var(--heading-letter-spacing);
+  text-shadow: 0 1px 12px rgba(0,0,0,0.25);
+}
+.reel__product {
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem;
+  border-radius: var(--card-radius);
+  background: rgb(var(--color-card));
+}
+.reel__product-media { display: block; width: 4.4rem; aspect-ratio: 1; border-radius: calc(var(--card-radius) - 4px); overflow: hidden; background: rgba(var(--color-foreground), 0.05); }
+.reel__product-media img { width: 100%; height: 100%; object-fit: cover; }
+.reel__product-info { display: flex; flex-direction: column; min-width: 0; font-size: 1.3rem; line-height: 1.3; }
+.reel__product-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reel__product-price { opacity: 0.7; font-size: 1.2rem; }
+
+/* Viewer */
+.reels-viewer { z-index: 120; padding: 0; }
+@media (min-width: 750px) { .reels-viewer { padding: 2rem; } }
+.reels-viewer .modal__overlay { background: rgba(8, 8, 8, 0.92); }
+.reels-viewer__panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
+  overflow: visible;
+}
+@media (min-width: 750px) {
+  .reels-viewer__panel { width: min(46rem, calc((100dvh - 4rem) * 0.5625)); height: calc(100dvh - 4rem); }
+}
+.reels-viewer__track {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border-radius: 0;
+}
+@media (min-width: 750px) { .reels-viewer__track { border-radius: 2rem; } }
+.reels-viewer__track::-webkit-scrollbar { display: none; }
+.reels-viewer__slide {
+  position: relative;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: #000;
+  overflow: hidden;
+}
+.reels-viewer__media { position: absolute; inset: 0; cursor: pointer; }
+.reels-viewer__media video, .reels-viewer__media img { width: 100%; height: 100%; object-fit: cover; }
+.reels-viewer__slide::after {
+  content: "";
+  position: absolute; inset: auto 0 0 0; height: 55%;
+  background: linear-gradient(0deg, rgba(0,0,0,0.7), rgba(0,0,0,0));
+  pointer-events: none;
+}
+.reels-viewer__progress { position: absolute; top: 1rem; left: 1.2rem; right: 1.2rem; height: 2px; border-radius: 2px; background: rgba(255,255,255,0.3); z-index: 3; overflow: hidden; }
+.reels-viewer__progress span { display: block; height: 100%; background: #fff; transform: scaleX(0); transform-origin: left; transition: transform 0.25s linear; }
+.reels-viewer__controls { position: absolute; top: 2rem; right: 1.2rem; z-index: 5; display: flex; gap: 0.8rem; }
+.reels-viewer__btn, .reels-viewer__nav {
+  width: 4rem; height: 4rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 50%;
+  color: #fff;
+  background: rgba(255,255,255,0.16);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.reels-viewer__btn .icon { width: 1.8rem; height: 1.8rem; }
+.reels-viewer__btn[aria-pressed="true"] .reels-viewer__unmuted,
+.reels-viewer__btn[aria-pressed="false"] .reels-viewer__muted { display: none; }
+.reels-viewer__nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 5; }
+.reels-viewer__nav--prev { left: -6rem; }
+.reels-viewer__nav--next { right: -6rem; }
+.reels-viewer__info {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  display: flex; flex-direction: column; gap: 1.2rem;
+  padding: 2rem 1.2rem calc(1.6rem + env(safe-area-inset-bottom));
+}
+.reels-viewer__title { margin: 0; }
+.reels-viewer__products { display: flex; flex-direction: column; gap: 0.8rem; }
+.reels-product {
+  display: grid;
+  grid-template-columns: 5.2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.8rem;
+  border-radius: 1.6rem;
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-background), 0.9);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  transform: translateY(1.2rem);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out) 0.15s, opacity 0.5s var(--ease-out) 0.15s;
+}
+.reels-viewer__slide.is-active .reels-product { transform: none; opacity: 1; }
+.reels-product__media { width: 5.2rem; aspect-ratio: 1; border-radius: 1rem; overflow: hidden; background: rgba(var(--color-foreground), 0.05); }
+.reels-product__media img { width: 100%; height: 100%; object-fit: cover; }
+.reels-product__info { display: flex; flex-direction: column; min-width: 0; font-size: 1.3rem; line-height: 1.3; }
+.reels-product__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reels-product__price { font-size: 1.2rem; opacity: 0.75; }
+.reels-product__add { min-height: 3.6rem; padding: 0 1.4rem; }
+.reels-product__add .icon { width: 1.4rem; height: 1.4rem; }
