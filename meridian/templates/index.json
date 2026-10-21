@@ -1,21 +1,21 @@
 {
   "sections": {
-    "image_banner": {
+    "hero": {
       "type": "image-banner",
       "blocks": {
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "heading": "Bestsellers",
+            "heading_size": "h1"
           }
         },
         "button": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "Shop all",
+            "button_label_1": "Shop now",
             "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
+            "button_style_secondary_1": false,
             "button_label_2": "",
             "button_link_2": "",
             "button_style_secondary_2": false
@@ -27,49 +27,156 @@
         "button"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 10,
         "image_height": "large",
-        "desktop_content_position": "bottom-center",
+        "desktop_content_position": "middle-center",
         "show_text_box": false,
-        "image_behavior": "none",
         "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-5",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": false,
-        "show_text_below": false
+        "show_text_below": false,
+        "image_behavior": "none"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "bestsellers": {
+      "type": "product-carousel",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "heading": "Fine jewelry made responsibly",
+        "collection": "all"
       }
+    },
+    "tiles": {
+      "type": "collection-tiles",
+      "blocks": {
+        "t0": {
+          "type": "tile",
+          "settings": {
+            "title": "Necklaces"
+          }
+        },
+        "t1": {
+          "type": "tile",
+          "settings": {
+            "title": "Earrings"
+          }
+        },
+        "t2": {
+          "type": "tile",
+          "settings": {
+            "title": "Rings"
+          }
+        },
+        "t3": {
+          "type": "tile",
+          "settings": {
+            "title": "Bracelets"
+          }
+        }
+      },
+      "block_order": [
+        "t0",
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {}
+    },
+    "new_in": {
+      "type": "product-carousel",
+      "settings": {
+        "heading": "New in",
+        "collection": "all"
+      }
+    },
+    "community": {
+      "type": "instagram-gallery",
+      "blocks": {
+        "g0": {
+          "type": "image",
+          "settings": {}
+        },
+        "g1": {
+          "type": "image",
+          "settings": {}
+        },
+        "g2": {
+          "type": "image",
+          "settings": {}
+        },
+        "g3": {
+          "type": "image",
+          "settings": {}
+        },
+        "g4": {
+          "type": "image",
+          "settings": {}
+        },
+        "g5": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5"
+      ],
+      "settings": {}
+    },
+    "press": {
+      "type": "press-marquee",
+      "blocks": {
+        "p0": {
+          "type": "press",
+          "settings": {
+            "name": "Vogue"
+          }
+        },
+        "p1": {
+          "type": "press",
+          "settings": {
+            "name": "Forbes"
+          }
+        },
+        "p2": {
+          "type": "press",
+          "settings": {
+            "name": "Cosmopolitan"
+          }
+        },
+        "p3": {
+          "type": "press",
+          "settings": {
+            "name": "Elle"
+          }
+        },
+        "p4": {
+          "type": "press",
+          "settings": {
+            "name": "Harper's Bazaar"
+          }
+        }
+      },
+      "block_order": [
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "bestsellers",
+    "tiles",
+    "new_in",
+    "community",
+    "press"
   ]
 }

@@ -6,7 +6,7 @@
         "vendor": {
           "type": "text",
           "settings": {
-            "text": "{{ product.vendor }}",
+            "text": "{{ product.type }}",
             "text_style": "uppercase"
           }
         },
@@ -23,9 +23,6 @@
             "swatch_shape": "circle"
           }
         },
-        "quantity_selector": {
-          "type": "quantity_selector"
-        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
@@ -33,13 +30,48 @@
             "show_gift_card_recipient": true
           }
         },
-        "description": {
-          "type": "description"
-        },
-        "share": {
-          "type": "share",
+        "wishlist": {
+          "type": "wishlist_button",
           "settings": {
-            "share_label": "Share"
+            "label_add": "Add to wishlist",
+            "label_remove": "Saved to wishlist"
+          }
+        },
+        "tab_desc": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product description",
+            "icon": "none",
+            "content": "",
+            "page": "",
+            "use_description": true
+          }
+        },
+        "tab_materials": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Materials / composition",
+            "icon": "none",
+            "content": "",
+            "page": ""
+          }
+        },
+        "tab_fit": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Dimensions & fit",
+            "icon": "none",
+            "content": "",
+            "page": ""
+          }
+        },
+        "tab_care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care",
+            "icon": "none",
+            "content": "",
+            "page": ""
           }
         }
       },
@@ -48,32 +80,27 @@
         "title",
         "price",
         "variant_picker",
-        "quantity_selector",
         "buy_buttons",
-        "description",
-        "share"
+        "wishlist",
+        "tab_desc",
+        "tab_materials",
+        "tab_fit",
+        "tab_care"
       ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
         "media_position": "left",
-        "gallery_layout": "stacked",
+        "gallery_layout": "thumbnail",
         "media_size": "large",
         "constrain_to_viewport": true,
-        "media_fit": "contain",
+        "media_fit": "cover",
         "image_zoom": "lightbox",
-        "mobile_thumbnails": "hide",
+        "mobile_thumbnails": "show",
         "hide_variants": true,
         "enable_video_looping": false,
         "padding_top": 36,
         "padding_bottom": 12
-      }
-    },
-    "disclosures": {
-      "type": "disclosures",
-      "settings": {
-        "padding_top": 36,
-        "padding_bottom": 0
       }
     },
     "related-products": {
@@ -93,11 +120,71 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "tabs": {
+      "type": "product-tabs",
+      "blocks": {
+        "overview": {
+          "type": "tab",
+          "settings": {
+            "title": "Product overview",
+            "use_description": true
+          }
+        },
+        "packaging": {
+          "type": "tab",
+          "settings": {
+            "title": "Packaging",
+            "content": "<p>Every piece arrives in a recycled-card gift box with a soft pouch and a care card.</p>"
+          }
+        },
+        "shipping": {
+          "type": "tab",
+          "settings": {
+            "title": "Shipping & returns",
+            "content": "<p>Free shipping on orders over \u20ac300. Free returns within 30 days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "overview",
+        "packaging",
+        "shipping"
+      ],
+      "settings": {}
+    },
+    "statement": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "A sculpted memory of the sun \u2014 bold and imperfectly beautiful.",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading"
+      ],
+      "settings": {
+        "image_overlay_opacity": 20,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-5",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false,
+        "image_behavior": "none"
+      }
     }
   },
   "order": [
     "main",
-    "disclosures",
+    "tabs",
+    "statement",
     "related-products"
   ]
 }

@@ -1,0 +1,26 @@
+{%- comment -%}
+  Tag badge (product tag "badge:New in") and wishlist toggle on product cards.
+  Accepts: card_product
+{%- endcomment -%}
+<div class="card-extras">
+  {%- if settings.card_tag_badges -%}
+    {%- for tag in card_product.tags -%}
+      {%- assign tag_lower = tag | downcase -%}
+      {%- if tag_lower contains 'badge:' -%}
+        <span class="card-extras__badge">{{ tag | split: ':' | last | strip }}</span>
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- if settings.wishlist_enable -%}
+    <button
+      type="button"
+      class="card-extras__wishlist wishlist-toggle"
+      data-wishlist-handle="{{ card_product.handle }}"
+      aria-label="Add {{ card_product.title | escape }} to wishlist"
+      aria-pressed="false"
+    >
+      {%- render 'icon-heart' -%}
+    </button>
+  {%- endif -%}
+</div>

@@ -223,6 +223,7 @@
                         {{- 'icon-caret.svg' | inline_asset_content -}}
                       </summary>
                       <div class="accordion__content rte" id="ProductAccordion-{{ block.id }}-{{ section.id }}">
+                        {%- if block.settings.use_description -%}{{ product.description }}{%- endif -%}
                         {{ block.settings.content }}
                         {{ block.settings.page.content }}
                       </div>
@@ -688,6 +689,21 @@
                   </product-recommendations>
                 {%- when 'icon-with-text' -%}
                   {% render 'icon-with-text', block: block %}
+                {%- when 'wishlist_button' -%}
+                  {%- if settings.wishlist_enable -%}
+                    <button
+                      type="button"
+                      class="m-wishlist-button link"
+                      data-wishlist-handle="{{ product.handle }}"
+                      data-label-add="{{ block.settings.label_add | escape }}"
+                      data-label-remove="{{ block.settings.label_remove | escape }}"
+                      aria-pressed="false"
+                      {{ block.shopify_attributes }}
+                    >
+                      {%- render 'icon-heart' -%}
+                      <span data-wishlist-label>{{ block.settings.label_add | escape }}</span>
+                    </button>
+                  {%- endif -%}
               {%- endcase -%}
             {%- endfor -%}
             <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -761,6 +777,15 @@
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "wishlist_button",
+      "name": "Wishlist button",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label_add", "label": "Add label", "default": "Add to wishlist" },
+        { "type": "text", "id": "label_remove", "label": "Remove label", "default": "Saved to wishlist" }
+      ]
     },
     {
       "type": "text",
@@ -1020,6 +1045,7 @@
       "type": "collapsible_tab",
       "name": "t:sections.main-product.blocks.collapsible_tab.name",
       "settings": [
+        { "type": "checkbox", "id": "use_description", "label": "Show product description", "default": false },
         {
           "type": "text",
           "id": "heading",

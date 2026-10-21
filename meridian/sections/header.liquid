@@ -299,6 +299,12 @@
         {%- endcase -%}
       {%- endfor -%}
 
+      {%- if settings.wishlist_enable -%}
+        <a href="{{ settings.wishlist_page.url | default: '/pages/wishlist' }}" class="header__icon header__icon--wishlist link focus-inset" aria-label="Wishlist">
+          <span class="svg-wrapper">{%- render 'icon-heart' -%}</span>
+          <span class="wishlist-count" data-wishlist-count hidden></span>
+        </a>
+      {%- endif -%}
       <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
         {% if cart == empty %}
           <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>

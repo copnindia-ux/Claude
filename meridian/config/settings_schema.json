@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Dawn",
-    "theme_version": "16.0.0",
-    "theme_author": "Shopify",
+    "theme_name": "Meridian",
+    "theme_version": "1.0.0",
+    "theme_author": "Meridian Studio",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -1464,6 +1464,30 @@
         "id": "customer_account_menu",
         "default": "customer-account-main-menu",
         "label": "t:settings_schema.customer_accounts.settings.customer_account_menu.label"
+      }
+    ]
+  },
+  {
+    "name": "Wishlist & badges",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "wishlist_enable",
+        "label": "Enable wishlist",
+        "default": true
+      },
+      {
+        "type": "page",
+        "id": "wishlist_page",
+        "label": "Wishlist page",
+        "info": "Assign the page.wishlist template to this page."
+      },
+      {
+        "type": "checkbox",
+        "id": "card_tag_badges",
+        "label": "Show tag badges on product cards",
+        "default": true,
+        "info": "Tag products like badge:New in or badge:Back in stock."
       }
     ]
   }

@@ -1,0 +1,63 @@
+<div class="color-{{ section.settings.color_scheme }} gradient m-marquee section-{{ section.id }}-padding" style="--m-marquee-speed: {{ section.settings.speed }}s;">
+  <div class="m-marquee__track">
+    {%- for i in (1..2) -%}
+      <div class="m-marquee__group"{% if forloop.last %} aria-hidden="true"{% endif %}>
+        {%- if section.settings.label != blank -%}
+          <span class="m-marquee__label">{{ section.settings.label | escape }}</span>
+          <span class="m-marquee__dot">•</span>
+        {%- endif -%}
+        {%- for block in section.blocks -%}
+          <span class="m-marquee__item" {% if forloop.first and i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            {%- if block.settings.logo != blank -%}
+              {{ block.settings.logo | image_url: height: 60 | image_tag: loading: 'lazy', height: 20, alt: block.settings.name }}
+            {%- else -%}
+              {{ block.settings.name | escape }}
+            {%- endif -%}
+          </span>
+          <span class="m-marquee__dot">•</span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }}-padding { padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px; }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Press marquee",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Featured in" },
+    { "type": "range", "id": "speed", "min": 10, "max": 80, "step": 5, "unit": "s", "label": "Loop duration", "default": 35 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 24 }
+  ],
+  "blocks": [
+    {
+      "type": "press",
+      "name": "Publication",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Publication" },
+        { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Optional. Replaces the name." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Press marquee",
+      "blocks": [
+        { "type": "press", "settings": { "name": "Vogue" } },
+        { "type": "press", "settings": { "name": "Forbes" } },
+        { "type": "press", "settings": { "name": "Cosmopolitan" } },
+        { "type": "press", "settings": { "name": "Elle" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

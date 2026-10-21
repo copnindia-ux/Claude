@@ -1,0 +1,33 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <h1 class="meridian-heading">{{ section.settings.heading | escape }}</h1>
+  <wishlist-grid>
+    <ul class="grid product-grid grid--2-col-tablet-down grid--4-col-desktop" data-wishlist-grid role="list"></ul>
+    <div class="wishlist-empty" data-wishlist-empty hidden>
+      <p>{{ section.settings.empty_text }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="button">{{ section.settings.button_label | escape }}</a>
+    </div>
+  </wishlist-grid>
+</div>
+
+{% style %}
+  .section-{{ section.id }}-padding { padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px; }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Wishlist",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Wishlist" },
+    { "type": "richtext", "id": "empty_text", "label": "Empty text", "default": "<p>You haven't saved anything yet. Tap the heart on a piece to keep it here.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop all" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding", "default": 60 }
+  ]
+}
+{% endschema %}
